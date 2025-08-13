@@ -34,3 +34,32 @@ feat(authentication): Add login functionality
 - Backend API: Added API endpoint for user authentication.
 - Error handling: Improved error messages for failed login attempts.
 ```
+
+---
+
+### Additional Examples
+
+#### Documentation Update:
+```
+docs(readme): Update project structure and installation steps
+
+- README.md: Added detailed project structure.
+- README.md: Updated installation steps for clarity.
+```
+
+#### Bug Fix:
+```
+fix(api): Resolve issue with order creation endpoint
+
+- POST /api/v1/orders: Fixed validation for missing fields.
+- OrderService: Added null checks for optional parameters.
+```
+
+#### Feature Addition:
+```
+feat(menu): Add support for dynamic menu categories
+
+- MenuController: Added endpoints for category-based filtering.
+- MenuService: Implemented logic for dynamic category retrieval.
+- Frontend: Updated menu page to support category selection.
+```
