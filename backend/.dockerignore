@@ -1,0 +1,15 @@
+target/
+!target/*.jar
+*.log
+*.tmp
+.DS_Store
+.vscode
+.idea
+*.iml
+*.ipr
+*.iws
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
