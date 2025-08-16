@@ -1,30 +1,26 @@
 # Development Dockerfile for Next.js with watch mode
-FROM node:18-alpine AS development
+FROM node:18-alpine
 
 # Install dependencies for watch mode
 RUN apk add --no-cache libc6-compat curl
 
-# Create app user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
 WORKDIR /app
 
-# Copy package files
+# Copy package files first for better caching
 COPY package.json package-lock.json* ./
+
+# Install dependencies
 RUN npm ci
 
-# Copy source code with proper ownership
-COPY --chown=nextjs:nodejs . .
-
-# Switch to app user
-USER nextjs
+# Copy source code (will be overridden by watch volumes)
+COPY . .
 
 EXPOSE 3000
 
 ENV NODE_ENV=development
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Development command with hot reload
 CMD ["npm", "run", "dev"]

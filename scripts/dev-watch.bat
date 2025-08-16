@@ -9,16 +9,28 @@ echo   - Start Next.js frontend with hot reloading
 echo   - Enable file watching for automatic updates
 echo.
 
-REM Check if Docker Compose supports watch
-docker compose version | findstr "v2.2" >nul
+REM Check if Docker Compose is available
+docker compose version 2>nul
 if %errorlevel% neq 0 (
-    echo ⚠️  Warning: Docker Compose watch requires version 2.22+. Please update Docker Compose.
-    echo You can still run without watch mode using: docker compose -f compose.yml -f compose.dev.yml up
+    echo ❌ Error: Docker Compose not found. Please install Docker Desktop.
     exit /b 1
 )
 
-echo 📦 Building and starting services with watch mode...
-docker compose -f compose.yml -f compose.dev.yml up --watch
+echo 📋 Docker Compose version:
+docker compose version
+echo.
+
+REM Try watch mode first, fallback to regular mode
+echo 📦 Attempting to start with watch mode...
+docker compose up --watch 2>nul
+
+REM If watch mode fails, try regular mode
+if %errorlevel% neq 0 (
+    echo.
+    echo ⚠️  Watch mode not supported, starting in regular development mode...
+    echo 📦 Building and starting services...
+    docker compose up --build
+)
 
 echo 🛑 Development environment stopped.
 pause

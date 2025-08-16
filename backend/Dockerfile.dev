@@ -1,12 +1,8 @@
 # Development Dockerfile for Spring Boot with watch mode
-FROM eclipse-temurin:21-jdk-alpine AS development
+FROM eclipse-temurin:21-jdk-alpine
 
 # Install dependencies for watch mode
 RUN apk add --no-cache curl
-
-# Create spring user
-RUN addgroup -g 1001 -S spring && \
-    adduser -u 1001 -S spring -G spring
 
 WORKDIR /app
 
@@ -21,11 +17,8 @@ RUN chmod +x ./mvnw
 # Download dependencies (cached layer)
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code with proper ownership
-COPY --chown=spring:spring src src
-
-# Switch to spring user
-USER spring
+# Copy source code (will be overridden by watch volumes)
+COPY src src
 
 EXPOSE 8080
 

@@ -33,7 +33,7 @@ fi
 print_status "Docker is running"
 
 # Check if Docker Compose is available
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+if ! docker compose version &> /dev/null; then
     print_error "Docker Compose is not available. Please install Docker Compose and try again."
     exit 1
 fi
@@ -42,11 +42,11 @@ print_status "Docker Compose is available"
 
 # Stop and remove existing containers
 echo -e "\n${YELLOW}📦 Stopping existing containers...${NC}"
-docker-compose down --remove-orphans
+docker compose down --remove-orphans
 
 # Build and start services
 echo -e "\n${YELLOW}🔨 Building and starting services...${NC}"
-docker-compose up --build -d
+docker compose up --build -d
 
 # Wait for services to be healthy
 echo -e "\n${YELLOW}⏳ Waiting for services to be healthy...${NC}"
@@ -58,7 +58,7 @@ wait_for_service() {
     local count=0
     
     while [ $count -lt $timeout ]; do
-        if docker-compose ps | grep "$service" | grep -q "healthy"; then
+        if docker compose ps | grep "$service" | grep -q "healthy"; then
             print_status "$service is healthy"
             return 0
         fi
@@ -82,18 +82,18 @@ wait_for_service "frontend" || exit 1
 
 # Show service status
 echo -e "\n${GREEN}📊 Service Status:${NC}"
-docker-compose ps
+docker compose ps
 
 # Show service URLs
 echo -e "\n${GREEN}🌐 Service URLs:${NC}"
-echo "Frontend: http://localhost:3000"
+echo "Frontend: http://localhost:3001"
 echo "Backend API: http://localhost:8083"
 echo "Swagger UI: http://localhost:8083/swagger-ui/index.html"
-echo "Database: localhost:5435 (user: astro, password: astro123, db: astroneko)"
+echo "Database: localhost:5434 (user: astro, password: astro123, db: astroneko_dev)"
 
 # Show logs command
 echo -e "\n${YELLOW}📋 To view logs, run:${NC}"
-echo "docker-compose logs -f [service_name]"
+echo "docker compose logs -f [service_name]"
 echo "Services: postgres, backend, frontend"
 
 echo -e "\n${GREEN}🎉 Deployment completed successfully!${NC}"

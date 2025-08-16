@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo 🚀 Starting Astroneko Coffee Docker Deployment
-echo =============================================
+echo 🚀 Starting Astroneko Coffee Development Environment
+echo ================================================
 
 REM Check if Docker is running
 docker info >nul 2>&1
@@ -28,12 +28,12 @@ echo ✅ Docker Compose is available
 REM Stop and remove existing containers
 echo.
 echo 📦 Stopping existing containers...
-docker-compose down --remove-orphans
+docker compose down --remove-orphans
 
 REM Build and start services
 echo.
 echo 🔨 Building and starting services...
-docker-compose up --build -d
+docker compose up --build -d
 
 REM Wait for services to be ready
 echo.
@@ -43,20 +43,20 @@ timeout /t 30 /nobreak >nul
 REM Show service status
 echo.
 echo 📊 Service Status:
-docker-compose ps
+docker compose ps
 
 REM Show service URLs
 echo.
 echo 🌐 Service URLs:
-echo Frontend: http://localhost:3000
+echo Frontend: http://localhost:3001
 echo Backend API: http://localhost:8083
 echo Swagger UI: http://localhost:8083/swagger-ui/index.html
-echo Database: localhost:5435 (user: astro, password: astro123, db: astroneko)
+echo Database: localhost:5434 (user: astro, password: astro123, db: astroneko_dev)
 
 REM Show logs command
 echo.
 echo 📋 To view logs, run:
-echo docker-compose logs -f [service_name]
+echo docker compose logs -f [service_name]
 echo Services: postgres, backend, frontend
 
 echo.

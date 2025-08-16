@@ -92,14 +92,30 @@ astroneko-coffee/
 
 ## 🚀 Installation
 
-### 1. Clone the repository
+### Option 1: Docker Development Environment (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/astroneko-coffee.git
+cd astroneko-coffee
+
+# Start with development environment and watch mode
+./scripts/dev-watch.bat
+
+# OR start basic development environment
+./scripts/dev-start.bat
+```
+
+### Option 2: Local Development Setup
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/your-username/astroneko-coffee.git
 cd astroneko-coffee
 ```
 
-### 2. Set up infrastructure
+#### 2. Set up infrastructure
 
 ```bash
 cd infrastructure
@@ -107,14 +123,14 @@ cp .env.example .env
 docker compose up -d postgres redis redis-commander
 ```
 
-### 3. Backend
+#### 3. Backend
 
 ```bash
 cd ../backend
 mvn spring-boot:run
 ```
 
-### 4. Frontend
+#### 4. Frontend
 
 ```bash
 cd ../frontend
@@ -126,9 +142,8 @@ npm run dev
 
 ## ▶ Usage
 
-* Frontend: [http://localhost:3003](http://localhost:3003)
+* Frontend: [http://localhost:3001](http://localhost:3001)
 * Backend Swagger UI: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
-* Redis Commander: [http://localhost:8084](http://localhost:8084)
 
 ---
 
