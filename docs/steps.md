@@ -213,3 +213,224 @@
      - Ensure the page displays the menu fetched from the backend.
      - Check that the menu items are listed with their names and prices.
      - Confirm that the API endpoint `/api/v1/expose/menu` is being called successfully.
+
+8. **Setup Docker Database**
+   - Create a `compose.yml` file in the project root:
+     ```yml
+        services:
+        postgres:
+            image: postgres:16-alpine
+            container_name: astroneko_postgres
+            restart: no # Only start when explicitly called
+            env_file:
+            - .env # Environment variables for credentials (POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB)
+            ports:
+            - "5435:5432" # Updated port based on documentation
+            volumes:
+            - astroneko_postgres:/var/lib/postgresql/data
+
+        volumes:
+        astroneko_postgres:
+     ```
+
+   - Create a `.env` file in the project root for database credentials:
+     ```env
+     POSTGRES_USER=astro
+     POSTGRES_PASSWORD=astro123
+     POSTGRES_DB=astroneko
+     ```
+
+   - Start the PostgreSQL database:
+     ```bash
+     docker compose up -d
+     ```
+
+   - Verify the database is running:
+     ```bash
+     docker ps
+     ```
+
+9. **Connect Backend to Database and Create Tables**
+   - **Update Application Properties**:
+     - Update `backend/src/main/resources/application.properties`:
+     ```properties
+     server.port=8083
+     spring.profiles.active=dev
+     management.endpoints.web.exposure.include=health,info
+
+     springdoc.swagger-ui.path=/swagger-ui.html
+     spring.security.user.name=admin
+     spring.security.user.password=admin123
+
+     spring.datasource.url=jdbc:postgresql://localhost:5435/astroneko
+     spring.datasource.username=astro
+     spring.datasource.password=astro123
+     spring.jpa.hibernate.ddl-auto=update
+     spring.jpa.show-sql=true
+     spring.jpa.properties.hibernate.format_sql=true
+     spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+     ```
+
+   - **Create Entity Class**:
+     - Create `MenuItem.java` in `backend/src/main/java/coffee/astroneko/backend/entity/`:
+     ```java
+     package coffee.astroneko.backend.entity;
+
+     import jakarta.persistence.Entity;
+     import jakarta.persistence.GeneratedValue;
+     import jakarta.persistence.GenerationType;
+     import jakarta.persistence.Id;
+
+     @Entity
+     public class MenuItem {
+
+       @Id
+       @GeneratedValue(strategy = GenerationType.IDENTITY)
+       private Long id;
+
+       private String name;
+       private Double price;
+
+       // Getters and Setters
+       public Long getId() {
+         return id;
+       }
+
+       public void setId(Long id) {
+         this.id = id;
+       }
+
+       public String getName() {
+         return name;
+       }
+
+       public void setName(String name) {
+         this.name = name;
+       }
+
+       public Double getPrice() {
+         return price;
+       }
+
+       public void setPrice(Double price) {
+         this.price = price;
+       }
+     }
+     ```
+
+   - **Create Repository Interface**:
+     - Create `MenuItemRepository.java` in `backend/src/main/java/coffee/astroneko/backend/repository/`:
+     ```java
+     package coffee.astroneko.backend.repository;
+
+     import coffee.astroneko.backend.entity.MenuItem;
+     import org.springframework.data.jpa.repository.JpaRepository;
+     import org.springframework.stereotype.Repository;
+
+     @Repository
+     public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {}
+     ```
+
+   - **Update Menu Controller**:
+     - Update `MenuController.java` to use the database:
+     ```java
+     @Tag(name = "Menu", description = "API for managing coffee shop menu")
+     @RestController
+     @RequestMapping("/api/v1/expose/menu")
+     public class MenuController {
+
+       private final MenuItemRepository menuItemRepository;
+
+       @Autowired
+       public MenuController(MenuItemRepository menuItemRepository) {
+         this.menuItemRepository = menuItemRepository;
+       }
+
+       @Operation(
+         summary = "Get menu items",
+         description = "Returns a list of available menu items"
+       )
+       @GetMapping
+       public List<MenuItem> getMenu() {
+         return menuItemRepository.findAll();
+       }
+     }
+     ```
+
+   - **Update BackendApplication**:
+     - Add necessary annotations to `BackendApplication.java`:
+     ```java
+     package coffee.astroneko.backend;
+
+     import org.springframework.boot.SpringApplication;
+     import org.springframework.boot.autoconfigure.SpringBootApplication;
+     import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+     @EnableJpaRepositories(basePackages = "coffee.astroneko.backend.repository")
+     @SpringBootApplication(scanBasePackages = "coffee.astroneko.backend")
+     public class BackendApplication {
+
+       public static void main(String[] args) {
+         SpringApplication.run(BackendApplication.class, args);
+       }
+     }
+     ```
+
+   - **Create JPA Configuration**:
+     - Create `JpaConfig.java` in `backend/src/main/java/coffee/astroneko/backend/config/`:
+     ```java
+     package coffee.astroneko.backend.config;
+
+     import org.springframework.beans.factory.annotation.Autowired;
+     import org.springframework.context.annotation.Bean;
+     import org.springframework.context.annotation.Configuration;
+     import org.springframework.orm.jpa.JpaTransactionManager;
+     import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+     import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+     import org.springframework.transaction.PlatformTransactionManager;
+
+     import javax.sql.DataSource;
+     import java.util.Properties;
+
+     @Configuration
+     public class JpaConfig {
+
+       @Autowired
+       private DataSource dataSource;
+
+       @Bean
+       public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+         factoryBean.setDataSource(dataSource);
+         factoryBean.setPackagesToScan("coffee.astroneko.backend.entity");
+         factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+         
+         Properties jpaProperties = new Properties();
+         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+         jpaProperties.put("hibernate.hbm2ddl.auto", "update");
+         jpaProperties.put("hibernate.show_sql", "true");
+         factoryBean.setJpaProperties(jpaProperties);
+         
+         return factoryBean;
+       }
+
+       @Bean
+       public PlatformTransactionManager transactionManager() {
+         JpaTransactionManager transactionManager = new JpaTransactionManager();
+         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+         return transactionManager;
+       }
+     }
+     ```
+
+   - **Test the Database Connection**:
+     - Start the backend:
+     ```bash
+     cd backend
+     mvn spring-boot:run
+     ```
+     - Verify:
+       - Check that the `menu_item` table is created automatically in PostgreSQL.
+       - Access the menu endpoint: [http://localhost:8083/api/v1/expose/menu](http://localhost:8083/api/v1/expose/menu)
+       - Initially, it will return an empty array `[]` since no data has been inserted yet.
+       - Use a database client (like Navicat, pgAdmin, or DBeaver) to connect to the database and verify the table structure.
