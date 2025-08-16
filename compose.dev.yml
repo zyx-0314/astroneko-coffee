@@ -1,0 +1,39 @@
+# Development Docker Compose Override
+# This file extends compose.yml for development-specific configurations
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: builder # Use builder stage for development hot-reload if needed
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_JPA_SHOW_SQL: true
+      LOGGING_LEVEL_ROOT: DEBUG
+    volumes:
+      - ./backend/src:/app/src:ro # Mount source for potential hot-reload
+    ports:
+      - "8083:8083"
+      - "5005:5005" # Debug port
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: deps # Use deps stage for development
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8083
+    volumes:
+      - ./frontend:/app:delegated
+      - /app/node_modules # Anonymous volume to prevent overwriting
+    command: npm run dev
+    ports:
+      - "3001:3000" # Different port for dev
+
+  postgres:
+    environment:
+      POSTGRES_DB: astroneko_dev
+    ports:
+      - "5434:5432" # Different port for dev database
