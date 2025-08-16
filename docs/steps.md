@@ -1491,6 +1491,56 @@
       - **Port Conflicts**: Verify ports 3003, 8083, and 5435 are available
       - **Build Failures**: Clear Docker cache with `docker system prune`
 
+    - **Development with Docker Compose Watch** 🔥:
+      
+      Docker Compose Watch enables real-time file synchronization and automatic container updates during development, providing a seamless development experience with hot reloading.
+
+      - **Prerequisites**:
+        - Docker Compose version 2.22+ (check with `docker compose version`)
+        - Development Dockerfiles configured for hot reloading
+
+      - **Start Development Environment with Watch**:
+        ```bash
+        # Using the provided script (recommended)
+        ./scripts/dev-watch.sh    # Linux/macOS
+        ./scripts/dev-watch.bat   # Windows
+
+        # Or manually
+        docker compose -f compose.yml -f compose.dev.yml up --watch
+        ```
+
+      - **Watch Mode Features**:
+        - **Frontend (Next.js)**: 
+          - `sync` - Real-time file synchronization for components, pages, and assets
+          - `sync+restart` - Restart container when config files change (next.config.ts, tailwind.config.ts)
+          - `rebuild` - Full image rebuild when dependencies change (package.json)
+        
+        - **Backend (Spring Boot)**:
+          - `sync` - Hot reload Java source files with Spring DevTools
+          - `rebuild` - Full rebuild when Maven configuration changes (pom.xml)
+        
+        - **Database**: Standard PostgreSQL with persistent volumes
+
+      - **Development URLs**:
+        - **Frontend**: http://localhost:3001 (dev port)
+        - **Backend**: http://localhost:8083 
+        - **Database**: localhost:5434 (dev database)
+
+      - **Watch Mode Benefits**:
+        - ⚡ Instant feedback on code changes
+        - 🔄 Automatic container updates without manual restarts  
+        - 🎯 Selective sync rules for optimal performance
+        - 🛡️ Ignores unnecessary files (node_modules, build artifacts)
+        - 🔍 Debug-friendly with exposed debug ports
+
+      - **Stopping Watch Mode**:
+        ```bash
+        # Stop all services
+        docker compose -f compose.yml -f compose.dev.yml down
+
+        # Or use Ctrl+C to stop watch and keep containers running
+        ```
+
     - **Production Considerations**:
       - Multi-stage builds for optimized image sizes
       - Health checks for container orchestration
@@ -1498,4 +1548,570 @@
       - Environment-specific configurations
       - Container resource limits and monitoring
       - Automated deployment with CI/CD integration
+
+15. **Design System: Mood Board and Dark Mode Theme** 🎨
+
+    **Objective**: Implement a comprehensive design system with mood board showcase and dark/light theme support to establish brand consistency and enhance user experience.
+
+    - **Add Theme Dependencies**:
+      - **Update Frontend Dependencies**:
+        ```bash
+        cd frontend
+        npm install next-themes lucide-react
+        ```
+        - `next-themes`: Provides theme switching functionality with system preference detection
+        - `lucide-react`: Icon library for theme toggle and UI elements
+
+    - **Configure Theme Provider**:
+      - **Create Theme Provider** (`frontend/provider/theme-provider.tsx`):
+        ```tsx
+        "use client"
+
+        import * as React from "react"
+        import { ThemeProvider as NextThemesProvider } from "next-themes"
+
+        export function ThemeProvider({
+          children,
+          ...props
+        }: React.ComponentProps<typeof NextThemesProvider>) {
+          return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+        }
+        ```
+
+      - **Update Root Layout** (`frontend/app/layout.tsx`):
+        ```tsx
+        import { ThemeProvider } from "@/provider/theme-provider";
+
+        export default function RootLayout({
+          children,
+        }: {
+          children: React.ReactNode;
+        }) {
+          return (
+            <html lang="en" suppressHydrationWarning>
+              <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                </ThemeProvider>
+              </body>
+            </html>
+          );
+        }
+        ```
+
+    - **Create Theme Toggle Component**:
+      - **Theme Toggle** (`frontend/components/ui/theme-toggle.tsx`):
+        ```tsx
+        "use client"
+
+        import { Moon, Sun } from "lucide-react"
+        import { useTheme } from "next-themes"
+        import { Button } from "@/components/ui/button"
+        import {
+          DropdownMenu,
+          DropdownMenuContent,
+          DropdownMenuItem,
+          DropdownMenuTrigger,
+        } from "@/components/ui/dropdown-menu"
+
+        export function ThemeToggle() {
+          const { setTheme } = useTheme()
+
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        }
+        ```
+
+    - **Design Brand Color System**:
+      - **Brand Colors Definition**:
+        ```scss
+        // Astroneko Coffee Brand Colors
+        :root {
+          --color-shingle-fawn: #6B4E37;    /* Primary coffee brown */
+          --color-jungle-green: #2CA6A4;    /* Secondary teal accent */
+          --color-equator: #E1B168;         /* Warm golden highlight */
+          --color-alabaster: #F8F8FF;       /* Clean background */
+        }
+        ```
+
+    - **Create Mood Board Page Structure**:
+      - **Mood Board Main Page** (`frontend/app/mood-board/page.tsx`):
+        ```tsx
+        import React from 'react';
+        import { MoodBoardColors } from '@/components/MoodBoard/Colors';
+        import { MoodBoardTypography } from '@/components/MoodBoard/Typography';
+        import { MoodBoardUIElements } from '@/components/MoodBoard/UIElements';
+        import { ThemeToggle } from '@/components/ui/theme-toggle';
+
+        export default function MoodBoardPage() {
+          return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors py-8">
+              <div className="container mx-auto px-4">
+                <header className="mb-12">
+                  <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                      Astroneko Coffee
+                    </h1>
+                    <div className="flex items-center gap-4">
+                      <ThemeToggle />
+                      <div className="flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm">
+                        🎨 Shuffle
+                        <span className="text-xs opacity-70">C</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg">
+                    Design system and mood board for our cosmic coffee experience
+                  </p>
+                </header>
+
+                <main className="space-y-16">
+                  <MoodBoardColors />
+                  <MoodBoardTypography />
+                  <MoodBoardUIElements />
+                </main>
+              </div>
+            </div>
+          );
+        }
+        ```
+
+    - **Implement Color Palette Component** (`frontend/components/MoodBoard/Colors.tsx`):
+      ```tsx
+      "use client";
+
+      import React from 'react';
+
+      interface Color {
+        hex: string;
+        name: string;
+      }
+
+      export function MoodBoardColors() {
+        const neutralColors: Color[] = [
+          { hex: "#F8F9FA", name: "Light Gray" },
+          { hex: "#E9ECEF", name: "Gray 100" },
+          { hex: "#6C757D", name: "Gray 500" },
+          { hex: "#343A40", name: "Gray 800" },
+          { hex: "#212529", name: "Almost Black" }
+        ];
+
+        return (
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Colors</h2>
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                🎨 Shuffle
+                <span className="text-xs opacity-70">C</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Neutrals Palette */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Neutrals</h3>
+                <div className="space-y-1">
+                  {neutralColors.map((color, index) => (
+                    <div 
+                      key={index}
+                      className="h-12 rounded-lg border border-gray-200 dark:border-gray-700"
+                      style={{ backgroundColor: color.hex }}
+                      title={`${color.name} - ${color.hex}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Brand Color Cards */}
+              <div className="bg-gradient-to-br from-[#6B4E37] to-[#5A3E2A] rounded-xl p-6 text-white relative overflow-hidden">
+                <div className="relative z-10">
+                  <h3 className="text-lg font-medium mb-2">Shingle Fawn</h3>
+                  <div className="text-sm opacity-90 mb-4">Main</div>
+                  <div className="text-xs font-mono">#6B4E37</div>
+                </div>
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-8 translate-y-8" />
+              </div>
+
+              <div className="bg-gradient-to-br from-[#2CA6A4] to-[#238A88] rounded-xl p-6 text-white relative overflow-hidden">
+                <div className="relative z-10">
+                  <h3 className="text-lg font-medium mb-2">Jungle Green</h3>
+                  <div className="text-xs font-mono">#2CA6A4</div>
+                </div>
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-8 translate-y-8" />
+              </div>
+
+              <div className="bg-gradient-to-br from-[#E1B168] to-[#D4A356] rounded-xl p-6 text-gray-800 relative overflow-hidden">
+                <div className="relative z-10">
+                  <h3 className="text-lg font-medium mb-2">Equator</h3>
+                  <div className="text-xs font-mono">#E1B168</div>
+                </div>
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/20 rounded-full translate-x-8 translate-y-8" />
+              </div>
+            </div>
+
+            {/* Color Usage Guidelines */}
+            <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Color Usage Guidelines</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#6B4E37]" />
+                    <span className="font-medium text-gray-900 dark:text-white">Primary (Shingle Fawn)</span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Brand headers, primary buttons, coffee-related elements</p>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#2CA6A4]" />
+                    <span className="font-medium text-gray-900 dark:text-white">Accent (Jungle Green)</span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Success states, fresh ingredients, eco-friendly features</p>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#E1B168]" />
+                    <span className="font-medium text-gray-900 dark:text-white">Highlight (Equator)</span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Warm accents, premium items, special offers</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+      ```
+
+    - **Implement Typography Showcase** (`frontend/components/MoodBoard/Typography.tsx`):
+      ```tsx
+      "use client";
+
+      import React from 'react';
+
+      export function MoodBoardTypography() {
+        return (
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Typography</h2>
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                <span className="text-sm">Aa</span>
+                Regular - normal
+                <span className="text-xs opacity-70">▼</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Heading Typography */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Heading</h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">Cormorant Garamond</div>
+                </div>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-4xl font-serif text-gray-900 dark:text-white leading-tight">
+                      Cormorant Garamond
+                    </h1>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">H1 - 36px / 2.25rem</div>
+                  </div>
+                  
+                  <div>
+                    <h2 className="text-3xl font-serif text-gray-900 dark:text-white leading-tight">
+                      Premium Coffee Experience
+                    </h2>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">H2 - 30px / 1.875rem</div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-2xl font-serif text-gray-900 dark:text-white leading-tight">
+                      Artisanal Brewing Methods
+                    </h3>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">H3 - 24px / 1.5rem</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Body Typography */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Body</h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">Cantarell</div>
+                </div>
+                
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-lg text-gray-900 dark:text-white leading-relaxed font-sans">
+                      Cantarell Regular
+                    </p>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Large - 18px / 1.125rem</div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-base text-gray-900 dark:text-white leading-relaxed font-sans">
+                      Perfect for body text and descriptions. Clean, readable, and modern typography that complements our coffee brand aesthetic.
+                    </p>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Base - 16px / 1rem</div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-sans">
+                      Smaller text for captions, labels, and supplementary information throughout the application.
+                    </p>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Small - 14px / 0.875rem</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Typography Usage */}
+            <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Typography Usage</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-2 font-serif text-gray-900 dark:text-white">Cormorant Garamond (Headings)</h4>
+                  <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>• Page titles and main headings</li>
+                    <li>• Section headers</li>
+                    <li>• Featured coffee names</li>
+                    <li>• Brand messaging</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2 font-sans text-gray-900 dark:text-white">Cantarell (Body)</h4>
+                  <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>• Body text and descriptions</li>
+                    <li>• Navigation and UI elements</li>
+                    <li>• Form labels and inputs</li>
+                    <li>• Button text and captions</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+      ```
+
+    - **Implement UI Elements Showcase** (`frontend/components/MoodBoard/UIElements.tsx`):
+      ```tsx
+      "use client";
+
+      import React, { useState } from 'react';
+
+      export function MoodBoardUIElements() {
+        const [activeTab, setActiveTab] = useState('buttons');
+
+        return (
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">UI Styling</h2>
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                🎨 Shuffle
+                <span className="text-xs opacity-70">U</span>
+              </div>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="flex gap-1 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
+              <button
+                onClick={() => setActiveTab('buttons')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'buttons' 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                Buttons & Forms
+              </button>
+              <button
+                onClick={() => setActiveTab('cards')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'cards' 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                Cards & Images
+              </button>
+            </div>
+
+            {activeTab === 'buttons' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Buttons & Forms */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">Buttons & Forms</h3>
+                  
+                  <div className="space-y-6">
+                    {/* Primary Buttons */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Primary Buttons</h4>
+                      <div className="flex flex-wrap gap-3">
+                        <button className="px-6 py-2 bg-[#6B4E37] text-white rounded-lg hover:bg-[#5A3E2A] transition-colors font-medium">
+                          Order Now
+                        </button>
+                        <button className="px-6 py-2 bg-[#2CA6A4] text-white rounded-lg hover:bg-[#238A88] transition-colors font-medium">
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Form Elements */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Form Elements</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Customer Name
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Enter your name"
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-[#6B4E37] focus:border-transparent outline-none transition-colors placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interactive Elements */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">Interactive Elements</h3>
+                  
+                  <div className="space-y-6">
+                    {/* Status Badges */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Status Badges</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                          Available
+                        </span>
+                        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                          Preparing
+                        </span>
+                        <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                          Out of Stock
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'cards' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Product Cards */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">Coffee Cards</h3>
+                  
+                  <div className="space-y-6">
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                      <div className="h-48 bg-gradient-to-br from-[#6B4E37] to-[#8B5A3C] relative">
+                        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+                        <div className="absolute bottom-4 left-4 text-white">
+                          <h4 className="text-lg font-semibold">Premium Espresso</h4>
+                          <p className="text-sm opacity-90">Rich and bold flavor</p>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-[#6B4E37]">$3.50</span>
+                          <button className="px-4 py-2 bg-[#2CA6A4] text-white rounded-lg hover:bg-[#238A88] transition-colors text-sm font-medium">
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        );
+      }
+      ```
+
+    - **Test Design System Implementation**:
+      - **Start Development Environment**:
+        ```bash
+        # Start frontend development server
+        cd frontend
+        npm run dev
+        ```
+
+      - **Verify Implementation**:
+        - **Mood Board Page**: http://localhost:3000/mood-board
+        - **Theme Toggle**: Click theme switcher to test light/dark/system modes
+        - **Brand Colors**: Verify all brand colors display correctly in both themes
+        - **Typography**: Check font hierarchy and readability in both themes
+        - **UI Elements**: Test interactive components and form elements
+        - **Responsive Design**: Verify layout works on different screen sizes
+
+    - **Integration with Existing Application**:
+      - **Update Homepage** to include mood board link:
+        ```tsx
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-2">🎨 Design System</h2>
+          <p className="text-gray-600">Explore our brand and UI components</p>
+          <a 
+            href="/mood-board" 
+            className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
+          >
+            View Mood Board
+          </a>
+        </div>
+        ```
+
+      - **Apply Theme Support** to existing components:
+        - Add dark mode classes to navigation components
+        - Update form elements with theme-aware styling
+        - Ensure proper contrast ratios in both themes
+        - Test user experience consistency across all pages
+
+    - **Design System Benefits**:
+      - **Brand Consistency**: Unified color palette and typography across all components
+      - **Developer Experience**: Clear component guidelines and usage examples  
+      - **User Experience**: Smooth theme transitions and system preference detection
+      - **Accessibility**: Proper contrast ratios and semantic markup
+      - **Maintainability**: Centralized design tokens and reusable components
+      - **Scalability**: Easy to extend with new components and themes
+
+    - **Deployment with Docker**:
+      - The mood board and theme system work seamlessly in containerized environments
+      - All components are statically built and served efficiently
+      - Theme preferences persist across browser sessions
+      - No additional infrastructure requirements
+
+    **✅ Design System Complete**: 
+    - Comprehensive mood board showcasing colors, typography, and UI elements
+    - Full dark/light theme support with system preference detection
+    - Professional theme toggle component with dropdown options
+    - Brand-consistent color palette applied throughout components
+    - Enhanced user experience with smooth theme transitions
 
