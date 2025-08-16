@@ -27,7 +27,7 @@ export default function HomePage() {
             <h2 className="text-xl font-semibold mb-2">🚀 About</h2>
             <p className="text-gray-600">Discover our cosmic mission</p>
             <a 
-              href="/about" 
+              href="/test/crud-expose" 
               className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
             >
               Learn More
@@ -38,7 +38,7 @@ export default function HomePage() {
             <h2 className="text-xl font-semibold mb-2">📡 API</h2>
             <p className="text-gray-600">Explore our backend services</p>
             <a 
-              href="http://localhost:8084/swagger-ui.html" 
+              href="http://localhost:8083/swagger-ui.html" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-4 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
