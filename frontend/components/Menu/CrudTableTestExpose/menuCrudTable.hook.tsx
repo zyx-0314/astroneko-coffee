@@ -78,7 +78,7 @@ export function MenuCrudTableHook() {
         price: parseFloat(data.price) || 0,
       };
       
-      const response = await axios.post(`${API_BASE_URL}/secure/menu`, payload);
+      const response = await axios.post(`${API_BASE_URL}/${process.env.NEXT_PUBLIC_API_VERSION}/secure/menu`, payload);
       
       // Add the new item to the local state
       const newItem: MenuItem = {
@@ -110,7 +110,7 @@ export function MenuCrudTableHook() {
         price: parseFloat(data.price) || 0,
       };
       
-      const response = await axios.put(`${API_BASE_URL}/secure/menu/${id}`, payload);
+      const response = await axios.put(`${API_BASE_URL}/${process.env.NEXT_PUBLIC_API_VERSION}/secure/menu/${id}`, payload);
       
       // Update the item in local state
       setMenuItems(prev =>
@@ -135,7 +135,7 @@ export function MenuCrudTableHook() {
   const deleteMenuItem = async (id: string) => {
     try {
       setError(null);
-      await axios.delete(`${API_BASE_URL}/secure/menu/${id}`);
+      await axios.delete(`${API_BASE_URL}/${process.env.NEXT_PUBLIC_API_VERSION}/secure/menu/${id}`);
       
       // Remove the item from local state
       setMenuItems(prev => prev.filter(item => item.id !== id));
