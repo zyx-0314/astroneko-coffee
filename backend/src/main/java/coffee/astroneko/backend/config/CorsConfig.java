@@ -17,8 +17,11 @@ public class CorsConfig {
         // Apply CORS to specific endpoints
         registry
           .addMapping("/api/v1/secure/**")
-          .allowedOrigins("http://localhost:3000") // Allow frontend origin
-          .allowedOrigins("http://localhost:3003") // Allow frontend origin
+          .allowedOrigins(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3003"
+          ) // Allow frontend origins
           .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
           .allowedHeaders("*")
           .allowCredentials(true);
@@ -26,11 +29,27 @@ public class CorsConfig {
         // Exempt other APIs from CORS
         registry
           .addMapping("/api/v1/expose/**")
-          .allowedOrigins("http://localhost:3000") // Allow frontend origin
-          .allowedOrigins("http://localhost:3003") // Allow frontend origin
-          .allowedMethods("GET", "POST")
+          .allowedOrigins(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3003"
+          ) // Allow frontend origins
+          .allowedMethods("GET", "POST", "OPTIONS")
           .allowedHeaders("*")
           .allowCredentials(false); // No credentials for admin APIs
+
+        // Allow Swagger UI endpoints
+        registry
+          .addMapping("/swagger-ui/**")
+          .allowedOrigins("*")
+          .allowedMethods("GET", "POST", "OPTIONS")
+          .allowedHeaders("*");
+
+        registry
+          .addMapping("/v3/api-docs/**")
+          .allowedOrigins("*")
+          .allowedMethods("GET", "OPTIONS")
+          .allowedHeaders("*");
       }
     };
   }

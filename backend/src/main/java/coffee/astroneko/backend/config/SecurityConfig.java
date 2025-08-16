@@ -8,17 +8,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf
-                        .disable()) // Disable CSRF for simplicity during development
-                .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/v1/expose/**").permitAll() // Allow public access to /menu
-                    .anyRequest().authenticated() // Require authentication for other endpoints
-                )
-                .formLogin(form -> form.defaultSuccessUrl("/home", true)); // Updated form login configuration
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    throws Exception {
+    http
+      .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity during development
+      .authorizeHttpRequests(
+        auth ->
+          auth
+            .requestMatchers("/api/v1/expose/**")
+            .permitAll() // Allow public access to /menu
+            .requestMatchers("/api/v1/secure/**")
+            .permitAll() // Temporarily allow secure endpoints for testing
+            .requestMatchers(
+              "/swagger-ui/**",
+              "/v3/api-docs/**",
+              "/swagger-ui.html"
+            )
+            .permitAll() // Allow Swagger UI and API docs
+            .anyRequest()
+            .authenticated() // Require authentication for other endpoints
+      )
+      .formLogin(form -> form.defaultSuccessUrl("/home", true)); // Updated form login configuration
 
-        return http.build();
-    }
+    return http.build();
+  }
 }
