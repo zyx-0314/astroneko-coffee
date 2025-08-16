@@ -1041,3 +1041,105 @@
         - Verify form validation works correctly
         - Confirm API communication is working properly
 
+13. **Implement Automated Testing Framework**
+    - **Add Testing Dependencies to Backend**:
+      - Update `pom.xml` to include testing libraries:
+      ```xml
+      <!-- Testing Dependencies -->
+      <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>junit-jupiter</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>postgresql</artifactId>
+          <scope>test</scope>
+      </dependency>
+      ```
+
+    - **Create Backend Test Structure**:
+      - Create comprehensive test suite covering all layers:
+        - `MenuItemTest.java`: Entity unit tests
+        - `MenuItemServiceTest.java`: Service layer tests with mocks
+        - `MenuItemRepositoryTest.java`: JPA repository tests
+        - `MenuControllerTest.java`: Public API controller tests
+        - `MenuManagementControllerTest.java`: Secure API controller tests
+        - `SimpleIntegrationTest.java`: Database integration tests
+
+    - **Configure Test Environment**:
+      - Update `application-test.properties`:
+      ```properties
+      # Test database configuration
+      spring.datasource.url=jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+      spring.datasource.driver-class-name=org.h2.Driver
+      spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+      spring.jpa.hibernate.ddl-auto=create-drop
+      spring.jpa.show-sql=false
+      spring.security.user.name=test
+      spring.security.user.password=test
+      ```
+
+    - **Add Frontend Testing Setup**:
+      - Update `package.json` with testing dependencies and scripts:
+      ```json
+      {
+        "scripts": {
+          "test": "jest",
+          "test:watch": "jest --watch", 
+          "test:ci": "jest --ci --coverage --watchAll=false"
+        },
+        "devDependencies": {
+          "@testing-library/jest-dom": "^6.6.3",
+          "@testing-library/react": "^16.1.0",
+          "@testing-library/user-event": "^14.5.2",
+          "@types/jest": "^29.5.14",
+          "jest": "^29.7.0",
+          "jest-environment-jsdom": "^29.7.0"
+        }
+      }
+      ```
+
+      - Create `jest.config.js` and `jest.setup.js` for test configuration
+      - Create component tests for critical UI components
+
+    - **Set Up CI/CD Pipeline**:
+      - Create `.github/workflows/ci-cd.yml` with comprehensive testing pipeline:
+        - Backend tests with PostgreSQL service
+        - Frontend tests with Node.js setup
+        - Integration tests with Docker Compose
+        - Test coverage reporting
+        - Automated deployment on successful tests
+
+    - **Create Test Runner Scripts**:
+      - `scripts/run-tests.bat` for Windows
+      - `scripts/run-tests.sh` for Unix/Linux/macOS
+      - Automated test execution with colored output and summary reports
+
+    - **Run and Verify Tests**:
+      - Test backend unit tests:
+      ```bash
+      cd backend
+      mvn test -Dtest="MenuItemTest,MenuItemServiceTest"
+      ```
+      - Expected: All 12 unit tests should pass ✅
+      - Install frontend dependencies and run tests:
+      ```bash
+      cd frontend
+      npm install
+      npm test
+      ```
+      - Verify CI/CD pipeline triggers on code changes
+      - Check test coverage reports and ensure quality thresholds are met
+
+    - **Documentation**:
+      - Comprehensive testing guide created in `docs/TESTING.md`
+      - Includes test structure, running instructions, CI/CD setup, and best practices
+      - Debugging guides for common test failures
+      - Integration with development workflow recommendations
+
