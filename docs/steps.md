@@ -1143,3 +1143,359 @@
       - Debugging guides for common test failures
       - Integration with development workflow recommendations
 
+14. **Docker Containerization**
+
+    **Objective**: Containerize the complete Astroneko Coffee application stack for production deployment and environment consistency.
+
+    - **Create Docker Configuration Files**:
+
+      - **Backend Dockerfile** (`backend/Dockerfile`):
+        ```dockerfile
+        # Multi-stage build for Spring Boot application
+        FROM eclipse-temurin:21-jdk-alpine AS builder
+        WORKDIR /app
+        COPY mvnw .
+        COPY .mvn .mvn
+        COPY pom.xml .
+        RUN chmod +x ./mvnw
+        RUN ./mvnw dependency:go-offline -B
+        COPY src src
+        RUN ./mvnw clean package -DskipTests
+
+        FROM eclipse-temurin:21-jre-alpine AS runtime  
+        RUN apk add --no-cache curl
+        RUN addgroup -g 1001 -S spring && \
+            adduser -u 1001 -S spring -G spring
+        WORKDIR /app
+        COPY --from=builder /app/target/*.jar app.jar
+        RUN chown -R spring:spring /app
+        USER spring
+        EXPOSE 8080
+        ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+        ```
+
+      - **Frontend Dockerfile** (`frontend/Dockerfile`):
+        ```dockerfile
+        # Multi-stage build for Next.js application
+        FROM node:18-alpine AS base
+
+        FROM base AS deps
+        RUN apk add --no-cache libc6-compat
+        WORKDIR /app
+        COPY package.json package-lock.json* ./
+        RUN npm ci
+
+        FROM base AS builder
+        WORKDIR /app
+        COPY --from=deps /app/node_modules ./node_modules
+        COPY . .
+        RUN npm run build -- --no-lint
+
+        FROM base AS runner
+        WORKDIR /app
+        RUN addgroup --system --gid 1001 nodejs
+        RUN adduser --system --uid 1001 nextjs
+        COPY --from=builder /app/public ./public
+        RUN mkdir .next
+        RUN chown nextjs:nodejs .next
+        COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+        COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+        USER nextjs
+        EXPOSE 3000
+        ENV PORT 3000
+        ENV HOSTNAME "0.0.0.0"
+        CMD ["node", "server.js"]
+        ```
+
+      - **Docker Compose Configuration** (`compose.yml`):
+        ```yaml
+        services:
+          postgres:
+            image: postgres:16-alpine
+            container_name: astroneko_postgres
+            restart: unless-stopped
+            environment:
+              POSTGRES_DB: astroneko
+              POSTGRES_USER: astro
+              POSTGRES_PASSWORD: astro123
+            ports:
+              - "5435:5432"
+            volumes:
+              - astroneko_postgres:/var/lib/postgresql/data
+            healthcheck:
+              test: ["CMD-SHELL", "pg_isready -U astro -d astroneko"]
+              interval: 30s
+              timeout: 10s
+              retries: 3
+              start_period: 30s
+            networks:
+              - astroneko_network
+
+          backend:
+            build:
+              context: ./backend
+              dockerfile: Dockerfile
+            container_name: astroneko_backend
+            restart: unless-stopped
+            environment:
+              SPRING_PROFILES_ACTIVE: prod
+              SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/astroneko
+              SPRING_DATASOURCE_USERNAME: astro
+              SPRING_DATASOURCE_PASSWORD: astro123
+              SERVER_PORT: 8080
+            ports:
+              - "8083:8080"
+            depends_on:
+              postgres:
+                condition: service_healthy
+            healthcheck:
+              test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+              interval: 30s
+              timeout: 10s
+              retries: 3
+              start_period: 60s
+            networks:
+              - astroneko_network
+
+          frontend:
+            build:
+              context: ./frontend
+              dockerfile: Dockerfile
+            container_name: astroneko_frontend
+            restart: unless-stopped
+            environment:
+              NODE_ENV: production
+              NEXT_PUBLIC_API_URL: http://localhost:8083
+            ports:
+              - "3003:3000"
+            depends_on:
+              backend:
+                condition: service_healthy
+            healthcheck:
+              test: [
+                "CMD",
+                "wget",
+                "--no-verbose",
+                "--tries=1",
+                "--spider",
+                "http://localhost:3000/",
+              ]
+              interval: 30s
+              timeout: 10s
+              retries: 3
+              start_period: 30s
+            networks:
+              - astroneko_network
+
+        volumes:
+          astroneko_postgres:
+
+        networks:
+          astroneko_network:
+            driver: bridge
+        ```
+
+    - **Create Frontend Homepage**:
+      - **Homepage Component** (`frontend/app/page.tsx`):
+        ```tsx
+        import React from 'react';
+
+        export default function HomePage() {
+          return (
+            <main className="container mx-auto px-4 py-8">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  ☕ Astroneko Coffee
+                </h1>
+                <p className="text-lg text-gray-600 mb-8">
+                  Welcome to our cosmic coffee experience!
+                </p>
+                
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
+                  <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-2">☕ Menu</h2>
+                    <p className="text-gray-600">Explore our stellar coffee selection</p>
+                    <a 
+                      href="/menu" 
+                      className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                    >
+                      View Menu
+                    </a>
+                  </div>
+                  
+                  <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-2">🚀 About</h2>
+                    <p className="text-gray-600">Discover our cosmic mission</p>
+                    <a 
+                      href="/test/crud-expose" 
+                      className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    >
+                      Learn More
+                    </a>
+                  </div>
+                  
+                  <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-2">📡 API</h2>
+                    <p className="text-gray-600">Explore our backend services</p>
+                    <a 
+                      href="http://localhost:8083/swagger-ui.html" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-4 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                    >
+                      API Docs
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="mt-12 p-6 bg-gray-100 rounded-lg">
+                  <h3 className="text-lg font-semibold mb-2">🐾 System Status</h3>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">🔧</div>
+                      <div className="text-sm text-gray-600">Backend API</div>
+                      <div className="text-green-600 font-semibold">✅ Running</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">🌐</div>
+                      <div className="text-sm text-gray-600">Frontend</div>
+                      <div className="text-green-600 font-semibold">✅ Running</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl mb-1">🗄️</div>
+                      <div className="text-sm text-gray-600">Database</div>
+                      <div className="text-green-600 font-semibold">✅ Connected</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          );
+        }
+        ```
+
+    - **Create Deployment Scripts**:
+
+      - **Windows Deployment Script** (`scripts/deploy-docker.bat`):
+        ```batch
+        @echo off
+        echo 🚀 Starting Astroneko Coffee Docker Deployment...
+        echo.
+
+        echo 📦 Building and starting containers...
+        docker compose up --build -d
+
+        echo.
+        echo 🔍 Checking container status...
+        docker compose ps
+
+        echo.
+        echo 📊 Container logs (last 10 lines each):
+        echo.
+        echo === Backend Logs ===
+        docker compose logs backend --tail 10
+        echo.
+        echo === Frontend Logs ===  
+        docker compose logs frontend --tail 10
+        echo.
+        echo === Database Logs ===
+        docker compose logs postgres --tail 10
+
+        echo.
+        echo ✅ Deployment complete!
+        echo.
+        echo 🌐 Access Points:
+        echo   - Frontend:  http://localhost:3003
+        echo   - Backend:   http://localhost:8083/swagger-ui.html
+        echo   - Database:  localhost:5435 (astro/astro123)
+        echo.
+        echo 📝 Useful commands:
+        echo   - Stop:     docker compose down
+        echo   - Logs:     docker compose logs [service]
+        echo   - Restart:  docker compose restart [service]
+        pause
+        ```
+
+      - **Unix/Linux/macOS Deployment Script** (`scripts/deploy-docker.sh`):
+        ```bash
+        #!/bin/bash
+        set -e
+
+        echo "🚀 Starting Astroneko Coffee Docker Deployment..."
+        echo
+
+        echo "📦 Building and starting containers..."
+        docker compose up --build -d
+
+        echo
+        echo "🔍 Checking container status..."
+        docker compose ps
+
+        echo
+        echo "📊 Container logs (last 10 lines each):"
+        echo
+        echo "=== Backend Logs ==="
+        docker compose logs backend --tail 10
+        echo
+        echo "=== Frontend Logs ==="
+        docker compose logs frontend --tail 10
+        echo
+        echo "=== Database Logs ==="
+        docker compose logs postgres --tail 10
+
+        echo
+        echo "✅ Deployment complete!"
+        echo
+        echo "🌐 Access Points:"
+        echo "  - Frontend:  http://localhost:3003"
+        echo "  - Backend:   http://localhost:8083/swagger-ui.html"  
+        echo "  - Database:  localhost:5435 (astro/astro123)"
+        echo
+        echo "📝 Useful commands:"
+        echo "  - Stop:     docker compose down"
+        echo "  - Logs:     docker compose logs [service]"
+        echo "  - Restart:  docker compose restart [service]"
+        ```
+
+    - **Build and Deploy Docker Stack**:
+      ```bash
+      # Build and start all services
+      docker compose up --build -d
+
+      # Check container status
+      docker compose ps
+
+      # View logs for troubleshooting
+      docker compose logs backend
+      docker compose logs frontend
+      docker compose logs postgres
+      ```
+
+    - **Service Configuration**:
+      - **Database**: PostgreSQL 16 with persistent volumes on port 5435
+      - **Backend**: Spring Boot API with health checks on port 8083  
+      - **Frontend**: Next.js application with homepage on port 3003
+      - **Networking**: Custom Docker network for inter-service communication
+      - **Health Checks**: Automated monitoring for all services
+      - **Security**: Non-root users in containers, proper secret management
+
+    - **Verify Deployment**:
+      - **Frontend Homepage**: http://localhost:3003 ✅
+      - **Backend Swagger UI**: http://localhost:8083/swagger-ui.html ✅ 
+      - **Database Connection**: PostgreSQL ready for connections ✅
+      - **Service Health**: All containers healthy and communicating ✅
+
+    - **Troubleshooting Common Issues**:
+      - **Frontend 404 Error**: Ensure `page.tsx` exists in `app/` directory
+      - **Backend Connection Failed**: Check database health and environment variables
+      - **Port Conflicts**: Verify ports 3003, 8083, and 5435 are available
+      - **Build Failures**: Clear Docker cache with `docker system prune`
+
+    - **Production Considerations**:
+      - Multi-stage builds for optimized image sizes
+      - Health checks for container orchestration
+      - Persistent volumes for data retention
+      - Environment-specific configurations
+      - Container resource limits and monitoring
+      - Automated deployment with CI/CD integration
+
