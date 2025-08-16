@@ -1,7 +1,7 @@
 package coffee.astroneko.backend.controller;
 
 import coffee.astroneko.backend.entity.MenuItem;
-import coffee.astroneko.backend.repository.MenuItemRepository;
+import coffee.astroneko.backend.service.MenuItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/expose/menu")
 public class MenuController {
 
-  private final MenuItemRepository menuItemRepository;
+  private final MenuItemService menuItemService;
 
   @Autowired
-  public MenuController(MenuItemRepository menuItemRepository) {
-    this.menuItemRepository = menuItemRepository;
+  public MenuController(MenuItemService menuItemService) {
+    this.menuItemService = menuItemService;
   }
 
   @Operation(
@@ -28,6 +28,6 @@ public class MenuController {
   )
   @GetMapping
   public List<MenuItem> getMenu() {
-    return menuItemRepository.findAll();
+    return menuItemService.getAllMenuItems();
   }
 }
