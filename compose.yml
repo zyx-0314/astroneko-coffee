@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: astroneko_postgres
+    restart: no # Only start when explicitly called
+    env_file:
+      - .env # Environment variables for credentials (POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB)
+    ports:
+      - "5435:5432" # Updated port based on documentation
+    volumes:
+      - astroneko_postgres:/var/lib/postgresql/data
+
+volumes:
+  astroneko_postgres:
