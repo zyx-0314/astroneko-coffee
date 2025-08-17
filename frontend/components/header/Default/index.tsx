@@ -81,18 +81,6 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
                 />
               </Link>
             </div>
-            <div>
-              <Link 
-                href="/mood-board" 
-                className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium relative group"
-              >
-                Design
-                <motion.div 
-                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#E1B168] group-hover:w-full transition-all duration-300"
-                  layoutId="underline"
-                />
-              </Link>
-            </div>
             
             {/* Dropdown menu for More */}
             <div className="relative group">
