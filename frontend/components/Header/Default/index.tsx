@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { AnimatedButton } from '@/components/ui/animated-button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { HeaderProps } from '@/schema/header.schema';
 import { useHeaderState } from './Default.hook';
@@ -9,39 +11,88 @@ import { useHeaderState } from './Default.hook';
 export default function DefaultHeader({ className = '' }: HeaderProps) {
   const { isMobileMenuOpen, toggleMobileMenu } = useHeaderState();
   return (
-    <header className={`bg-[#D4EDEC] dark:bg-[#1a3d2e] text-gray-800 dark:text-white shadow-md ${className}`}>
+    <header className={`bg-[#D4EDEC] dark:bg-[#2CA6A4] text-gray-800 dark:text-white shadow-md ${className}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-xl font-bold">
-                <span className="text-[#E1B168]">☕</span>
-                <span className="ml-2">Astroneko Coffee</span>
-              </div>
+            <Link href="/" className="flex items-center space-x-3">
+              {/* Light mode logo */}
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Image
+                  src="/main-logo/transparent.webp"
+                  alt="Astroneko Coffee"
+                  width={40}
+                  height={40}
+                  className="dark:hidden"
+                  priority
+                />
+              </motion.div>
+              {/* Dark mode logo */}
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Image
+                  src="/main-logo/light-transparent.webp"
+                  alt="Astroneko Coffee"
+                  width={40}
+                  height={40}
+                  className="hidden dark:block"
+                  priority
+                />
+              </motion.div>
+              <motion.div 
+                className="text-xl font-bold"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <span className="text-gray-800 dark:text-white">Astroneko Coffee</span>
+              </motion.div>
             </Link>
           </div>
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
-              className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium"
-            >
-              Home
-            </Link>
-            <Link 
-              href="/menu" 
-              className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium"
-            >
-              Menu
-            </Link>
-            <Link 
-              href="/mood-board" 
-              className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium"
-            >
-              Design
-            </Link>
+            <div>
+              <Link 
+                href="/" 
+                className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium relative group"
+              >
+                Home
+                <motion.div 
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#E1B168] group-hover:w-full transition-all duration-300"
+                  layoutId="underline"
+                />
+              </Link>
+            </div>
+            <div>
+              <Link 
+                href="/menu" 
+                className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium relative group"
+              >
+                Menu
+                <motion.div 
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#E1B168] group-hover:w-full transition-all duration-300"
+                  layoutId="underline"
+                />
+              </Link>
+            </div>
+            <div>
+              <Link 
+                href="/mood-board" 
+                className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium relative group"
+              >
+                Design
+                <motion.div 
+                  className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#E1B168] group-hover:w-full transition-all duration-300"
+                  layoutId="underline"
+                />
+              </Link>
+            </div>
             
             {/* Dropdown menu for More */}
             <div className="relative group">
@@ -87,25 +138,27 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             
-            <Button 
+            <AnimatedButton 
               asChild
-              className="bg-[#E1B168] hover:bg-[#d4a455] text-[#2D5A4A] font-semibold px-6 py-2 rounded-md transition-colors duration-200"
+              className="bg-[#E1B168] hover:bg-[#d4a455] text-[#2D5A4A] font-semibold px-6 py-2 rounded-md"
             >
               <Link href="/order">
                 Order
               </Link>
-            </Button>
+            </AnimatedButton>
 
             {/* Mobile menu button */}
-            <button 
+            <motion.button 
               onClick={toggleMobileMenu}
               className="mobile-menu-button md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-800 dark:text-white hover:text-[#E1B168] hover:bg-gray-100 dark:hover:bg-[#1a3d2e] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 dark:focus:ring-white"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
             >
               <span className="sr-only">Open main menu</span>
               <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>

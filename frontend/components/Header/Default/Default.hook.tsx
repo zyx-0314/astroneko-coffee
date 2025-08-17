@@ -13,10 +13,6 @@ export const useHeaderState = () => {
 
   // Close mobile menu on route change
   useEffect(() => {
-    const handleRouteChange = () => {
-      closeMobileMenu();
-    };
-
     // Close menu when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;

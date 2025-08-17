@@ -1,1 +1,3 @@
-export { default } from '@/components/Header/Default/index';
+import DefaultHeader  from './Default';
+
+export { DefaultHeader as Header };
