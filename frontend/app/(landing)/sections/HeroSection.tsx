@@ -114,7 +114,7 @@ export default function HeroSection() {
             <AnimatedButton 
               asChild 
               size="lg"
-              className="bg-[#6B4E37] hover:bg-[#5A3E2A] text-white px-8 py-4 text-lg min-w-[160px] rounded-lg"
+              className="bg-[#6B4E37] hover:bg-[#5A3E2A] text-white px-8 py-4 text-lg min-w-[160px] rounded-lg transform-all duration-300"
             >
               <Link href="/menu">
                 <Coffee className="w-5 h-5 mr-2" />
@@ -126,7 +126,7 @@ export default function HeroSection() {
               asChild 
               variant="outline" 
               size="lg"
-              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg min-w-[160px] rounded-lg backdrop-blur-sm"
+              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 dark:hover:text-gray-900 transform-all duration-300 dark:hover:bg-white px-8 py-4 text-lg min-w-[160px] rounded-lg backdrop-blur-sm"
             >
               <Link href="/order">
                 <Sparkles className="w-5 h-5 mr-2" />
