@@ -1,14 +1,16 @@
+# Astroneko Coffee - Development Environment
+# Simple Docker Compose setup for development and demo
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: astroneko_postgres_dev
-    restart: unless-stopped
     environment:
       POSTGRES_DB: astroneko_dev
       POSTGRES_USER: astro
       POSTGRES_PASSWORD: astro123
     ports:
-      - "5434:5432"
+      - "5434:5432" # External port 5434 to avoid conflicts
     volumes:
       - astroneko_postgres_dev:/var/lib/postgresql/data
     healthcheck:
@@ -25,16 +27,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: astroneko_backend_dev
-    restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      # Override database connection for Docker network
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/astroneko_dev
       SPRING_DATASOURCE_USERNAME: astro
       SPRING_DATASOURCE_PASSWORD: astro123
       SERVER_PORT: 8080
-      SPRING_DEVTOOLS_RESTART_ENABLED: true
-      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: true
-      SPRING_JPA_SHOW_SQL: true
       LOGGING_LEVEL_ROOT: INFO
     ports:
       - "8083:8080"
@@ -66,7 +64,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: astroneko_frontend_dev
-    restart: unless-stopped
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:8083

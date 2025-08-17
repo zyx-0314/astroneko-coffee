@@ -51,8 +51,20 @@ class MenuManagementControllerTest {
     menuItem2.setName("Cappuccino");
     menuItem2.setPrice(3.75);
 
-    createRequest = new CreateMenuItemRequest("Latte", 4.25);
-    updateRequest = new UpdateMenuItemRequest("Updated Espresso", 2.75);
+    createRequest = new CreateMenuItemRequest(
+      "Latte",
+      "Creamy coffee with steamed milk",
+      4.25,
+      MenuItem.ItemType.COFFEE,
+      "/placeholder/latte.jpg"
+    );
+    updateRequest = new UpdateMenuItemRequest(
+      "Updated Espresso",
+      "Strong concentrated coffee",
+      2.75,
+      MenuItem.ItemType.COFFEE,
+      "/placeholder/espresso.jpg"
+    );
   }
 
   @Test
@@ -87,7 +99,13 @@ class MenuManagementControllerTest {
   @Test
   void testCreateMenuItem_InvalidData() throws Exception {
     // Given - invalid request with empty name
-    CreateMenuItemRequest invalidRequest = new CreateMenuItemRequest("", -1.0);
+    CreateMenuItemRequest invalidRequest = new CreateMenuItemRequest(
+      "",
+      "",
+      -1.0,
+      MenuItem.ItemType.COFFEE,
+      ""
+    );
 
     // When & Then
     mockMvc

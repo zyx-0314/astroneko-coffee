@@ -73,7 +73,10 @@ class MenuManagementIntegrationTest {
     // 2. Test CREATE menu item
     CreateMenuItemRequest createRequest = new CreateMenuItemRequest(
       "Espresso",
-      2.50
+      "Strong concentrated coffee",
+      2.50,
+      coffee.astroneko.backend.entity.MenuItem.ItemType.COFFEE,
+      "/placeholder/espresso.jpg"
     );
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -113,7 +116,10 @@ class MenuManagementIntegrationTest {
     // 5. Test UPDATE
     UpdateMenuItemRequest updateRequest = new UpdateMenuItemRequest(
       "Double Espresso",
-      3.00
+      "Extra strong concentrated coffee",
+      3.00,
+      coffee.astroneko.backend.entity.MenuItem.ItemType.COFFEE,
+      "/placeholder/double-espresso.jpg"
     );
     HttpEntity<UpdateMenuItemRequest> updateEntity = new HttpEntity<>(
       updateRequest,
@@ -158,7 +164,13 @@ class MenuManagementIntegrationTest {
   @Test
   void testValidationErrors() {
     // Test with invalid data (empty name, negative price)
-    CreateMenuItemRequest invalidRequest = new CreateMenuItemRequest("", -1.0);
+    CreateMenuItemRequest invalidRequest = new CreateMenuItemRequest(
+      "",
+      "",
+      -1.0,
+      coffee.astroneko.backend.entity.MenuItem.ItemType.COFFEE,
+      ""
+    );
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<CreateMenuItemRequest> entity = new HttpEntity<>(
@@ -186,7 +198,10 @@ class MenuManagementIntegrationTest {
     // Test UPDATE non-existent item
     UpdateMenuItemRequest updateRequest = new UpdateMenuItemRequest(
       "Test",
-      1.0
+      "Test description",
+      1.0,
+      coffee.astroneko.backend.entity.MenuItem.ItemType.COFFEE,
+      "/placeholder/test.jpg"
     );
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);

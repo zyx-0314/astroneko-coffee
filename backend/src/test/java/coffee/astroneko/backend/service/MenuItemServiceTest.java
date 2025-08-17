@@ -44,8 +44,20 @@ class MenuItemServiceTest {
     menuItem2.setName("Cappuccino");
     menuItem2.setPrice(3.75);
 
-    createRequest = new CreateMenuItemRequest("Latte", 4.25);
-    updateRequest = new UpdateMenuItemRequest("Updated Espresso", 2.75);
+    createRequest = new CreateMenuItemRequest(
+      "Latte",
+      "Creamy coffee with steamed milk",
+      4.25,
+      MenuItem.ItemType.COFFEE,
+      "/placeholder/latte.jpg"
+    );
+    updateRequest = new UpdateMenuItemRequest(
+      "Updated Espresso",
+      "Strong concentrated coffee",
+      2.75,
+      MenuItem.ItemType.COFFEE,
+      "/placeholder/espresso.jpg"
+    );
   }
 
   @Test

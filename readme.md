@@ -90,60 +90,46 @@ astroneko-coffee/
 
 ---
 
-## 🚀 Installation
+## 🚀 Quick Start (Development Mode)
 
-### Option 1: Docker Development Environment (Recommended)
+This project is configured for **development/demo purposes only** with Docker Compose.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- Git
+
+### Getting Started
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/astroneko-coffee.git
+# 1. Clone the repository
+git clone https://github.com/zyx-0314/astroneko-coffee.git
 cd astroneko-coffee
 
-# Start with development environment and watch mode
-./scripts/dev-watch.bat
-
-# OR start basic development environment
+# 2. Start the development environment
 ./scripts/dev-start.bat
+
+# OR with hot-reload support
+./scripts/dev-watch.bat
 ```
 
-### Option 2: Local Development Setup
-
-#### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/astroneko-coffee.git
-cd astroneko-coffee
-```
-
-#### 2. Set up infrastructure
-
-```bash
-cd infrastructure
-cp .env.example .env
-docker compose up -d postgres redis redis-commander
-```
-
-#### 3. Backend
-
-```bash
-cd ../backend
-mvn spring-boot:run
-```
-
-#### 4. Frontend
-
-```bash
-cd ../frontend
-npm install
-npm run dev
-```
+That's it! The script will automatically:
+- 🗄️ Start PostgreSQL database with sample data
+- ☕ Build and run Spring Boot backend with hot-reload
+- 🌐 Build and run Next.js frontend with hot-reload
 
 ---
 
-## ▶ Usage
+## 🌐 Access Points
 
-* Frontend: [http://localhost:3001](http://localhost:3001)
-* Backend Swagger UI: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
+Once started, you can access:
+
+- **Frontend Application**: [http://localhost:3001](http://localhost:3001)
+- **Backend API Docs**: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)  
+- **Database**: `localhost:5434` (user: `astro`, password: `astro123`, db: `astroneko_dev`)
+
+### Demo Credentials
+- **Admin Access**: username `admin`, password `admin123`
 
 ---
 
@@ -162,23 +148,27 @@ We work in **2-hour dev blocks**, not daily unless free time allows.
 
 ---
 
-## 📅 Milestones
+## �️ Development Notes
 
-**M0** – Setup & hello world (backend + frontend)
+### Project Status
+This is a **development/demo project** designed to showcase full-stack development skills. Current implementation includes:
 
-**M1** – Auth (JWT) + Menu CRUD
+- ✅ **Complete menu system** with filtering and promotions
+- ✅ **RESTful API** with comprehensive endpoints  
+- ✅ **Modern frontend** with Next.js and Framer Motion animations
+- ✅ **Database integration** with sample cosmic-themed menu items
+- ✅ **Docker development environment** with hot-reload
+- ✅ **API documentation** with Swagger UI
 
-**M2** – Orders + Queue/Reservation
+### Available Scripts
+- `./scripts/dev-start.bat` - Start development environment
+- `./scripts/dev-watch.bat` - Start with hot-reload (recommended)
+- `./scripts/run-tests.bat` - Run backend tests
 
-**M3** – Staff & Requests + Dashboards
-
-**M4** – WebSocket realtime updates
-
-**M5** – GraphQL read models
-
-**M6** – AI chat support (local Ollama)
-
-**M7** – Payroll & final polish
+### Technology Stack
+- **Backend**: Spring Boot 3.5, PostgreSQL, JPA/Hibernate
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS, Framer Motion
+- **Tools**: Docker Compose, Maven, npm, Swagger UI
 
 ---
 
