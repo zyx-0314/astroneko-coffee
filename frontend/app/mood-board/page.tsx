@@ -13,10 +13,6 @@ export default function MoodBoardPage() {
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Astroneko Coffee</h1>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <div className="flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm">
-                🎨 Shuffle
-                <span className="text-xs opacity-70">C</span>
-              </div>
             </div>
           </div>
           <p className="text-gray-600 dark:text-gray-300 text-lg">
