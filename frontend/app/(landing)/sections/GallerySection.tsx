@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { AnimatedButton } from '@/components/ui/animated-button';
@@ -9,10 +10,10 @@ import { fadeInUp, fadeInDown } from '@/framer/variants/text';
 import { FloatingParticles } from '@/components/backgrounds';
 
 const galleryItems = [
-  { icon: '☕', title: 'Perfect Brews', delay: 0.1 },
-  { icon: '🌌', title: 'Cosmic Atmosphere', delay: 0.2 },
-  { icon: '🥐', title: 'Galactic Treats', delay: 0.3 },
-  { icon: '👥', title: 'Friendly Crew', delay: 0.4 }
+  { image: '/landing/gallery/Perfect_Brews.webp', title: 'Perfect Brews', delay: 0.1 },
+  { image: '/landing/gallery/Cosmic_Atmosphere.webp', title: 'Cosmic Atmosphere', delay: 0.2 },
+  { image: '/landing/gallery/Galactic_Treats.webp', title: 'Galactic Treats', delay: 0.3 },
+  { image: '/landing/gallery/Friendly_Crew.webp', title: 'Friendly Crew', delay: 0.4 }
 ];
 
 export default function GallerySection() {
@@ -77,35 +78,36 @@ export default function GallerySection() {
               }}
             >
               <motion.div 
-                className="w-full h-full flex items-center justify-center"
-                whileHover={{ scale: 1.1 }}
+                className="w-full h-full relative overflow-hidden"
+                whileHover={{ scale: 1.02 }}
               >
-                <div className="text-center">
-                  <motion.div 
-                    className="text-4xl mb-2"
-                    animate={{ 
-                      rotate: [0, 5, -5, 0],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ 
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      delay: index * 0.5
-                    }}
-                  >
-                    {item.icon}
-                  </motion.div>
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div 
+                  className="absolute bottom-0 left-0 right-0 p-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: item.delay + 0.2 }}
+                >
                   <motion.p 
-                    className="text-sm font-medium"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: item.delay + 0.2 }}
+                    className="text-sm font-medium text-white text-center drop-shadow-lg"
+                    whileHover={{ scale: 1.05 }}
                   >
                     {item.title}
                   </motion.p>
-                </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           ))}
@@ -122,8 +124,8 @@ export default function GallerySection() {
             asChild
             className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-lg font-medium hover:bg-white/30 transition-all duration-300"
           >
-            <Link href="/mood-board">
-              View Design System
+            <Link href="/">
+              View Our Gallery
             </Link>
           </AnimatedButton>
         </motion.div>

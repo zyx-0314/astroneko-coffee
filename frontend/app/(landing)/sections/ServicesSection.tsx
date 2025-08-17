@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { fadeInContainer } from '@/framer/variants/containers';
@@ -7,19 +8,19 @@ import { fadeInDown } from '@/framer/variants/text';
 
 const services = [
   {
-    icon: '🪑',
+    image: '/landing/service/Dine_In_Experience.webp',
     title: 'Dine-In Experience',
     description: 'Immerse yourself in our cosmic atmosphere with comfortable seating, stellar ambiance, and the perfect environment for work, meetings, or relaxation.',
     delay: 0.2
   },
   {
-    icon: '🥤',
+    image: '/landing/service/Takeaway_Service.webp',
     title: 'Takeaway Service',
     description: 'Grab your favorite cosmic coffee to-go and take the intergalactic experience with you. Perfect for busy space travelers and earthbound commuters alike.',
     delay: 0.4
   },
   {
-    icon: '🎉',
+    image: '/landing/service/Special_Events.webp',
     title: 'Special Events',
     description: 'Host your cosmic gatherings with us! From birthday parties to corporate meetings, our unique space-themed venue makes every event memorable and out of this world.',
     delay: 0.6
@@ -62,15 +63,21 @@ export default function ServicesSection() {
                 }}
               >
                 <motion.div 
-                  className="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl mb-6 flex items-center justify-center"
+                  className="w-full h-48 rounded-xl mb-6 overflow-hidden relative"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
                   <motion.div 
-                    className="text-6xl"
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
                     animate={{ 
-                      rotate: [0, 5, -5, 0],
-                      scale: [1, 1.1, 1]
+                      opacity: [0.4, 0.6, 0.4]
                     }}
                     transition={{ 
                       duration: 3,
@@ -78,9 +85,7 @@ export default function ServicesSection() {
                       repeatType: "reverse",
                       delay: index * 0.7
                     }}
-                  >
-                    {service.icon}
-                  </motion.div>
+                  />
                 </motion.div>
                 <motion.h3 
                   className="text-xl font-semibold mb-3 text-gray-900 dark:text-white"

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { BarChart3, TrendingUp, Users, Calendar } from 'lucide-react';
@@ -129,47 +130,40 @@ export default function StatsSection() {
             </motion.div>
           </motion.div>
           
-          {/* Image placeholder */}
+          {/* Stats Image */}
           <motion.div className="order-2" variants={imageScale}>
             <motion.div 
-              className="aspect-[4/3] bg-gradient-to-br from-amber-200 to-orange-300 rounded-2xl shadow-2xl overflow-hidden"
+              className="aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden relative"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="w-full h-full flex items-center justify-center relative">
-                <div className="text-center text-white z-10">
-                  <motion.div 
-                    className="text-6xl mb-4"
-                    animate={{ 
-                      rotate: [0, 5, -5, 0],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ 
-                      duration: 3, 
-                      repeat: Infinity, 
-                      ease: "easeInOut" 
-                    }}
-                  >
-                    📊
-                  </motion.div>
-                  <p className="text-lg font-medium">Our Success Story</p>
-                </div>
-                {/* Animated background particles */}
-                <motion.div
-                  className="absolute top-4 right-4 text-white opacity-30"
-                  animate={{ y: [-5, 5, -5], rotate: [0, 180, 360] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  ✨
-                </motion.div>
-                <motion.div
-                  className="absolute bottom-6 left-6 text-white opacity-40"
-                  animate={{ y: [5, -5, 5], x: [-2, 2, -2] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                >
-                  🚀
-                </motion.div>
-              </div>
+              <Image
+                src="/landing/stats/Stats.webp"
+                alt="Our Success Story - Numbers that speak to our cosmic success"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+                whileHover={{ opacity: 0.6 }}
+                transition={{ duration: 0.3 }}
+              />
+              {/* Animated background particles */}
+              <motion.div
+                className="absolute top-4 right-4 text-white opacity-70"
+                animate={{ y: [-5, 5, -5], rotate: [0, 180, 360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                ✨
+              </motion.div>
+              <motion.div
+                className="absolute bottom-6 left-6 text-white opacity-60"
+                animate={{ y: [5, -5, 5], x: [-2, 2, -2] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
+                🚀
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>

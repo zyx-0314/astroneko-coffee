@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { fadeInContainer, imageScale, slideLeftContainer, slideUpContainer } from '@/framer';
 import { motion } from 'framer-motion';
 import { Coffee, Sparkles } from 'lucide-react';
@@ -15,39 +16,35 @@ export default function FeatureSection() {
     >
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image placeholder */}
+          {/* Feature Image */}
           <motion.div className="order-2 lg:order-1" variants={imageScale}>
-            <div className="aspect-[4/3] bg-gradient-to-br from-amber-200 to-orange-300 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden relative">
+              <Image
+                src="/landing/feature/Feature.webp"
+                alt="Cosmic Coffee Experience at Astroneko Coffee"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
               <motion.div 
-                className="w-full h-full flex items-center justify-center relative"
-                whileHover={{ scale: 1.05 }}
+                className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+                whileHover={{ opacity: 0.7 }}
                 transition={{ duration: 0.3 }}
+              />
+              {/* Floating particles */}
+              <motion.div
+                className="absolute top-4 right-4 text-white opacity-70"
+                animate={{ y: [-5, 5, -5] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               >
-                <div className="text-center text-white z-10">
-                  <motion.div 
-                    className="text-6xl mb-4"
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    ☕
-                  </motion.div>
-                  <p className="text-lg font-medium">Cosmic Coffee Experience</p>
-                </div>
-                {/* Floating particles */}
-                <motion.div
-                  className="absolute top-4 right-4 text-white opacity-50"
-                  animate={{ y: [-5, 5, -5] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                >
-                  <Sparkles size={20} />
-                </motion.div>
-                <motion.div
-                  className="absolute bottom-6 left-6 text-white opacity-40"
-                  animate={{ y: [5, -5, 5] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                >
-                  <Coffee size={16} />
-                </motion.div>
+                <Sparkles size={20} />
+              </motion.div>
+              <motion.div
+                className="absolute bottom-6 left-6 text-white opacity-60"
+                animate={{ y: [5, -5, 5] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+              >
+                <Coffee size={16} />
               </motion.div>
             </div>
           </motion.div>

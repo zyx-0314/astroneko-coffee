@@ -1,26 +1,26 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
-
 import { fadeInContainer } from '@/framer/variants/containers';
 import { fadeInUp, fadeInDown } from '@/framer/variants/text';
 
 const steps = [
   {
-    icon: '🚀',
+    image: '/landing/howItWorks/Step_Into_Our_Galaxy.webp',
     title: 'Step Into Our Galaxy',
     description: 'Enter our cosmic café and immediately feel transported to an intergalactic coffee experience like no other. The atmosphere sets the tone for your journey.',
     delay: 0.2
   },
   {
-    icon: '☕',
+    image: '/landing/howItWorks/Choose_Your_Cosmic_Blend.webp',
     title: 'Choose Your Cosmic Blend',
     description: 'Browse our stellar menu of specialty blends and galactic treats. Our cosmic crew is here to guide you through our extensive selection of otherworldly flavors.',
     delay: 0.4
   },
   {
-    icon: '🌟',
+    image: '/landing/howItWorks/Savor_the_Experience.webp',
     title: 'Savor the Experience',
     description: 'Enjoy your perfectly crafted cosmic coffee in our unique atmosphere. Whether you stay to work or take it to-go, every sip is an adventure.',
     delay: 0.6
@@ -68,15 +68,21 @@ export default function HowItWorksSection() {
                 transition={{ duration: 0.3 }}
               >
                 <motion.div 
-                  className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-6 flex items-center justify-center"
+                  className="w-full h-48 rounded-xl mb-6 overflow-hidden relative"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
                   <motion.div 
-                    className="text-6xl"
+                    className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
                     animate={{ 
-                      y: [0, -10, 0],
-                      rotate: [0, 5, -5, 0]
+                      opacity: [0.3, 0.5, 0.3]
                     }}
                     transition={{ 
                       duration: 3,
@@ -84,9 +90,7 @@ export default function HowItWorksSection() {
                       repeatType: "reverse",
                       delay: index * 0.5
                     }}
-                  >
-                    {step.icon}
-                  </motion.div>
+                  />
                 </motion.div>
                 <motion.h3 
                   className="text-xl font-semibold mb-3 text-gray-900 dark:text-white"

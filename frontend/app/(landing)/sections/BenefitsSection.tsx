@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { AnimatedButton } from '@/components/ui/animated-button';
@@ -51,7 +52,7 @@ export default function BenefitsSection() {
             </motion.div>
           </motion.div>
           
-          {/* Image placeholder */}
+          {/* Benefits Image */}
           <motion.div 
             className="order-2"
             initial={{ opacity: 0, x: 50 }}
@@ -60,32 +61,22 @@ export default function BenefitsSection() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <motion.div 
-              className="aspect-[4/3] bg-gradient-to-br from-orange-200 to-amber-300 rounded-2xl shadow-2xl"
+              className="aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden relative"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="w-full h-full flex items-center justify-center">
-                <motion.div 
-                  className="text-center text-white"
-                  variants={fadeInRight}
-                >
-                  <motion.div 
-                    className="text-6xl mb-4"
-                    animate={{ 
-                      rotate: [0, 10, -10, 0],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ 
-                      duration: 4,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                  >
-                    🌌
-                  </motion.div>
-                  <p className="text-lg font-medium">Cosmic Benefits</p>
-                </motion.div>
-              </div>
+              <Image
+                src="/landing/benefit/Benefits.webp"
+                alt="Experience the benefits of our cosmic café"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
+                whileHover={{ opacity: 0.6 }}
+                transition={{ duration: 0.3 }}
+              />
             </motion.div>
           </motion.div>
         </div>
