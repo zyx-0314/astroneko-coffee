@@ -49,15 +49,15 @@ export function MenuCrudTableHook() {
       setValidationErrors({});
       MenuItemFormSchema.parse(data);
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = "Validation failed";
       const errors: Record<string, string> = {};
-      if (error.errors) {
-        error.errors.forEach((err: any) => {
-          if (err.path.length > 0) {
-            errors[err.path[0]] = err.message;
-          }
-        });
+      if (error instanceof Error) {
+        errorMessage = error.message;
       }
+
+      console.error("Validation error:", errorMessage);
+
       setValidationErrors(errors);
       return false;
     }

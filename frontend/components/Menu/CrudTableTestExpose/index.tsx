@@ -168,7 +168,7 @@ export function MenuCrudTable() {
             {menuItems.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center text-gray-500 py-8">
-                  No menu items found. Click "Add New Item" to create one.
+                  {`No menu items found. Click "Add New Item" to create one.`}
                 </TableCell>
               </TableRow>
             ) : (
