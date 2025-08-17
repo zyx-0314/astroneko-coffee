@@ -1,5 +1,5 @@
-import MoodBoardColors from '@/components/MoodBoard/Colors';
-import MoodBoardTypography from '@/components/MoodBoard/Typography';
-import MoodBoardUIElements from '@/components/MoodBoard/UIElements';
+import MoodBoardColors from "./Colors";
+import MoodBoardTypography from "./Typography";
+import MoodBoardUIElements from "./UIElements";
 
 export { MoodBoardColors, MoodBoardTypography, MoodBoardUIElements };

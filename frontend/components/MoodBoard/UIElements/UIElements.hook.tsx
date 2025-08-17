@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from 'react';
-import { ButtonExample, FormExample, CardExample } from '@/schema/uiElements.schema';
+import { 
+  ButtonExample, 
+  FormExample, 
+  CardExample, 
+  LogoExample, 
+  StarRating, 
+  ToggleExample, 
+  BadgeExample 
+} from '@/schema/uiElements.schema';
 
 export function useUIElementsState() {
   const [activeTab, setActiveTab] = useState('buttons');
@@ -39,11 +47,45 @@ export function useUIElementsState() {
     }
   ];
 
+  const logoExamples: LogoExample[] = [
+    { size: "medium", label: "Medium Logo" },
+    { size: "small", label: "Small Logo Black" },
+    { size: "small", label: "Small Logo White" },
+    { size: "small", label: "Small Logo Normal" }
+  ];
+
+  const starRatings: StarRating[] = [
+    { rating: 5, label: "Excellent" },
+    { rating: 4, label: "Very Good" },
+    { rating: 3, label: "Good" },
+    { rating: 2, label: "Fair" },
+    { rating: 1, label: "Poor" }
+  ];
+
+  const toggleExamples: ToggleExample[] = [
+    { id: "notifications", label: "Notifications", checked: true },
+    { id: "darkmode", label: "Dark Mode", checked: false },
+    { id: "emailUpdates", label: "Email Updates", checked: true },
+    { id: "soundEffects", label: "Sound Effects", checked: false }
+  ];
+
+  const badgeExamples: BadgeExample[] = [
+    { label: "New", variant: "success", color: "#10B981" },
+    { label: "Popular", variant: "primary", color: "#6B4E37" },
+    { label: "Hot", variant: "danger", color: "#EF4444" },
+    { label: "Limited", variant: "warning", color: "#F59E0B" },
+    { label: "Sold Out", variant: "neutral", color: "#6B7280" }
+  ];
+
   return {
     activeTab,
     setActiveTab,
     buttonExamples,
     formExamples,
-    cardExamples
+    cardExamples,
+    logoExamples,
+    starRatings,
+    toggleExamples,
+    badgeExamples
   };
 }

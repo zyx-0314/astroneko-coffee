@@ -1,8 +1,8 @@
 "use client";
 
 import { FC } from 'react';
-import { Color } from '@/schema/colors.schema';
 import { useColorPalette } from './Colors.hook';
+import { Color } from '@/schema/colors.schema';
 
 const MoodBoardColors: FC = () => {
   const { selectedColor, copiedColor, copyToClipboard, selectColor } = useColorPalette();
@@ -25,31 +25,47 @@ const MoodBoardColors: FC = () => {
   const renderColorCard = (color: Color, index: number) => (
     <div
       key={index}
-      className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer bg-white dark:bg-gray-800"
       onClick={() => {
         copyToClipboard(color.hex);
         selectColor(color.hex);
       }}
     >
+      {/* Color Display Area */}
       <div
-        className="h-32 w-full transition-transform duration-300 group-hover:scale-105"
-        style={{ backgroundColor: color.hex }}
-      />
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
-      <div className="p-4 bg-white dark:bg-gray-800">
+        className="h-32 w-full transition-transform duration-300 group-hover:scale-105 relative border-0"
+        style={{ 
+          backgroundColor: color.hex,
+          minHeight: '8rem',
+          width: '100%',
+          display: 'block'
+        }}
+      >
+        {/* Visual confirmation overlay */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{ backgroundColor: color.hex }}
+        />
+      </div>
+      
+      {/* Hover Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 pointer-events-none" />
+      
+      {/* Color Info */}
+      <div className="p-4 bg-white dark:bg-gray-800 relative z-10">
         <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
           {color.name}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 font-mono">
+        <p className="text-sm text-gray-600 dark:text-gray-400 font-mono uppercase">
           {color.hex}
         </p>
         {copiedColor === color.hex && (
-          <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+          <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
             Copied!
           </p>
         )}
         {selectedColor === color.hex && (
-          <div className="absolute top-2 right-2 w-4 h-4 bg-green-500 rounded-full shadow-md">
+          <div className="absolute top-2 right-2 w-4 h-4 bg-green-500 rounded-full shadow-md z-20">
             <div className="absolute inset-1 bg-white rounded-full" />
           </div>
         )}
