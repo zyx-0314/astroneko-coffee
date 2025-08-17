@@ -1,8 +1,7 @@
-import React from 'react';
-
+// Homepage with static content - use SSR for SEO and performance
 export default function HomePage() {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto px-4 py-16">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           ☕ Astroneko Coffee

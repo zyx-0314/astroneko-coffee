@@ -1,9 +1,8 @@
 import React from 'react';
-import { MoodBoardColors } from '@/components/MoodBoard/Colors';
-import { MoodBoardTypography } from '@/components/MoodBoard/Typography';
-import { MoodBoardUIElements } from '@/components/MoodBoard/UIElements';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { MoodBoardColors, MoodBoardTypography, MoodBoardUIElements } from '@/components/MoodBoard';
 
+// Interactive design system showcase - use CSR for theme toggling and copy interactions
 export default function MoodBoardPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors py-8">

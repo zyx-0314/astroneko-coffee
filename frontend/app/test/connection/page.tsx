@@ -1,4 +1,4 @@
-import { ConnectionCheckerMenu } from "@/components/Menu/ConnectionChecker";
+import { ConnectionCheckerMenu } from "@/components/Menu";
 
 const Home = () => {
   return (

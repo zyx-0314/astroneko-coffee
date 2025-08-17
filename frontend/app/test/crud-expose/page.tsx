@@ -1,7 +1,6 @@
 "use client";
 
-import { MenuCrudTable } from "@/components/Menu/CrudTableTestExpose/menuCrudTable";
-
+import { MenuCrudTable } from "@/components/Menu";
 
 const MenuCrudPage = () => {
   return (
