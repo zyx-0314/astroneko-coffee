@@ -44,3 +44,4 @@ function Badge({
 }
 
 export { Badge, badgeVariants }
+export { AnimatedBadge } from './animated-badge'
