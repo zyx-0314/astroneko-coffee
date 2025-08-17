@@ -20,3 +20,25 @@ export interface CardExample {
   image?: string;
   variant: 'default' | 'featured' | 'compact';
 }
+
+export interface LogoExample {
+  size: 'small' | 'medium' | 'large';
+  label: string;
+}
+
+export interface StarRating {
+  rating: 1 | 2 | 3 | 4 | 5;
+  label: string;
+}
+
+export interface ToggleExample {
+  id: string;
+  label: string;
+  checked: boolean;
+}
+
+export interface BadgeExample {
+  label: string;
+  variant: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'neutral';
+  color: string;
+}
