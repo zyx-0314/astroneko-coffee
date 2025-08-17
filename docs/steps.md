@@ -1677,13 +1677,6 @@
                     <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
                       Astroneko Coffee
                     </h1>
-                    <div className="flex items-center gap-4">
-                      <ThemeToggle />
-                      <div className="flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm">
-                        🎨 Shuffle
-                        <span className="text-xs opacity-70">C</span>
-                      </div>
-                    </div>
                   </div>
                   <p className="text-gray-600 dark:text-gray-300 text-lg">
                     Design system and mood board for our cosmic coffee experience
@@ -1725,10 +1718,6 @@
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Colors</h2>
-              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
-                🎨 Shuffle
-                <span className="text-xs opacity-70">C</span>
-              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1817,11 +1806,6 @@
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Typography</h2>
-              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
-                <span className="text-sm">Aa</span>
-                Regular - normal
-                <span className="text-xs opacity-70">▼</span>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1930,10 +1914,6 @@
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">UI Styling</h2>
-              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
-                🎨 Shuffle
-                <span className="text-xs opacity-70">U</span>
-              </div>
             </div>
 
             {/* Tab Navigation */}
