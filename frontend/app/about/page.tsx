@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <InfoCard title="Our Mission">
             <p>
-              Welcome to Astroneko Coffee, where alien vibes meet perfect brews. We're creating an intergalactic café experience that blends the comfort of earth's finest coffee traditions with the wonder of cosmic exploration.
+              {`Welcome to Astroneko Coffee, where alien vibes meet perfect brews. We're creating an intergalactic café experience that blends the comfort of earth's finest coffee traditions with the wonder of cosmic exploration.`}
             </p>
           </InfoCard>
           

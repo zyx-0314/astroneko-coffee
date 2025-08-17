@@ -73,8 +73,8 @@ export default function CareersPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
           <h3 className="text-xl font-semibold mb-4 text-center">Ready to Apply?</h3>
           <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
-            We're still preparing for launch, but we'd love to hear from passionate individuals 
-            who want to be part of something extraordinary.
+            {`We're still preparing for launch, but we'd love to hear from passionate individuals 
+            who want to be part of something extraordinary.`}
           </p>
           <div className="text-center">
             <p className="text-sm text-gray-500 dark:text-gray-500 mb-4">
