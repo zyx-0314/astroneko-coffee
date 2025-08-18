@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { MoodBoardColors, MoodBoardTypography, MoodBoardUIElements } from '@/components/MoodBoard';
+import { MoodBoardColors, MoodBoardTypography, MoodBoardUIElements } from '@/components/moodBoard';
 
 // Interactive design system showcase - use CSR for theme toggling and copy interactions
 export default function MoodBoardPage() {

@@ -65,13 +65,31 @@ export function mockSignIn(email: string, password: string): Promise<User | null
           shift: { start: '08:00', clockInTime: '07:55' }
         },
         {
+          id: '5',
+          name: 'David Kim',
+          email: 'david.kim@astroneko.com',
+          role: 'manager' as const,
+          avatar: '/placeholder/user/Male.png',
+          shift: { start: '07:00', clockInTime: '06:55' }
+        },
+        {
           id: '7',
           name: 'John Smith',
           email: 'john.smith@example.com',
           role: 'client' as const,
           avatar: '/placeholder/avatars/john.jpg',
           points: 1250
+        },
+        {
+          id: '3',
+          name: 'Mike Rodriguez',
+          email: 'mike.rodriguez@astroneko.com',
+          role: 'cook' as const,
+          avatar: '/placeholder/user/Male.png',
+          shift: { start: '07:30', clockInTime: '07:25' },
+          isActive: true
         }
+        
       ];
       
       const user = users.find(u => u.email === email);

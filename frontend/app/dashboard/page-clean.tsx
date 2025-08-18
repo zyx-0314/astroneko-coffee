@@ -39,12 +39,12 @@ const recommendationItems = [...promoItems, ...regularItems];
 export default function ClientDashboard() {
   const userOrderHistory = getOrdersByCustomer(currentUser.id);
 
-  const handleQuickOrder = (item: any) => {
+  const handleQuickOrder = (item: unknown) => {
     console.log('Quick order for:', item);
     // Implement quick order functionality
   };
 
-  const handleAddToCart = (item: any) => {
+  const handleAddToCart = (item: unknown) => {
     console.log('Add to cart:', item);
     // Implement add to cart functionality
   };
