@@ -1,36 +1,6 @@
 import { MenuItem } from '@/schema/menuItem.schema';
+import { OrderStatus, OrderItem, Order } from '@/schema/order.schema';
 import { mockMenuItems } from './menu';
-
-export type OrderStatus = 
-  | 'PENDING' 
-  | 'IN_PROGRESS' 
-  | 'READY' 
-  | 'COMPLETE' 
-  | 'HAS_PROBLEM' 
-  | 'CANCELLED' 
-  | 'RETURN' 
-  | 'DELAYED';
-
-export interface OrderItem {
-  menuItem: MenuItem;
-  quantity: number;
-  specialInstructions?: string;
-}
-
-export interface Order {
-  id: string;
-  queueNo: number;
-  customerName: string;
-  customerId?: string;
-  items: OrderItem[];
-  total: number;
-  status: OrderStatus[];
-  placedAt: string; // ISO string
-  estimatedReady?: string; // ISO string
-  assignedTo?: string; // Staff member ID
-  completedBy?: string; // Staff member ID who completed the order
-  notes?: string;
-}
 
 // Helper function to get menu item by ID
 export const getMenuItemById = (id: string): MenuItem | undefined => {

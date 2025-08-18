@@ -1,11 +1,4 @@
-import { User } from './data/users';
-
-export type UserRole = 'cashier' | 'helper' | 'cook' | 'barista' | 'manager' | 'owner' | 'client';
-
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-}
+import { User, UserRole, AuthState } from '@/schema/user.schema';
 
 // Role to route mapping
 export const roleRouteMap: Record<UserRole, string> = {
