@@ -130,8 +130,8 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
               asChild
               className="bg-[#E1B168] hover:bg-[#d4a455] text-[#2D5A4A] font-semibold px-6 py-2 rounded-md"
             >
-              <Link href="/order">
-                Order
+              <Link href="/authentication">
+                Login
               </Link>
             </AnimatedButton>
 
