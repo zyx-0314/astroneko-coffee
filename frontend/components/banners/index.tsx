@@ -1,3 +1,5 @@
-import  PromotionBanner  from './PromotionalBanner';
+import PromotionBanner from './PromotionalBanner';
+import ComboBanner from './ComboBanner';
+import SaleBanners from './SaleBanners';
 
-export { PromotionBanner };
+export { PromotionBanner, ComboBanner, SaleBanners };
