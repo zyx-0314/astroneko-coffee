@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { AnimatedButton } from '@/components/ui/animated-button';
 import { fadeInContainer } from '@/framer/variants/containers';
-import { fadeInUp, fadeInLeft, fadeInRight } from '@/framer/variants/text';
+import { fadeInUp, fadeInLeft } from '@/framer/variants/text';
 
 export default function BenefitsSection() {
   return (

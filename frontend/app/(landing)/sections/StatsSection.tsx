@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { BarChart3, TrendingUp, Users, Calendar } from 'lucide-react';
 import { AppearContainer, imageScale, scaleContainer, slideRightContainer } from '@/framer';
