@@ -1052,9 +1052,6 @@ export default function MenuPage() {
                 Discover our intergalactic coffee creations and stellar treats
               </p>
             </motion.div>
-            <motion.div variants={cardFadeUp}>
-              <ThemeToggle />
-            </motion.div>
           </div>
 
           {/* Promotional Banner: Combo */}
