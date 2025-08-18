@@ -2,7 +2,6 @@ package coffee.astroneko.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "menu_items")
