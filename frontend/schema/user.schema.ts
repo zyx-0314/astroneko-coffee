@@ -25,6 +25,12 @@ export type StaffRole = Exclude<UserRole, 'client'>;
 // Client role specifically  
 export type ClientRole = Extract<UserRole, 'client'>;
 
+// Authentication state interface
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+}
+
 // User shift interface
 export interface UserShift {
   start: string; // HH:mm format
