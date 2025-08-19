@@ -1,20 +1,17 @@
 "use client"
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { mockSignIn, mockSignUp, getRouteForRole } from '@/lib/auth';
+import { AuthCard } from '@/components/cards';
+import { SignInSection, SignUpSection, AuthBackground } from './section';
+import { signIn, signUp, getRouteForRole } from '@/lib/auth';
+import { useAuth } from '@/provider/auth-provider';
 
 export default function AuthenticationPage() {
   const router = useRouter();
+  const { setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -30,7 +27,8 @@ export default function AuthenticationPage() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    sex: ''
   });
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -39,18 +37,21 @@ export default function AuthenticationPage() {
     setError('');
 
     try {
-      const user = await mockSignIn(signInData.email, signInData.password);
+      const user = await signIn(signInData.email, signInData.password);
       
       if (user) {
+        // Update the auth context
+        setUser(user);
+        
         // Redirect to appropriate dashboard based on role
         const route = getRouteForRole(user.role);
         router.push(route);
       } else {
         setError('Invalid email or password');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign In Error:', error);
-      setError('An error occurred during sign in');
+      setError(error.message || 'An error occurred during sign in');
     } finally {
       setIsLoading(false);
     }
@@ -68,264 +69,88 @@ export default function AuthenticationPage() {
     }
 
     try {
-      const user = await mockSignUp(signUpData.name, signUpData.email, signUpData.password);
+      const user = await signUp(signUpData.name, signUpData.email, signUpData.password, signUpData.sex);
       
       if (user) {
+        // Update the auth context
+        setUser(user);
+        
         // Redirect to client dashboard
         router.push('/dashboard');
       } else {
         setError('Failed to create account');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign Up Error:', error);
-      setError('An error occurred during sign up');
+      setError(error.message || 'An error occurred during sign up');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDemoLogin = (email: string) => {
-    setSignInData({ email, password: 'demo123' });
+    // All seeded users use the same password
+    let password = 'password123';
+    
+    setSignInData({ email, password });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/20 flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      <AuthBackground />
+      
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 relative z-10">
+        <AuthCard 
+          title="Welcome to Astroneko ☕"
+          description="Sign in to your account or create a new one"
         >
-          <Card>
-            <CardHeader className="text-center p-4 sm:p-6">
-              <CardTitle className="text-xl sm:text-2xl">Welcome Back</CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                Sign in to your account or create a new one
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signin" className="text-sm">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup" className="text-sm">Sign Up</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="signin" className="space-y-4 mt-4 sm:mt-6">
-                  <form onSubmit={handleSignIn} className="space-y-4">
-                    {/* Demo Accounts */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Demo Accounts</Label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDemoLogin('alex.johnson@astroneko.com')}
-                          className="text-xs"
-                        >
-                          Front Desk Employee Demo
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDemoLogin('john.smith@example.com')}
-                          className="text-xs"
-                        >
-                          Client Demo
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDemoLogin('mike.rodriguez@astroneko.com')}
-                          className="text-xs"
-                        >
-                          Cook Employee Demo
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDemoLogin('david.kim@astroneko.com')}
-                          className="text-xs"
-                        >
-                          Manager Demo
-                        </Button>
-                      </div>
-                    </div>
+          <Tabs defaultValue="signin" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="signin" className="text-sm font-medium">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="text-sm font-medium">Sign Up</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="signin">
+              <SignInSection
+                signInData={signInData}
+                setSignInData={setSignInData}
+                handleSignIn={handleSignIn}
+                handleDemoLogin={handleDemoLogin}
+                isLoading={isLoading}
+                error={error}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+              />
+            </TabsContent>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-email">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signin-email"
-                          type="email"
-                          placeholder="Enter your email"
-                          value={signInData.email}
-                          onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
+            <TabsContent value="signup">
+              <SignUpSection
+                signUpData={signUpData}
+                setSignUpData={setSignUpData}
+                handleSignUp={handleSignUp}
+                isLoading={isLoading}
+                error={error}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+              />
+            </TabsContent>
+          </Tabs>
+        </AuthCard>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signin-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Enter your password"
-                          value={signInData.password}
-                          onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
-                          className="pl-10 pr-10"
-                          required
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
-                      </div>
-                    </div>
-
-                    {error && (
-                      <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? 'Signing in...' : 'Sign In'}
-                    </Button>
-                  </form>
-
-                  <div className="text-center">
-                    <Link href="#" className="text-sm text-primary hover:underline">
-                      Forgot your password?
-                    </Link>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="signup" className="space-y-4 mt-4 sm:mt-6">
-                  <Alert>
-                    <AlertDescription className="text-xs sm:text-sm">
-                      <strong>Note:</strong> This is for client registration only. 
-                      Staff members are registered by management.
-                    </AlertDescription>
-                  </Alert>
-
-                  <form onSubmit={handleSignUp} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name">Full Name</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-name"
-                          type="text"
-                          placeholder="Enter your full name"
-                          value={signUpData.name}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-email"
-                          type="email"
-                          placeholder="Enter your email"
-                          value={signUpData.email}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a password"
-                          value={signUpData.password}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
-                          className="pl-10 pr-10"
-                          required
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-confirm">Confirm Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="signup-confirm"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Confirm your password"
-                          value={signUpData.confirmPassword}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                          className="pl-10"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {error && (
-                      <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
-                      </Alert>
-                    )}
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? 'Creating account...' : 'Create Account'}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>
-              By signing in, you agree to our{' '}
-              <Link href="#" className="text-primary hover:underline">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="#" className="text-primary hover:underline">
-                Privacy Policy
-              </Link>
-            </p>
-          </div>
-        </motion.div>
+        {/* Footer */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center text-sm text-muted-foreground max-w-md">
+          <p>
+            By signing in, you agree to our{' '}
+            <Link href="#" className="text-primary hover:underline transition-colors">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="#" className="text-primary hover:underline transition-colors">
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
