@@ -1,16 +1,10 @@
 import DefaultHeader from './Default';
 import DynamicHeader from './DynamicHeader';
-import ClientHeader from './ClientHeader';
-import KitchenHeader from './Kitchen';
-import FrontDeskHeader from './FrontDesk';
-import ManagerHeader from './Manager';
+import AuthenticatedHeader from './Authenticated';
 
 export { 
   DefaultHeader, 
   DynamicHeader, 
-  ClientHeader, 
-  KitchenHeader, 
-  FrontDeskHeader, 
-  ManagerHeader 
+  AuthenticatedHeader
 };
 export { DynamicHeader as Header };

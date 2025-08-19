@@ -19,7 +19,6 @@ import { dashboardStats, salesData, ordersByHour, categoryMix } from '@/lib/data
 import { stockItems, getLowStockItems } from '@/lib/data/stocks';
 import { User as UserType } from '@/schema/user.schema';
 import { users } from '@/lib/data/users';
-import ManagerHeader from '@/components/header/Manager';
 
 // Mock current user - in real app this would come from auth context
 const currentUser: UserType = {
