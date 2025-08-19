@@ -20,7 +20,15 @@ import {
   Package,
   ShoppingCart,
   User,
-  HelpCircle
+  HelpCircle,
+  BookOpen,
+  MessageSquare,
+  Clipboard,
+  Box,
+  BarChart2,
+  BarChartBig,
+  ChartColumnStacked,
+  BadgeCheck
 } from 'lucide-react';
 import { useAuth } from '@/provider/auth-provider';
 import { useAdminSidebar } from './AdminSidebar.hook';
@@ -42,7 +50,31 @@ export default function AdminSidebar() {
       title: 'Front Desk Dashboard',
       href: '/admin/front-desk/dashboard',
       icon: UserCheck,
-      roles: ['cashier']
+      roles: ['cashier', 'helper']
+    },
+    {
+      title: 'Orders Queue',
+      href: '/admin/front-desk/orders',
+      icon: ShoppingCart,
+      roles: ['cashier', 'helper']
+    },
+    {
+      title: 'Menu',
+      href: '/menu',
+      icon: Clipboard,
+      roles: ['cashier', 'helper']
+    },
+    {
+      title: 'Inventory',
+      href: '/admin/front-desk/inventory',
+      icon: Box,
+      roles: ['cashier', 'helper']
+    },
+    {
+      title: 'Reservations',
+      href: '/admin/front-desk/reservations',
+      icon: BadgeCheck,
+      roles: ['cashier', 'helper']
     },
     {
       title: 'Kitchen Dashboard',
@@ -50,11 +82,35 @@ export default function AdminSidebar() {
       icon: ChefHat,
       roles: ['cook', 'barista']
     },
+        {
+      title: 'Menu',
+      href: '/admin/kitchen/menu',
+      icon: Clipboard,
+      roles: ['cook', 'barista']
+    },
+    {
+      title: 'Orders Queue',
+      href: '/admin/kitchen/orders',
+      icon: ShoppingCart,
+      roles: ['cook', 'barista']
+    },
+    {
+      title: 'Inventory',
+      href: '/admin/kitchen/inventory',
+      icon: Box,
+      roles: ['cook', 'barista']
+    },
     // Manager tools
     {
       title: 'Staff Management',
       href: '/admin/managers/staff',
       icon: Users,
+      roles: ['owner', 'manager']
+    },
+    {
+      title: 'Customer Management',
+      href: '/admin/managers/customers',
+      icon: User,
       roles: ['owner', 'manager']
     },
     {
@@ -75,12 +131,29 @@ export default function AdminSidebar() {
       icon: Coffee,
       roles: ['owner', 'manager']
     },
-    // Shared tools
     {
       title: 'Reports',
       href: '/admin/reports',
       icon: BarChart3,
-      roles: ['owner', 'manager', 'cashier', 'helper', 'cook', 'barista']
+      roles: ['owner', 'manager']
+    },
+    {
+      title: 'Analytics',
+      href: '/admin/managers/analytics',
+      icon: ChartColumnStacked,
+      roles: ['owner', 'manager']
+    },
+    {
+      title: 'Performance',
+      href: '/admin/managers/performance',
+      icon: BarChart2,
+      roles: ['owner', 'manager']
+    },
+    {
+      title: 'Requests',
+      href: '/admin/requests',
+      icon: MessageSquare,
+      roles: ['owner', 'manager']
     }
   ];
 
@@ -89,6 +162,11 @@ export default function AdminSidebar() {
       title: 'Profile',
       href: '/admin/profile',
       icon: User
+    },
+    {
+      title: 'Manual',
+      href: '/admin/manual',
+      icon: BookOpen
     },
     {
       title: 'Help',
@@ -135,29 +213,15 @@ export default function AdminSidebar() {
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className={`
-          fixed md:relative z-40 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg
+          fixed md:relative z-40 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden
           ${isCollapsed ? 'md:w-0' : 'md:w-70'}
         `}
+        style={{
+          display: isCollapsed ? 'none' : 'block'
+        }}
       >
         <div className="flex flex-col h-full p-6 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6B4E37] to-[#2CA6A4] flex items-center justify-center">
-                <Coffee className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                  Astroneko
-                </h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Admin Panel
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* User Info */}
+           {/* User Info */}
           <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-[#6B4E37] text-white flex items-center justify-center">

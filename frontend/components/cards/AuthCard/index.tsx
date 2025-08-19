@@ -1,13 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface AuthCardProps {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-  className?: string;
-}
+import type { AuthCardProps } from '@/schema/components.schema';
 
 export default function AuthCard({ 
   title, 

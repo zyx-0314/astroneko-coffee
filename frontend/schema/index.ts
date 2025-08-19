@@ -13,6 +13,14 @@ export * from './components.schema';
 export * from './colors.schema';
 export * from './uiElements.schema';
 export * from './typography.schema';
-export * from './cards.schema';
 export * from './header.schema';
 export * from './animatedComponents.schema';
+export * from './auth.schema';
+
+// Card schemas (specific exports to avoid conflicts)
+export type { 
+  InfoCardProps, 
+  ContentCardProps, 
+  PlaceholderCardProps,
+  FeatureCardProps as CardFeatureProps  // Renamed to avoid conflict
+} from './cards.schema';

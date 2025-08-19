@@ -67,7 +67,7 @@ export default function DemoAccountCard({ onDemoLogin, className = '' }: DemoAcc
           <Button
             key={account.email}
             type="button"
-            variant={account.variant as any}
+            variant={account.variant as "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"}
             size="sm"
             onClick={() => handleDemoLogin(account.email)}
             className="text-xs h-9 hover:scale-105 transition-transform duration-200"

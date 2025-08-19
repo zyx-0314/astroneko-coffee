@@ -161,7 +161,7 @@ export default function HelpPage() {
                   Video tutorials coming soon
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  We're creating comprehensive video guides to help you get the most out of our platform.
+                  We&apos;re creating comprehensive video guides to help you get the most out of our platform.
                 </p>
               </div>
             </CardContent>

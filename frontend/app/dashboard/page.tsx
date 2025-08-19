@@ -6,23 +6,13 @@ import {
   mockMenuItems as menuItems,
 } from '@/lib/data/menu';
 import { getOrdersByCustomer } from '@/lib/data/orders';
-import { User } from '@/schema/user.schema';
+import { useAuth } from '@/provider/auth-provider';
 import {
   ProfileDisplaySection,
   FavoritesDisplaySection,
   RecommendationDisplaySection,
   OrderHistoryDisplaySection,
 } from './sections';
-
-// Mock current user - in real app this would come from auth context
-const currentUser: User = {
-  id: '7',
-  name: 'John Smith',
-  email: 'john.smith@example.com',
-  role: 'client',
-  points: 1250,
-  sex: 'male'
-};
 
 // Mock most bought items (would come from user's order history analysis)
 const mostBoughtItems = [
@@ -37,6 +27,20 @@ const regularItems = menuItems.filter(item => !item.isOnSale && item.promoType =
 const recommendationItems = [...promoItems, ...regularItems];
 
 export default function ClientDashboard() {
+  const { user: currentUser, isLoading } = useAuth();
+  
+  // Show loading state if user is not loaded yet
+  if (isLoading || !currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6B4E37] mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   const userOrderHistory = getOrdersByCustomer(currentUser.id);
 
   const handleQuickOrder = (item: unknown) => {

@@ -107,7 +107,7 @@ export default function ManagersDashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Today's Revenue</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Today&apos;s Revenue</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">$1,247</p>
                 </div>
                 <DollarSign className="h-8 w-8 text-[#6B4E37]" />

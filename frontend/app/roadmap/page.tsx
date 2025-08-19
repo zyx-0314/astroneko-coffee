@@ -217,7 +217,7 @@ export default function RoadmapPage() {
             Astroneko Coffee Roadmap
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Track our development progress and see what's coming next for the Astroneko Coffee management system.
+            Track our development progress and see what&apos;s coming next for the Astroneko Coffee management system.
             This roadmap is updated regularly to reflect our current priorities and development status.
           </p>
         </div>

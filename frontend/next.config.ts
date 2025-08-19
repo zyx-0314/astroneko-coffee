@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
 
+  // Webpack configuration for framer-motion
+  webpack: (config: any) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'framer-motion': require.resolve('framer-motion'),
+    };
+    return config;
+  },
+
   // API rewrite for backend communication
   async rewrites() {
     return [

@@ -67,7 +67,7 @@ export default function OrdersPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Today's Orders</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Today&apos;s Orders</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">87</p>
               </div>
               <ShoppingCart className="h-8 w-8 text-[#6B4E37]" />

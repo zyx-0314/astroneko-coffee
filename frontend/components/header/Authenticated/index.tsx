@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, 
@@ -28,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { User } from '@/schema/user.schema';
 import { useAuthenticatedHeaderState } from './Authenticated.hook';
+import { CreateReportModal, CreateRequestModal } from '@/components/modals';
 
 export interface AuthenticatedHeaderProps {
   user: User;
@@ -50,6 +52,10 @@ export default function AuthenticatedHeader({
     toggleCart,
     toggleProfileMenu
   } = useAuthenticatedHeaderState();
+
+  // Modal states for Reports and Requests
+  const [isCreateReportModalOpen, setIsCreateReportModalOpen] = useState(false);
+  const [isCreateRequestModalOpen, setIsCreateRequestModalOpen] = useState(false);
 
   // Current promo data
   const currentPromo = {
@@ -288,7 +294,7 @@ export default function AuthenticatedHeader({
                     <div className="py-2">
                       {/* Common items for all users */}
                       <Link 
-                        href="/dashboard/profile" 
+                        href={isAdmin ? "/admin/profile" : "/dashboard/profile"} 
                         className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       >
                         <UserIcon className="w-4 h-4" />
@@ -332,13 +338,16 @@ export default function AuthenticatedHeader({
                       {/* Admin-only items */}
                       {isAdmin && (
                         <>
-                          <Link 
-                            href="/admin/reports" 
-                            className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          <button 
+                            onClick={() => {
+                              setIsCreateReportModalOpen(true);
+                              toggleProfileMenu();
+                            }}
+                            className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full text-left"
                           >
                             <FileText className="w-4 h-4" />
                             <span>Reports</span>
-                          </Link>
+                          </button>
                           <Link 
                             href="/admin/help" 
                             className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -346,13 +355,16 @@ export default function AuthenticatedHeader({
                             <HelpCircle className="w-4 h-4" />
                             <span>Help</span>
                           </Link>
-                          <Link 
-                            href="/admin/requests" 
-                            className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          <button 
+                            onClick={() => {
+                              setIsCreateRequestModalOpen(true);
+                              toggleProfileMenu();
+                            }}
+                            className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full text-left"
                           >
                             <MessageSquare className="w-4 h-4" />
                             <span>Requests</span>
-                          </Link>
+                          </button>
                           <Link 
                             href="/admin/manual" 
                             className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -365,7 +377,7 @@ export default function AuthenticatedHeader({
 
                       {/* Settings for all users */}
                       <Link 
-                        href="/dashboard/settings" 
+                        href={isAdmin ? "/admin/settings" : "/dashboard/settings"} 
                         className="flex items-center space-x-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       >
                         <Settings className="w-4 h-4" />
@@ -549,6 +561,25 @@ export default function AuthenticatedHeader({
           )}
         </AnimatePresence>
       </div>
+
+      {/* Modals */}
+      <CreateReportModal
+        isOpen={isCreateReportModalOpen}
+        onClose={() => setIsCreateReportModalOpen(false)}
+        onSubmit={() => {
+          // Handle report creation
+          setIsCreateReportModalOpen(false);
+        }}
+      />
+      
+      <CreateRequestModal
+        isOpen={isCreateRequestModalOpen}
+        onClose={() => setIsCreateRequestModalOpen(false)}
+        onSubmit={() => {
+          // Handle request creation
+          setIsCreateRequestModalOpen(false);
+        }}
+      />
     </header>
   );
 }

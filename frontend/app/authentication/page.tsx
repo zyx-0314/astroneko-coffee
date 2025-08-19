@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuthCard } from '@/components/cards';
-import { SignInSection, SignUpSection, AuthBackground } from './section';
+import { SignInSection, SignUpSection, AuthBackground } from './sections';
 import { signIn, signUp, getRouteForRole } from '@/lib/auth';
 import { useAuth } from '@/provider/auth-provider';
 
@@ -50,9 +50,9 @@ export default function AuthenticationPage() {
       } else {
         setError('Invalid email or password');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign In Error:', error);
-      setError(error.message || 'An error occurred during sign in');
+      setError(error instanceof Error ? error.message : 'An error occurred during sign in');
     } finally {
       setIsLoading(false);
     }
@@ -81,9 +81,9 @@ export default function AuthenticationPage() {
       } else {
         setError('Failed to create account');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign Up Error:', error);
-      setError(error.message || 'An error occurred during sign up');
+      setError(error instanceof Error ? error.message : 'An error occurred during sign up');
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +91,7 @@ export default function AuthenticationPage() {
 
   const handleDemoLogin = (email: string) => {
     // All seeded users use the same password
-    let password = 'password123';
+    const password = 'password123';
     
     setSignInData({ email, password });
   };

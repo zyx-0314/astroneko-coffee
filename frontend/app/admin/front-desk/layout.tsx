@@ -1,7 +1,7 @@
 'use client';
 
-import { AdminAside } from '@/components/aside';
 import { RoleGuard } from '@/components/guards';
+import { AdminSidebar } from '@/components/navigation';
 import { useAuth } from '@/provider/auth-provider';
 import { frontDeskRoles } from '@/lib/auth';
 
@@ -15,12 +15,7 @@ export default function FrontDeskLayout({
   return (
     <RoleGuard allowedRoles={frontDeskRoles}>
       <div className="flex min-h-[calc(100vh-80px)]">
-        {user && (
-          <AdminAside 
-            user={user} 
-            className="w-64 min-h-full" 
-          />
-        )}
+
         <main className="flex-1 bg-gray-50 dark:bg-gray-900">
           {children}
         </main>

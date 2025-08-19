@@ -26,7 +26,7 @@ export default function StaffManagementPage() {
                   Staff Management
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 mt-1">
-                  Manage your coffee shop team members and their roles
+                  Manage your coffee shop staff, schedules, and performance
                 </p>
               </div>
             </div>

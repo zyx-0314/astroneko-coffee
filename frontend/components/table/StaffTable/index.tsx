@@ -3,6 +3,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+// Temporary interface to avoid any type
+interface StaffMember {
+  id: string;
+  employeeId: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  shift: string;
+  phone: string;
+  lastActive: string;
+  avatar?: string;
+}
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
@@ -104,7 +117,7 @@ export default function StaffTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {staffMembers.map((staff: any, index: number) => (
+          {staffMembers.map((staff: StaffMember, index: number) => (
             <motion.tr
               key={staff.id}
               initial={{ opacity: 0, y: 20 }}

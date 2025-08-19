@@ -41,11 +41,14 @@ export interface OrdersTableProps {
 
 // Card component interfaces
 export interface TestimonialCardProps {
-  name: string;
+  quote: string;
+  author: string;
   role: string;
-  testimonial: string;
   avatar?: string;
+  initials?: string;
   rating?: number;
+  className?: string;
+  delay?: number;
 }
 
 // Counter component interfaces
@@ -245,3 +248,107 @@ export interface WithChildren {
 export interface BaseComponentProps extends WithClassName, WithChildren {
   id?: string;
 }
+
+// Auth components
+export interface AuthCardProps {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+// Gallery and feature components  
+export interface GalleryCardProps {
+  src: string;
+  alt: string;
+  title?: string;
+  description?: string;
+  className?: string;
+}
+
+// FeatureCardProps moved to cards.schema.ts to avoid conflicts
+
+// Staff components
+export interface StaffMember {
+  id: string;
+  employeeId: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  shift: string;
+  phone: string;
+  lastActive: string;
+  avatar?: string;
+}
+
+export interface StaffFormData {
+  name: string;
+  email: string;
+  role: string;
+  shift: string;
+  phone: string;
+  avatar?: File;
+}
+
+export interface StaffFormErrors {
+  name?: string;
+  email?: string;
+  role?: string;
+  shift?: string;
+  phone?: string;
+  avatar?: string;
+}
+
+export interface StaffFormProps {
+  initialData?: Partial<StaffFormData>;
+  onSubmit: (data: StaffFormData) => void;
+  onCancel?: () => void;
+  isLoading?: boolean;
+}
+
+// Header components
+export interface DynamicHeaderProps extends HeaderProps {
+  variant?: 'default' | 'authenticated' | 'admin';
+}
+
+export interface AuthenticatedHeaderProps {
+  user: User;
+  onLogout?: () => void;
+  className?: string;
+}
+
+// Stats counter components
+export interface StatsCounterProps {
+  end: number;
+  duration?: number;
+  start?: number;
+  decimals?: number;
+  suffix?: string;
+  prefix?: string;
+  className?: string;
+}
+
+// UI Components
+export interface EmptyStateProps {
+  title: string;
+  description?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+  className?: string;
+}
+
+export interface StatusBadgeProps {
+  status: string;
+  variant?: 'default' | 'success' | 'warning' | 'destructive';
+  className?: string;
+}
+
+// Animated component props moved to animatedComponents.schema.ts to avoid conflicts
+
+// Import User type
+import type { User } from './user.schema';
+import type { HeaderProps } from './header.schema';

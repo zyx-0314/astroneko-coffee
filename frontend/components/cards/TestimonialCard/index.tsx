@@ -3,16 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-export interface TestimonialCardProps {
-  quote: string;
-  author: string;
-  role: string;
-  avatar?: string;
-  initials?: string;
-  rating?: number;
-  className?: string;
-  delay?: number;
-}
+import type { TestimonialCardProps } from '@/schema/components.schema';
 
 import { StarRatingProps } from '@/schema/animatedComponents.schema';
 

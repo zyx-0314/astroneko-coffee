@@ -51,28 +51,8 @@ export function canAccessManagement(role: UserRole): boolean {
 // Backend API configuration
 const API_BASE_URL = 'http://localhost:8083/api/v1/expose/auth';
 
-// Authentication API types
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface SignUpRequest {
-  name: string;
-  email: string;
-  password: string;
-  sex?: string;
-}
-
-interface AuthResponse {
-  token: string;
-  type: string;
-  userId: number;
-  email: string;
-  name: string;
-  role: string;
-}
-
+// Import authentication types from schema
+import type { LoginRequest, SignUpRequest, AuthResponse } from '@/schema/auth.schema';
 import { tokenManager } from './auth-cookies';
 
 // Store JWT token using secure token manager
