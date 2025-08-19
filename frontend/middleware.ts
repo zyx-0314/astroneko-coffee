@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { tokenManager } from './lib/auth-cookies';
 
 // Define role permissions
 const ROLE_PERMISSIONS = {
@@ -18,10 +19,10 @@ const ROLE_PERMISSIONS = {
     '/careers'
   ],
   cook: [
-    '/admin/dashboard/kitchen',
-    '/admin/dashboard/kitchen/orders',
-    '/admin/dashboard/kitchen/menu',
-    '/admin/dashboard/kitchen/inventory',
+    '/admin/kitchen/dashboard',
+    '/admin/kitchen/dashboard/orders',
+    '/admin/kitchen/dashboard/menu',
+    '/admin/kitchen/dashboard/inventory',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -30,10 +31,10 @@ const ROLE_PERMISSIONS = {
     '/dashboard/settings'
   ],
   barista: [
-    '/admin/dashboard/kitchen',
-    '/admin/dashboard/kitchen/orders',
-    '/admin/dashboard/kitchen/menu',
-    '/admin/dashboard/kitchen/inventory',
+    '/admin/kitchen/dashboard',
+    '/admin/kitchen/dashboard/orders',
+    '/admin/kitchen/dashboard/menu',
+    '/admin/kitchen/dashboard/inventory',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -42,10 +43,10 @@ const ROLE_PERMISSIONS = {
     '/dashboard/settings'
   ],
   cashier: [
-    '/admin/dashboard/front-desk',
-    '/admin/dashboard/front-desk/orders',
-    '/admin/dashboard/front-desk/customers',
-    '/admin/dashboard/front-desk/reservations',
+    '/admin/front-desk/dashboard',
+    '/admin/front-desk/dashboard/orders',
+    '/admin/front-desk/dashboard/customers',
+    '/admin/front-desk/dashboard/reservations',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -54,10 +55,10 @@ const ROLE_PERMISSIONS = {
     '/dashboard/settings'
   ],
   helper: [
-    '/admin/dashboard/front-desk',
-    '/admin/dashboard/front-desk/orders',
-    '/admin/dashboard/front-desk/customers',
-    '/admin/dashboard/front-desk/reservations',
+    '/admin/front-desk/dashboard',
+    '/admin/front-desk/dashboard/orders',
+    '/admin/front-desk/dashboard/customers',
+    '/admin/front-desk/dashboard/reservations',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -67,19 +68,19 @@ const ROLE_PERMISSIONS = {
   ],
   manager: [
     '/admin/dashboard',
-    '/admin/dashboard/managers',
-    '/admin/dashboard/managers/staff',
-    '/admin/dashboard/managers/analytics',
-    '/admin/dashboard/managers/performance',
-    '/admin/dashboard/managers/reports',
-    '/admin/dashboard/kitchen',
-    '/admin/dashboard/kitchen/orders',
-    '/admin/dashboard/kitchen/menu',
-    '/admin/dashboard/kitchen/inventory',
-    '/admin/dashboard/front-desk',
-    '/admin/dashboard/front-desk/orders',
-    '/admin/dashboard/front-desk/customers',
-    '/admin/dashboard/front-desk/reservations',
+    '/admin/managers/dashboard',
+    '/admin/managers/dashboard/staff',
+    '/admin/managers/dashboard/analytics',
+    '/admin/managers/dashboard/performance',
+    '/admin/managers/dashboard/reports',
+    '/admin/kitchen/dashboard',
+    '/admin/kitchen/dashboard/orders',
+    '/admin/kitchen/dashboard/menu',
+    '/admin/kitchen/dashboard/inventory',
+    '/admin/front-desk/dashboard',
+    '/admin/front-desk/dashboard/orders',
+    '/admin/front-desk/dashboard/customers',
+    '/admin/front-desk/dashboard/reservations',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -90,19 +91,19 @@ const ROLE_PERMISSIONS = {
   ],
   owner: [
     '/admin/dashboard',
-    '/admin/dashboard/managers',
-    '/admin/dashboard/managers/staff',
-    '/admin/dashboard/managers/analytics',
-    '/admin/dashboard/managers/performance',
-    '/admin/dashboard/managers/reports',
-    '/admin/dashboard/kitchen',
-    '/admin/dashboard/kitchen/orders',
-    '/admin/dashboard/kitchen/menu',
-    '/admin/dashboard/kitchen/inventory',
-    '/admin/dashboard/front-desk',
-    '/admin/dashboard/front-desk/orders',
-    '/admin/dashboard/front-desk/customers',
-    '/admin/dashboard/front-desk/reservations',
+    '/admin/managers/dashboard',
+    '/admin/managers/dashboard/staff',
+    '/admin/managers/dashboard/analytics',
+    '/admin/managers/dashboard/performance',
+    '/admin/managers/dashboard/reports',
+    '/admin/kitchen/dashboard',
+    '/admin/kitchen/dashboard/orders',
+    '/admin/kitchen/dashboard/menu',
+    '/admin/kitchen/dashboard/inventory',
+    '/admin/front-desk/dashboard',
+    '/admin/front-desk/dashboard/orders',
+    '/admin/front-desk/dashboard/customers',
+    '/admin/front-desk/dashboard/reservations',
     '/admin/reports',
     '/admin/help',
     '/admin/requests',
@@ -128,28 +129,21 @@ const PUBLIC_ROUTES = [
 
 // Mock function to get user role - in real app, this would come from JWT or session
 function getUserRole(request: NextRequest): string | null {
-  // For development, we'll extract role from pathname or use a mock
-  const pathname = request.nextUrl.pathname;
-  
-  // Mock role determination based on path (for development)
-  if (pathname.startsWith('/admin/dashboard/kitchen')) {
-    return 'cook';
-  } else if (pathname.startsWith('/admin/dashboard/front-desk')) {
-    return 'cashier';
-  } else if (pathname.startsWith('/admin/dashboard/managers')) {
-    return 'manager';
-  } else if (pathname.startsWith('/dashboard')) {
-    return 'client';
+  try {
+    // Get token from cookies using our token manager
+    const token = tokenManager.getServerToken(request.headers.get('cookie'));
+    
+    if (!token) {
+      return null;
+    }
+    
+    // Decode JWT token to extract role (simplified - in production, verify signature)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role?.toLowerCase() || null;
+  } catch (error) {
+    console.error('Error extracting user role from token:', error);
+    return null;
   }
-  
-  // In production, you would decode JWT token or check session
-  // const token = request.cookies.get('auth-token')?.value;
-  // if (token) {
-  //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  //   return decoded.role;
-  // }
-  
-  return null;
 }
 
 function hasPermission(userRole: string, requestedPath: string): boolean {
@@ -205,15 +199,15 @@ export function middleware(request: NextRequest) {
         break;
       case 'cook':
       case 'barista':
-        url.pathname = '/admin/dashboard/kitchen';
+        url.pathname = '/admin/kitchen/dashboard';
         break;
       case 'cashier':
       case 'helper':
-        url.pathname = '/admin/dashboard/front-desk';
+        url.pathname = '/admin/front-desk/dashboard';
         break;
       case 'manager':
       case 'owner':
-        url.pathname = '/admin/dashboard/managers';
+        url.pathname = '/admin/managers/dashboard';
         break;
       default:
         url.pathname = '/errors/forbidden';

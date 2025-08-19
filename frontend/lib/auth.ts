@@ -2,12 +2,12 @@ import { User, UserRole, AuthState } from '@/schema/user.schema';
 
 // Role to route mapping
 export const roleRouteMap: Record<UserRole, string> = {
-  cashier: '/admin/dashboard/front-desk',
-  helper: '/admin/dashboard/front-desk',
-  cook: '/admin/dashboard/kitchen',
-  barista: '/admin/dashboard/kitchen',
-  manager: '/admin/dashboard/managers',
-  owner: '/admin/dashboard/managers',
+  cashier: '/admin/front-desk/dashboard',
+  helper: '/admin/front-desk/dashboard',
+  cook: '/admin/kitchen/dashboard',
+  barista: '/admin/kitchen/dashboard',
+  manager: '/admin/managers/dashboard',
+  owner: '/admin/managers/dashboard',
   client: '/dashboard'
 };
 
@@ -73,29 +73,22 @@ interface AuthResponse {
   role: string;
 }
 
-// Store JWT token in localStorage
+import { tokenManager } from './auth-cookies';
+
+// Store JWT token using secure token manager
 export function saveAuthToken(token: string): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_token', token);
-  }
+  tokenManager.setToken(token);
 }
 
-// Get JWT token from localStorage
+// Get JWT token using secure token manager
 export function getAuthToken(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('auth_token');
-  }
-  return null;
+  return tokenManager.getToken();
 }
 
-// Remove JWT token from localStorage
+// Remove JWT token using secure token manager  
 export function removeAuthToken(): void {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token');
-  }
-}
-
-// Fetch user profile from backend using JWT token
+  tokenManager.removeToken();
+}// Fetch user profile from backend using JWT token
 export async function fetchUserProfile(token?: string): Promise<User | null> {
   const authToken = token || getAuthToken();
   if (!authToken) return null;

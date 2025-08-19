@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyState } from '@/components/ui/empty-state';
 import { formatDate, formatTime } from '@/lib/date-utils';
 import { Order, OrderItem } from '@/schema/order.schema';
 import { OrderHistoryDisplaySectionProps } from '@/schema';

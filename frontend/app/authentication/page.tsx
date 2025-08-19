@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuthCard } from '@/components/cards';
 import { SignInSection, SignUpSection, AuthBackground } from './section';
@@ -96,20 +97,51 @@ export default function AuthenticationPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative bg-gradient-to-br from-[#F8F9FA] via-[#FFFFFF] to-[#E9ECEF] dark:from-[#212529] dark:via-[#343A40] dark:to-[#495057]">
       <AuthBackground />
+      
+      {/* Brand Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="pt-8 pb-4 text-center relative z-10"
+      >
+        <h1 className="text-4xl font-bold mb-2 text-[#6B4E37] dark:text-[#E1B168]">
+          Astroneko Coffee
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Where cosmic vibes meet perfect brews ✨
+        </p>
+      </motion.div>
       
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 relative z-10">
-        <AuthCard 
-          title="Welcome to Astroneko ☕"
-          description="Sign in to your account or create a new one"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="w-full max-w-md"
         >
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="signin" className="text-sm font-medium">Sign In</TabsTrigger>
-              <TabsTrigger value="signup" className="text-sm font-medium">Sign Up</TabsTrigger>
-            </TabsList>
+          <AuthCard 
+            title="Welcome Back"
+            description="Sign in to your account or create a new one"
+          >
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                <TabsTrigger 
+                  value="signin" 
+                  className="text-sm font-medium text-[#6B4E37] dark:text-[#E1B168] data-[state=active]:text-white data-[state=active]:bg-[#6B4E37] dark:data-[state=active]:bg-[#E1B168] data-[state=active]:shadow-sm transition-all duration-200 rounded-md"
+                >
+                  Sign In
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup" 
+                  className="text-sm font-medium text-[#2CA6A4] dark:text-[#D4EDEC] data-[state=active]:text-white data-[state=active]:bg-[#2CA6A4] dark:data-[state=active]:bg-[#2CA6A4] data-[state=active]:shadow-sm transition-all duration-200 rounded-md"
+                >
+                  Sign Up
+                </TabsTrigger>
+              </TabsList>
             
             <TabsContent value="signin">
               <SignInSection
@@ -137,20 +169,32 @@ export default function AuthenticationPage() {
             </TabsContent>
           </Tabs>
         </AuthCard>
+        </motion.div>
 
         {/* Footer */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center text-sm text-muted-foreground max-w-md">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center text-sm max-w-md text-gray-600 dark:text-gray-300"
+        >
           <p>
             By signing in, you agree to our{' '}
-            <Link href="#" className="text-primary hover:underline transition-colors">
+            <Link 
+              href="#" 
+              className="hover:underline transition-colors text-[#2CA6A4] dark:text-[#E1B168]"
+            >
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link href="#" className="text-primary hover:underline transition-colors">
+            <Link 
+              href="#" 
+              className="hover:underline transition-colors text-[#2CA6A4] dark:text-[#E1B168]"
+            >
               Privacy Policy
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

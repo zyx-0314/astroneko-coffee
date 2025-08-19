@@ -15,14 +15,11 @@ export const useDynamicHeaderState = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // Define routes that should use the AuthenticatedHeader (authenticated routes)
-  const authenticatedRoutes = ['/dashboard', '/admin/dashboard', '/order', '/profile', '/settings'];
-  
-  // Check if current route requires authenticated header
-  const isClientRoute = authenticatedRoutes.some(route => pathname.startsWith(route));
-  
   // Check if user is actually authenticated
   const isAuthenticated = !!user;
+  
+  // Show authenticated header on all pages except authentication page when user is logged in
+  const isClientRoute = isAuthenticated && pathname !== '/authentication';
 
   // Close mobile menu on route change
   useEffect(() => {

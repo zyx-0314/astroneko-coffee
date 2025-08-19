@@ -23,7 +23,8 @@ export function useAuth() {
 
 async function fetchCurrentUser(): Promise<User | null> {
   try {
-    const token = localStorage.getItem('authToken');
+    const { tokenManager } = await import('@/lib/auth-cookies');
+    const token = tokenManager.getToken();
     if (!token) return null;
 
     const response = await fetch('http://localhost:8083/api/v1/secure/user/profile', {
@@ -37,10 +38,11 @@ async function fetchCurrentUser(): Promise<User | null> {
     if (!response.ok) {
       if (response.status === 401) {
         // Token is invalid, remove it
-        localStorage.removeItem('authToken');
-        return null;
+        const { tokenManager } = await import('@/lib/auth-cookies');
+        tokenManager.removeToken();
+        throw new Error('401: Unauthorized');
       }
-      throw new Error('Failed to fetch user profile');
+      throw new Error(`Failed to fetch user profile: ${response.status}`);
     }
 
     const userData = await response.json();
@@ -71,22 +73,57 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const refreshUser = async () => {
-    setIsLoading(true);
-    const currentUser = await fetchCurrentUser();
-    setUser(currentUser);
-    setIsLoading(false);
+    if (!isInitialized) setIsLoading(true);
+    
+    try {
+      const currentUser = await fetchCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+      // Only clear user if it's an authentication error, not network error
+      if (error instanceof Error && error.message.includes('401')) {
+        setUser(null);
+      }
+      // For network errors, keep existing user state
+    } finally {
+      setIsLoading(false);
+      setIsInitialized(true);
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    setUser(null);
+  const logout = async () => {
+    try {
+      const { tokenManager } = await import('@/lib/auth-cookies');
+      tokenManager.removeToken();
+      setUser(null);
+      
+      // Redirect to authentication page
+      if (typeof window !== 'undefined') {
+        window.location.href = '/authentication';
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
+  // Initialize auth state on mount
   useEffect(() => {
     refreshUser();
   }, []);
+
+  // Periodically refresh user data to keep session alive
+  useEffect(() => {
+    if (!user || !isInitialized) return;
+
+    const interval = setInterval(() => {
+      refreshUser();
+    }, 10 * 60 * 1000); // Refresh every 10 minutes
+
+    return () => clearInterval(interval);
+  }, [user, isInitialized]);
 
   const value: AuthContextType = {
     user,

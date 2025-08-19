@@ -11,7 +11,7 @@ interface DynamicHeaderProps extends HeaderProps {
 }
 
 export default function DynamicHeader({ className = '', cartItemCount = 0 }: DynamicHeaderProps) {
-  const { isAuthenticated, isClientRoute } = useDynamicHeaderState();
+  const { isClientRoute } = useDynamicHeaderState();
   const { user, isLoading } = useAuth();
   
   // Show loading state while authentication is being verified
@@ -19,7 +19,8 @@ export default function DynamicHeader({ className = '', cartItemCount = 0 }: Dyn
     return <DefaultHeader className={className} />;
   }
   
-  if (user && isAuthenticated && isClientRoute) {
+  // Show authenticated header when user is logged in and not on authentication page
+  if (user && isClientRoute) {
     return (
       <AuthenticatedHeader 
         user={user} 
