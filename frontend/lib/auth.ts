@@ -48,71 +48,203 @@ export function canAccessManagement(role: UserRole): boolean {
   return managerRoles.includes(role);
 }
 
-// Mock authentication functions (no real backend calls)
+// Backend API configuration
+const API_BASE_URL = 'http://localhost:8083/api/v1/expose/auth';
+
+// Authentication API types
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+interface SignUpRequest {
+  name: string;
+  email: string;
+  password: string;
+  sex?: string;
+}
+
+interface AuthResponse {
+  token: string;
+  type: string;
+  userId: number;
+  email: string;
+  name: string;
+  role: string;
+}
+
+// Store JWT token in localStorage
+export function saveAuthToken(token: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('auth_token', token);
+  }
+}
+
+// Get JWT token from localStorage
+export function getAuthToken(): string | null {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('auth_token');
+  }
+  return null;
+}
+
+// Remove JWT token from localStorage
+export function removeAuthToken(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('auth_token');
+  }
+}
+
+// Fetch user profile from backend using JWT token
+export async function fetchUserProfile(token?: string): Promise<User | null> {
+  const authToken = token || getAuthToken();
+  if (!authToken) return null;
+
+  try {
+    const response = await fetch('http://localhost:8083/api/v1/secure/user/profile', {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Token expired or invalid
+        removeAuthToken();
+      }
+      return null;
+    }
+
+    const userData = await response.json();
+    
+    // Convert backend response to frontend User type
+    const user: User = {
+      id: userData.id.toString(),
+      name: userData.name,
+      email: userData.email,
+      role: userData.role.toLowerCase() as UserRole,
+      points: userData.points || 0,
+      sex: userData.sex ? userData.sex.toLowerCase() : undefined,
+      isActive: userData.isActive !== false,
+      avatar: userData.avatar
+    };
+
+    return user;
+  } catch (error) {
+    console.error('Failed to fetch user profile:', error);
+    return null;
+  }
+}
+
+// Real authentication functions that connect to backend
+export async function signIn(email: string, password: string): Promise<User | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password } as LoginRequest),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Login failed');
+    }
+
+    const authResponse: AuthResponse = await response.json();
+    
+    // Save the JWT token
+    saveAuthToken(authResponse.token);
+    
+    // Fetch complete user data after successful login
+    const completeUser = await fetchUserProfile(authResponse.token);
+    if (completeUser) {
+      return completeUser;
+    }
+
+    // Fallback: Convert basic auth response to frontend User type
+    const user: User = {
+      id: authResponse.userId.toString(),
+      name: authResponse.name,
+      email: authResponse.email,
+      role: authResponse.role as UserRole,
+      points: 0,
+      isActive: true
+    };
+
+    return user;
+  } catch (error) {
+    console.error('Sign In Error:', error);
+    throw error;
+  }
+}
+
+export async function signUp(name: string, email: string, password: string, sex?: string): Promise<User | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        name, 
+        email, 
+        password, 
+        sex: sex || 'OTHER' 
+      } as SignUpRequest),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Sign up failed');
+    }
+
+    const authResponse: AuthResponse = await response.json();
+    
+    // Save the JWT token
+    saveAuthToken(authResponse.token);
+    
+    // Fetch complete user data after successful signup
+    const completeUser = await fetchUserProfile(authResponse.token);
+    if (completeUser) {
+      return completeUser;
+    }
+
+    // Fallback: Convert basic auth response to frontend User type
+    const user: User = {
+      id: authResponse.userId.toString(),
+      name: authResponse.name,
+      email: authResponse.email,
+      role: authResponse.role as UserRole,
+      points: 0,
+      isActive: true
+    };
+
+    return user;
+  } catch (error) {
+    console.error('Sign Up Error:', error);
+    throw error;
+  }
+}
+
+// Sign out function
+export function signOut(): void {
+  removeAuthToken();
+  // Redirect to authentication page
+  if (typeof window !== 'undefined') {
+    window.location.href = '/authentication';
+  }
+}
+
+// Legacy mock functions for backward compatibility
 export function mockSignIn(email: string, password: string): Promise<User | null> {
-  return new Promise((resolve) => {
-    // Simulate API delay
-    setTimeout(() => {
-      // In a real app, this would validate credentials
-      // For demo, we'll find user by email
-      const users = [
-        {
-          id: '1',
-          name: 'Alex Johnson',
-          email: 'alex.johnson@astroneko.com',
-          role: 'cashier' as const,
-          avatar: '/placeholder/avatars/alex.jpg',
-          shift: { start: '08:00', clockInTime: '07:55' }
-        },
-        {
-          id: '5',
-          name: 'David Kim',
-          email: 'david.kim@astroneko.com',
-          role: 'manager' as const,
-          avatar: '/placeholder/user/Male.png',
-          shift: { start: '07:00', clockInTime: '06:55' }
-        },
-        {
-          id: '7',
-          name: 'John Smith',
-          email: 'john.smith@example.com',
-          role: 'client' as const,
-          avatar: '/placeholder/avatars/john.jpg',
-          points: 1250
-        },
-        {
-          id: '3',
-          name: 'Mike Rodriguez',
-          email: 'mike.rodriguez@astroneko.com',
-          role: 'cook' as const,
-          avatar: '/placeholder/user/Male.png',
-          shift: { start: '07:30', clockInTime: '07:25' },
-          isActive: true
-        }
-        
-      ];
-      
-      const user = users.find(u => u.email === email);
-      resolve(user || null);
-    }, 1000);
-  });
+  return signIn(email, password);
 }
 
 export function mockSignUp(name: string, email: string, password: string): Promise<User | null> {
-  return new Promise((resolve) => {
-    // Simulate API delay
-    setTimeout(() => {
-      // For demo, create a new client user
-      const newUser: User = {
-        id: Date.now().toString(),
-        name,
-        email,
-        role: 'client',
-        points: 0
-      };
-      resolve(newUser);
-    }, 1000);
-  });
+  return signUp(name, email, password);
 }
 
 export function calculateWorkDuration(clockInTime: string): string {
