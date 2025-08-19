@@ -616,4 +616,3 @@ export function MenuItemCard({ item, onSelect }: MenuItemCardProps) {
 ### **Separation of Concerns**
 - **Layered Architecture**: Clear separation between presentation, business logic, and data layers
 - **Context Isolation**: Different contexts for different concerns (auth, theme, etc.)
-- **Environment Separation**: Different configurations for development, testing, and production
