@@ -18,7 +18,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/common/EmptyState';
 import { formatDate, formatTime } from '@/lib/date-utils';
-import { Order } from '@/schema/order.schema';
+import { Order, OrderItem } from '@/schema/order.schema';
 import { OrderHistoryDisplaySectionProps } from '@/schema';
 
 export default function OrderHistoryDisplaySection({ orders }: OrderHistoryDisplaySectionProps) {
@@ -56,7 +56,7 @@ export default function OrderHistoryDisplaySection({ orders }: OrderHistoryDispl
                     <TableCell className="font-medium">#{order.id.slice(-6)}</TableCell>
                     <TableCell>
                       <div className="max-w-[200px]">
-                        {order.items.map((item: any, index: number) => (
+                        {order.items.map((item: OrderItem, index: number) => (
                           <div key={index} className="text-sm">
                             {item.quantity}x {item.menuItem.name}
                           </div>

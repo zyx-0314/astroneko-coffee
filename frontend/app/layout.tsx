@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/provider/theme-provider";
+import { AuthProvider } from "@/provider/auth-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -36,11 +37,13 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
