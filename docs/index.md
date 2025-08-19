@@ -73,9 +73,9 @@ frontend/
 │   │           └── index.ts            # Section exports
 │   ├── authentication/                 # sign in sign up page
 │   │   ├── page.tsx                    # Authentication main page
-│   │   └── section/                    # Authentication page components
+│   │   └── sections/                   # Authentication page components
 │   │       ├── AuthBackground.tsx      # Authentication background
-│   │       ├── index.tsx               # Section exports
+│   │       ├── index.ts                # Section exports
 │   │       ├── SignInSection.tsx       # Sign-in form section
 │   │       └── SignUpSection.tsx       # Sign-up form section
 │   ├── careers/                        # Careers section
@@ -166,9 +166,9 @@ frontend/
 │   │   ├── TestimonialCard/            # Customer testimonials
 │   │   │   └── index.tsx
 │   │   └── index.tsx                   # Card exports
-│   ├── carousel/                       # Carousel (Note: Currently in cards/RecoCarousel/)
+│   ├── carousel/                       # Carousel components
 │   │   ├── RecoCarousel/               # Recommendation carousel
-│   │   │   └── index.tsx               # (Located in cards/RecoCarousel/ for now)
+│   │   │   └── index.tsx               # Recommendation carousel component
 │   │   └── index.tsx                   # Carousel exports
 │   ├── controls/                       # Form controls
 │   │   ├── ActiveFilters/              # Active filter display
@@ -218,25 +218,25 @@ frontend/
 │   │   ├── AdminSidebar/               # Admin sidebar navigation
 │   │   │   ├── AdminSidebar.hook.tsx   # Sidebar component hook
 │   │   │   └── index.tsx
-│   │   └── index.ts       # Navigation exports
-│   ├── moodBoard/        # Mood board components
-│   │   ├── Colors/        # Color palette display
-│   │   │   ├── Colors.hook.tsx # Color logic
+│   │   └── index.ts                    # Navigation exports
+│   ├── moodBoard/                      # Mood board components
+│   │   ├── Colors/                     # Color palette display
+│   │   │   ├── Colors.hook.tsx         # Color logic
 │   │   │   └── index.tsx
-│   │   ├── Typography/    # Typography showcase
+│   │   ├── Typography/                 # Typography showcase
 │   │   │   └── index.tsx
-│   │   ├── UIElements/    # UI elements display
+│   │   ├── UIElements/                 # UI elements display
 │   │   │   └── index.tsx
-│   │   └── index.tsx      # MoodBoard exports
-│   ├── table/            # Table components
-│   │   ├── OrdersTable/   # Orders management table
+│   │   └── index.tsx                   # MoodBoard exports
+│   ├── table/                          # Table components
+│   │   ├── OrdersTable/                # Orders management table
 │   │   │   └── index.tsx
-│   │   ├── StaffTable/    # Staff management table
-│   │   │   ├── StaffTable.hook.ts # Staff table logic
+│   │   ├── StaffTable/                 # Staff management table
+│   │   │   ├── StaffTable.hook.ts      # Staff table logic
 │   │   │   └── index.tsx
-│   │   ├── StocksTable/   # Inventory management table
+│   │   ├── StocksTable/                # Inventory management table
 │   │   │   └── index.tsx
-│   │   └── index.ts       # Tables exports
+│   │   └── index.ts                    # Tables exports
 │   └── ui/               # Base UI components (shadcn/ui)
 │       ├── accordion.tsx
 │       ├── alert-dialog.tsx
