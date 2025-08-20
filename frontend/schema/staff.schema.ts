@@ -18,7 +18,7 @@ export enum StaffUserRole {
   OWNER = 'OWNER'
 }
 
-// Export alias for backwards compatibility
+// Export the original interfaces and types for backward compatibility
 export const UserRole = StaffUserRole;
 export type UserRole = StaffUserRole;
 

@@ -9,6 +9,7 @@ import { AuthCard } from '@/components/cards';
 import { SignInSection, SignUpSection, AuthBackground } from './sections';
 import { signIn, signUp, getRouteForRole } from '@/lib/auth';
 import { useAuth } from '@/provider/auth-provider';
+import { LoginFormData, SignUpFormData } from '@/schema/auth.schema';
 
 export default function AuthenticationPage() {
   const router = useRouter();
@@ -16,31 +17,13 @@ export default function AuthenticationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  
-  // Sign In Form
-  const [signInData, setSignInData] = useState({
-    email: '',
-    password: ''
-  });
-  
-  // Sign Up Form
-  const [signUpData, setSignUpData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: '',
-    sex: ''
-  });
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = async (data: LoginFormData) => {
     setIsLoading(true);
     setError('');
 
     try {
-      const user = await signIn(signInData.email, signInData.password);
+      const user = await signIn(data.email, data.password);
       
       if (user) {
         // Update the auth context
@@ -60,19 +43,19 @@ export default function AuthenticationPage() {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignUp = async (data: SignUpFormData) => {
     setIsLoading(true);
     setError('');
 
-    if (signUpData.password !== signUpData.confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const user = await signUp(signUpData.firstName, signUpData.lastName, signUpData.email, signUpData.phoneNumber, signUpData.password, signUpData.sex);
+      const user = await signUp(
+        data.firstName, 
+        data.lastName, 
+        data.email, 
+        data.phoneNumber, 
+        data.password, 
+        data.sex
+      );
       
       if (user) {
         // Update the auth context
@@ -92,10 +75,11 @@ export default function AuthenticationPage() {
   };
 
   const handleDemoLogin = (email: string) => {
-    // All seeded users use the same password
-    const password = 'password123';
-    
-    setSignInData({ email, password });
+    // For demo login, we can directly call handleSignIn with the demo credentials
+    handleSignIn({
+      email,
+      password: 'password123'
+    });
   };
 
   return (
@@ -147,8 +131,6 @@ export default function AuthenticationPage() {
             
             <TabsContent value="signin">
               <SignInSection
-                signInData={signInData}
-                setSignInData={setSignInData}
                 handleSignIn={handleSignIn}
                 handleDemoLogin={handleDemoLogin}
                 isLoading={isLoading}
@@ -160,8 +142,6 @@ export default function AuthenticationPage() {
 
             <TabsContent value="signup">
               <SignUpSection
-                signUpData={signUpData}
-                setSignUpData={setSignUpData}
                 handleSignUp={handleSignUp}
                 isLoading={isLoading}
                 error={error}

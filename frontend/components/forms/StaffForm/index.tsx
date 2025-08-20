@@ -1,33 +1,74 @@
 'use client';
 
 import React from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useStaffForm } from './StaffForm.hook';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { 
+  CreateStaffSchema, 
+  type CreateStaffFormData, 
+  EmploymentType, 
+  StaffUserRole, 
+  UserSex 
+} from '@/schema/staff.schema';
 import { UserPlus, Save, X } from 'lucide-react';
 
 interface StaffFormProps {
   onClose?: () => void;
   staffId?: string; // For editing existing staff
+  onSubmit?: (data: CreateStaffFormData) => void;
+  isLoading?: boolean;
 }
 
-export default function StaffForm({ onClose, staffId }: StaffFormProps) {
-  const {
-    formData,
-    isLoading,
-    errors,
-    handleInputChange,
-    handleSelectChange,
-    handleSubmit,
-    resetForm
-  } = useStaffForm(staffId);
-
+export default function StaffForm({ onClose, staffId, onSubmit, isLoading }: StaffFormProps) {
   const isEditing = !!staffId;
+
+  const form = useForm<CreateStaffFormData>({
+    resolver: zodResolver(CreateStaffSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      password: "",
+      role: StaffUserRole.HELPER,
+      sex: UserSex.OTHER,
+      employeeId: "",
+      hireDate: new Date().toISOString().split('T')[0],
+      employmentType: EmploymentType.FULL_TIME,
+      emergencyContactName: "",
+      emergencyContactPhone: "",
+      address: "",
+      phone: "",
+      birthDate: "",
+      socialSecurityNumber: "",
+      bankAccountNumber: "",
+      bankRoutingNumber: "",
+      position: "",
+      department: "",
+      shiftStart: "09:00",
+      shiftEnd: "17:00",
+    },
+  });
+
+  const handleFormSubmit = (data: CreateStaffFormData) => {
+    if (onSubmit) {
+      onSubmit(data);
+    }
+  };
 
   return (
     <motion.div
@@ -36,7 +77,7 @@ export default function StaffForm({ onClose, staffId }: StaffFormProps) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
     >
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">
+      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 max-w-4xl mx-auto">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-[#6B4E37]" />
@@ -50,189 +91,467 @@ export default function StaffForm({ onClose, staffId }: StaffFormProps) {
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Personal Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Personal Information
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-gray-700 dark:text-gray-300">
-                    First Name *
-                  </Label>
-                  <Input
-                    id="firstName"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Personal Information
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
                     name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className={`border-gray-300 dark:border-gray-600 ${errors.firstName ? 'border-red-500' : ''}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter first name" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-gray-700 dark:text-gray-300">
-                    Last Name *
-                  </Label>
-                  <Input
-                    id="lastName"
+                  
+                  <FormField
+                    control={form.control}
                     name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className={`border-gray-300 dark:border-gray-600 ${errors.lastName ? 'border-red-500' : ''}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter last name" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">
-                    Email *
-                  </Label>
-                  <Input
-                    id="email"
+                  
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter username" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
                     name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`border-gray-300 dark:border-gray-600 ${errors.email ? 'border-red-500' : ''}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="Enter email" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300">
-                    Phone Number *
-                  </Label>
-                  <Input
-                    id="phone"
+                  
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password *</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Enter password" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
                     name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className={`border-gray-300 dark:border-gray-600 ${errors.phone ? 'border-red-500' : ''}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone *</FormLabel>
+                        <FormControl>
+                          <Input type="tel" placeholder="Enter phone number" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  {errors.phone && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Work Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Work Information
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="role" className="text-gray-700 dark:text-gray-300">
-                    Role *
-                  </Label>
-                  <Select value={formData.role} onValueChange={(value) => handleSelectChange('role', value)}>
-                    <SelectTrigger className="border-gray-300 dark:border-gray-600">
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MANAGER">Manager</SelectItem>
-                      <SelectItem value="FRONT_DESK">Front Desk</SelectItem>
-                      <SelectItem value="KITCHEN">Kitchen Staff</SelectItem>
-                      <SelectItem value="BARISTA">Barista</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.role && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.role}</p>
-                  )}
+                  
+                  <FormField
+                    control={form.control}
+                    name="birthDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Birth Date *</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="sex"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={UserSex.MALE}>Male</SelectItem>
+                            <SelectItem value={UserSex.FEMALE}>Female</SelectItem>
+                            <SelectItem value={UserSex.OTHER}>Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="shift" className="text-gray-700 dark:text-gray-300">
-                    Shift *
-                  </Label>
-                  <Select value={formData.shift} onValueChange={(value) => handleSelectChange('shift', value)}>
-                    <SelectTrigger className="border-gray-300 dark:border-gray-600">
-                      <SelectValue placeholder="Select shift hours" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5:00 AM - 1:00 PM">Early (5:00 AM - 1:00 PM)</SelectItem>
-                      <SelectItem value="6:00 AM - 2:00 PM">Morning (6:00 AM - 2:00 PM)</SelectItem>
-                      <SelectItem value="9:00 AM - 5:00 PM">Day (9:00 AM - 5:00 PM)</SelectItem>
-                      <SelectItem value="2:00 PM - 10:00 PM">Evening (2:00 PM - 10:00 PM)</SelectItem>
-                      <SelectItem value="4:00 PM - 12:00 AM">Night (4:00 PM - 12:00 AM)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.shift && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.shift}</p>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address *</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter full address" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">
-                  Notes (Optional)
-                </Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                  placeholder="Additional notes about the staff member..."
-                  className="border-gray-300 dark:border-gray-600 min-h-[80px]"
                 />
               </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="bg-[#6B4E37] hover:bg-[#5a3f2d] text-white flex-1"
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    {isEditing ? 'Updating...' : 'Adding...'}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
-                    {isEditing ? 'Update Staff' : 'Add Staff'}
-                  </div>
-                )}
-              </Button>
-              
-              <Button
-                type="button"
-                variant="outline"
-                onClick={resetForm}
-                disabled={isLoading}
-                className="border-gray-300 dark:border-gray-600"
-              >
-                Reset
-              </Button>
-              
-              {onClose && (
+              {/* Employment Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Employment Information
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="employeeId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Employee ID *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter employee ID" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={StaffUserRole.CASHIER}>Cashier</SelectItem>
+                            <SelectItem value={StaffUserRole.HELPER}>Helper</SelectItem>
+                            <SelectItem value={StaffUserRole.COOK}>Cook</SelectItem>
+                            <SelectItem value={StaffUserRole.BARISTA}>Barista</SelectItem>
+                            <SelectItem value={StaffUserRole.MANAGER}>Manager</SelectItem>
+                            <SelectItem value={StaffUserRole.OWNER}>Owner</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="employmentType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Employment Type *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select employment type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={EmploymentType.FULL_TIME}>Full Time</SelectItem>
+                            <SelectItem value={EmploymentType.PART_TIME}>Part Time</SelectItem>
+                            <SelectItem value={EmploymentType.CONTRACT}>Contract</SelectItem>
+                            <SelectItem value={EmploymentType.INTERN}>Intern</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="hireDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Hire Date *</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="position"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Position *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter position" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="department"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Department *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter department" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="salary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Salary</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="Enter salary" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="hourlyRate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Hourly Rate</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" placeholder="Enter hourly rate" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="shiftStart"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Shift Start *</FormLabel>
+                        <FormControl>
+                          <Input type="time" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="shiftEnd"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Shift End *</FormLabel>
+                        <FormControl>
+                          <Input type="time" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Emergency Contact */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Emergency Contact
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="emergencyContactName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter emergency contact name" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="emergencyContactPhone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Phone *</FormLabel>
+                        <FormControl>
+                          <Input type="tel" placeholder="Enter emergency contact phone" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Banking Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Banking Information
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="socialSecurityNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Social Security Number *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter SSN" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="bankAccountNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Bank Account Number *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter bank account number" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="bankRoutingNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Bank Routing Number *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter bank routing number" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Additional Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Additional Information
+                </h3>
+                
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter any additional notes" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-6">
                 <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={onClose}
+                  type="submit"
+                  className="bg-[#6B4E37] hover:bg-[#5a3e2a] text-white flex items-center gap-2"
                   disabled={isLoading}
                 >
-                  Cancel
+                  <Save className="h-4 w-4" />
+                  {isLoading ? 'Saving...' : (isEditing ? 'Update Staff' : 'Add Staff')}
                 </Button>
-              )}
-            </div>
-          </form>
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                  disabled={isLoading}
+                >
+                  Reset Form
+                </Button>
+                
+                {onClose && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={onClose}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </motion.div>

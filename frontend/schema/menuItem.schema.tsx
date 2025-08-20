@@ -1,5 +1,10 @@
+import { z } from 'zod';
+
 // Item type enum to match backend
 export type ItemType = 'COFFEE' | 'PASTRIES' | 'DRINKS' | 'BUNDLES' | 'VEGETARIAN' | 'INSTANT' | 'COMBO';
+
+// Zod enum for ItemType
+export const ItemTypeEnum = z.enum(['COFFEE', 'PASTRIES', 'DRINKS', 'BUNDLES', 'VEGETARIAN', 'INSTANT', 'COMBO']);
 
 // Promo type is now a string to allow any text input
 export type PromoType = string | null;
@@ -90,3 +95,23 @@ export interface MenuItemResponse {
   createdAt?: string;
   updatedAt?: string;
 }
+
+// Zod schemas for validation
+export const CreateMenuItemSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  description: z.string().min(1, "Description is required").max(500, "Description must be less than 500 characters"),
+  price: z.number().min(0.01, "Price must be greater than 0"),
+  originalPrice: z.number().min(0).optional(),
+  type: ItemTypeEnum,
+  image: z.string().url("Must be a valid URL").or(z.string().length(0)),
+  tags: z.string().optional(),
+  inStock: z.boolean().default(true),
+  isOnSale: z.boolean().default(false),
+  isCombo: z.boolean().default(false),
+  promoType: z.string().nullable().optional(),
+});
+
+export const UpdateMenuItemSchema = CreateMenuItemSchema;
+
+export type CreateMenuItemFormData = z.infer<typeof CreateMenuItemSchema>;
+export type UpdateMenuItemFormData = z.infer<typeof UpdateMenuItemSchema>;
