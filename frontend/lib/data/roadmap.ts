@@ -34,8 +34,6 @@ export const roadmapData: RoadmapItem[] = [
     progress: 100,
     features: ['Landing page with header, nav, footer', 'Public menu with category filter', 'Availability badges', 'Order page with cart placeholder']
   },
-
-  // PHASE 1 - POS Core (In Progress)
   {
     id: 'p1-auth',
     title: 'Authentication System',
@@ -47,6 +45,8 @@ export const roadmapData: RoadmapItem[] = [
     progress: 85,
     features: ['Email+password forms with validation', 'Demo login buttons for roles', 'Client sign up with full validation', 'JWT route protection middleware', 'Auto-logout on token expiry']
   },
+
+  // PHASE 1 - POS Core (In Progress)
   {
     id: 'p1-menu',
     title: 'Menu Management (MVP)',

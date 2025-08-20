@@ -4,7 +4,9 @@
 export * from './menuItem.schema';
 export * from './menuItemValidation.schema';
 export * from './user.schema';
-export * from './staff.schema';
+// Export specific items from staff.schema to avoid UserRole conflict
+export type { Staff, StaffSummary, CreateStaffRequest, UpdateStaffRequest, StaffResponse, StaffListResponse, CreateStaffFormData, UpdateStaffFormData } from './staff.schema';
+export { EmploymentType, UserSex, StaffUserRole, CreateStaffSchema, UpdateStaffSchema, formatShiftTime, getFullName, maskSensitiveData, getRoleBadgeColor, getRoleDisplayName } from './staff.schema';
 export * from './order.schema';
 export * from './stock.schema';
 export * from './stats.schema';

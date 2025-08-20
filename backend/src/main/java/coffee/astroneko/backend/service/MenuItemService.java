@@ -86,7 +86,9 @@ public class MenuItemService {
    * Get menu item by ID
    */
   public Optional<MenuItemResponse> getMenuItemById(Long id) {
-    return menuItemRepository.findById(id).map(MenuItemResponse::from);
+    return menuItemRepository
+      .findByIdAndIsDeletedFalse(id)
+      .map(MenuItemResponse::from);
   }
 
   /**
@@ -127,7 +129,7 @@ public class MenuItemService {
     UpdateMenuItemRequest request
   ) {
     return menuItemRepository
-      .findById(id)
+      .findByIdAndIsDeletedFalse(id)
       .map(menuItem -> {
         if (request.getName() != null) {
           menuItem.setName(request.getName());
@@ -177,7 +179,7 @@ public class MenuItemService {
     Boolean inStock
   ) {
     return menuItemRepository
-      .findById(id)
+      .findByIdAndIsDeletedFalse(id)
       .map(menuItem -> {
         menuItem.setInStock(inStock);
         MenuItem updatedMenuItem = menuItemRepository.save(menuItem);
@@ -192,7 +194,7 @@ public class MenuItemService {
   @Transactional
   public boolean discontinueMenuItem(Long id) {
     return menuItemRepository
-      .findById(id)
+      .findByIdAndIsDeletedFalse(id)
       .map(menuItem -> {
         menuItem.setInStock(false);
         menuItemRepository.save(menuItem);
@@ -202,14 +204,20 @@ public class MenuItemService {
   }
 
   /**
-   * Delete menu item permanently (Manager only)
+   * Soft delete menu item (Manager only)
    */
   @PreAuthorize("hasRole('MANAGER') or hasRole('OWNER')")
   @Transactional
   public boolean deleteMenuItem(Long id) {
-    if (menuItemRepository.existsById(id)) {
-      menuItemRepository.deleteById(id);
-      return true;
+    Optional<MenuItem> menuItemOpt =
+      menuItemRepository.findByIdAndIsDeletedFalse(id);
+    if (menuItemOpt.isPresent()) {
+      MenuItem menuItem = menuItemOpt.get();
+      if (!menuItem.getIsDeleted()) {
+        menuItem.setIsDeleted(true);
+        menuItemRepository.save(menuItem);
+        return true;
+      }
     }
     return false;
   }
@@ -251,10 +259,10 @@ public class MenuItemService {
   }
 
   /**
-   * Get items by type
+   * Get items by type (excluding soft deleted)
    */
   public List<MenuItemResponse> getItemsByType(ItemType type) {
-    List<MenuItem> items = menuItemRepository.findByType(type);
+    List<MenuItem> items = menuItemRepository.findByTypeAndIsDeletedFalse(type);
     return items
       .stream()
       .map(MenuItemResponse::from)

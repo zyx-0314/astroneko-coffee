@@ -28,7 +28,7 @@ public class MenuItem {
   @Column(nullable = false, length = 20)
   private ItemType type;
 
-  @Column(nullable = false, length = 500)
+  @Column(length = 500)
   private String image;
 
   @Column(nullable = false)
@@ -78,6 +78,12 @@ public class MenuItem {
     inverseJoinColumns = @JoinColumn(name = "promo_id")
   )
   private Set<Promo> promos;
+
+  @Column(name = "is_deleted", nullable = false)
+  private Boolean isDeleted = false;
+
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -298,6 +304,28 @@ public class MenuItem {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public Boolean getIsDeleted() {
+    return isDeleted;
+  }
+
+  public void setIsDeleted(Boolean isDeleted) {
+    this.isDeleted = isDeleted;
+    this.updatedAt = LocalDateTime.now();
+    if (isDeleted) {
+      this.deletedAt = LocalDateTime.now();
+    } else {
+      this.deletedAt = null;
+    }
+  }
+
+  public LocalDateTime getDeletedAt() {
+    return deletedAt;
+  }
+
+  public void setDeletedAt(LocalDateTime deletedAt) {
+    this.deletedAt = deletedAt;
   }
 
   // Helper methods

@@ -83,7 +83,7 @@ public class UserService {
 
   public AuthResponse login(LoginRequest loginRequest) {
     // Find user by email
-    Optional<User> userOptional = userRepository.findByEmail(
+    Optional<User> userOptional = userRepository.findByEmailAndIsDeletedFalse(
       loginRequest.getEmail()
     );
     if (userOptional.isEmpty()) {
@@ -121,19 +121,19 @@ public class UserService {
   }
 
   public Optional<User> findByEmail(String email) {
-    return userRepository.findByEmail(email);
+    return userRepository.findByEmailAndIsDeletedFalse(email);
   }
 
   public Optional<User> findById(Long id) {
-    return userRepository.findById(id);
+    return userRepository.findByIdAndIsDeletedFalse(id);
   }
 
   public List<User> findByRole(User.Role role) {
-    return userRepository.findByRole(role);
+    return userRepository.findByRoleAndIsDeletedFalse(role);
   }
 
   public List<User> findAllActiveUsers() {
-    return userRepository.findByIsActiveTrue();
+    return userRepository.findByIsActiveTrueAndIsDeletedFalse();
   }
 
   public User save(User user) {

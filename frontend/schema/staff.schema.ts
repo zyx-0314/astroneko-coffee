@@ -8,7 +8,7 @@ export enum EmploymentType {
   INTERN = 'INTERN'
 }
 
-export enum UserRole {
+export enum StaffUserRole {
   CLIENT = 'CLIENT',
   CASHIER = 'CASHIER',  
   HELPER = 'HELPER',
@@ -17,6 +17,10 @@ export enum UserRole {
   MANAGER = 'MANAGER',
   OWNER = 'OWNER'
 }
+
+// Export alias for backwards compatibility
+export const UserRole = StaffUserRole;
+export type UserRole = StaffUserRole;
 
 export enum UserSex {
   MALE = 'MALE',
@@ -63,7 +67,7 @@ export interface Staff {
   lastName: string;
   username: string;
   email: string;
-  role: UserRole;
+  role: StaffUserRole;
   sex: UserSex;
   avatar?: string;
   points: number;
@@ -76,7 +80,7 @@ export interface StaffSummary {
   employeeId: string;
   name: string; // firstName + lastName
   email: string;
-  role: UserRole;
+  role: StaffUserRole;
   status: 'active' | 'break' | 'offline';
   shift: string; // formatted shift time
   phone: string;
@@ -96,7 +100,7 @@ export interface CreateStaffRequest {
   username: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: StaffUserRole;
   sex?: UserSex;
   avatar?: string;
 
@@ -141,7 +145,7 @@ export const CreateStaffSchema = z.object({
   username: z.string().min(1, "Username is required").max(50, "Username must not exceed 50 characters"),
   email: z.string().email("Invalid email format").max(100, "Email must not exceed 100 characters"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.nativeEnum(UserRole),
+  role: z.nativeEnum(StaffUserRole),
   sex: z.nativeEnum(UserSex).optional(),
   avatar: z.string().optional(),
 
@@ -177,7 +181,7 @@ export const UpdateStaffSchema = z.object({
   lastName: z.string().max(50, "Last name must not exceed 50 characters").optional(),
   username: z.string().max(50, "Username must not exceed 50 characters").optional(),
   email: z.string().email("Invalid email format").max(100, "Email must not exceed 100 characters").optional(),
-  role: z.nativeEnum(UserRole).optional(),
+  role: z.nativeEnum(StaffUserRole).optional(),
   sex: z.nativeEnum(UserSex).optional(),
   avatar: z.string().optional(),
 
@@ -242,29 +246,29 @@ export const maskSensitiveData = (data: string, visibleChars: number = 4): strin
   return masked + data.substring(data.length - visibleChars);
 };
 
-export const getRoleBadgeColor = (role: UserRole): string => {
+export const getRoleBadgeColor = (role: StaffUserRole): string => {
   const roleColors = {
-    [UserRole.MANAGER]: 'bg-[#6B4E37] text-white',
-    [UserRole.CASHIER]: 'bg-[#2CA6A4] text-white',
-    [UserRole.COOK]: 'bg-[#E1B168] text-white',
-    [UserRole.BARISTA]: 'bg-[#D4EDEC] text-gray-800',
-    [UserRole.HELPER]: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    [UserRole.OWNER]: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    [UserRole.CLIENT]: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+    [StaffUserRole.MANAGER]: 'bg-[#6B4E37] text-white',
+    [StaffUserRole.CASHIER]: 'bg-[#2CA6A4] text-white',
+    [StaffUserRole.COOK]: 'bg-[#E1B168] text-white',
+    [StaffUserRole.BARISTA]: 'bg-[#D4EDEC] text-gray-800',
+    [StaffUserRole.HELPER]: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
+    [StaffUserRole.OWNER]: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+    [StaffUserRole.CLIENT]: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
   };
   
   return roleColors[role] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
 };
 
-export const getRoleDisplayName = (role: UserRole): string => {
+export const getRoleDisplayName = (role: StaffUserRole): string => {
   const roleNames = {
-    [UserRole.MANAGER]: 'Manager',
-    [UserRole.CASHIER]: 'Cashier',
-    [UserRole.COOK]: 'Cook',
-    [UserRole.BARISTA]: 'Barista',
-    [UserRole.HELPER]: 'Helper',
-    [UserRole.OWNER]: 'Owner',
-    [UserRole.CLIENT]: 'Client'
+    [StaffUserRole.MANAGER]: 'Manager',
+    [StaffUserRole.CASHIER]: 'Cashier',
+    [StaffUserRole.COOK]: 'Cook',
+    [StaffUserRole.BARISTA]: 'Barista',
+    [StaffUserRole.HELPER]: 'Helper',
+    [StaffUserRole.OWNER]: 'Owner',
+    [StaffUserRole.CLIENT]: 'Client'
   };
   
   return roleNames[role] || role;

@@ -272,7 +272,7 @@ export default function MenuPage() {
         {!error && !searchQuery && !hasMoreItems && menuItems.length > 0 && (
           <div className="flex justify-center py-8">
             <div className="text-muted-foreground text-center">
-              <p>You've reached the end of our menu!</p>
+              <p>You&apos;ve reached the end of our menu!</p>
               <p className="text-sm mt-1">Showing all {totalItems} items</p>
             </div>
           </div>

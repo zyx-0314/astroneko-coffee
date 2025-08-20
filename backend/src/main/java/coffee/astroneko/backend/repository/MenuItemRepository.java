@@ -3,6 +3,7 @@ package coffee.astroneko.backend.repository;
 import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,30 +14,40 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   /**
-   * Find menu items by type
+   * Find menu item by ID (excluding soft deleted)
    */
-  List<MenuItem> findByType(ItemType type);
+  Optional<MenuItem> findByIdAndIsDeletedFalse(Long id);
 
   /**
-   * Find menu items by stock status
+   * Find menu items by type (excluding soft deleted)
    */
-  List<MenuItem> findByInStock(Boolean inStock);
+  List<MenuItem> findByTypeAndIsDeletedFalse(ItemType type);
 
   /**
-   * Find menu items on sale
+   * Find menu items by stock status (excluding soft deleted)
    */
-  List<MenuItem> findByIsOnSale(Boolean isOnSale);
+  List<MenuItem> findByInStockAndIsDeletedFalse(Boolean inStock);
 
   /**
-   * Find combo deals
+   * Find menu items on sale (excluding soft deleted)
    */
-  List<MenuItem> findByIsCombo(Boolean isCombo);
+  List<MenuItem> findByIsOnSaleAndIsDeletedFalse(Boolean isOnSale);
 
   /**
-   * Find menu items with complex filtering using JPQL
+   * Find combo deals (excluding soft deleted)
+   */
+  List<MenuItem> findByIsComboAndIsDeletedFalse(Boolean isCombo);
+
+  /**
+   * Find all non-deleted menu items
+   */
+  List<MenuItem> findByIsDeletedFalse();
+
+  /**
+   * Find menu items with complex filtering using JPQL (excluding soft deleted)
    */
   @Query(
-    "SELECT m FROM MenuItem m WHERE " +
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND " +
     "(:type IS NULL OR m.type = :type) AND " +
     "(:inStock IS NULL OR m.inStock = :inStock) AND " +
     "(:isOnSale IS NULL OR m.isOnSale = :isOnSale) AND " +
@@ -50,10 +61,10 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   );
 
   /**
-   * Find menu items with pagination and filtering
+   * Find menu items with pagination and filtering (excluding soft deleted)
    */
   @Query(
-    "SELECT m FROM MenuItem m WHERE " +
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND " +
     "(:type IS NULL OR m.type = :type) AND " +
     "(:inStock IS NULL OR m.inStock = :inStock) AND " +
     "(:isOnSale IS NULL OR m.isOnSale = :isOnSale) AND " +
@@ -68,26 +79,54 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   );
 
   /**
-   * Find top menu items by monthly buys for recommendations
+   * Find top menu items by monthly buys for recommendations (excluding soft deleted)
    */
   @Query(
-    "SELECT m FROM MenuItem m WHERE m.inStock = true ORDER BY m.monthlyBuys DESC"
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND m.inStock = true ORDER BY m.monthlyBuys DESC"
   )
   List<MenuItem> findTopBoughtItems(Pageable pageable);
 
   /**
-   * Find top menu items by rating for favorites
+   * Find top menu items by rating for favorites (excluding soft deleted)
    */
   @Query(
-    "SELECT m FROM MenuItem m WHERE m.inStock = true AND m.rating > 0 ORDER BY m.rating DESC, m.monthlyBuys DESC"
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND m.inStock = true AND m.rating > 0 ORDER BY m.rating DESC, m.monthlyBuys DESC"
   )
   List<MenuItem> findTopRatedItems(Pageable pageable);
 
   /**
-   * Find promotional items (with active promos)
+   * Find promotional items (with active promos) (excluding soft deleted)
    */
   @Query(
-    "SELECT DISTINCT m FROM MenuItem m JOIN m.promos p WHERE p.isActive = true AND p.startDate <= CURRENT_TIMESTAMP AND p.endDate >= CURRENT_TIMESTAMP AND m.inStock = true ORDER BY m.monthlyBuys DESC"
+    "SELECT DISTINCT m FROM MenuItem m JOIN m.promos p WHERE m.isDeleted = false AND p.isActive = true AND p.startDate <= CURRENT_TIMESTAMP AND p.endDate >= CURRENT_TIMESTAMP AND m.inStock = true ORDER BY m.monthlyBuys DESC"
   )
   List<MenuItem> findPromotionalItems(Pageable pageable);
+
+  /**
+   * Find all non-deleted menu items
+   */
+  @Query("SELECT m FROM MenuItem m WHERE m.isDeleted = false")
+  List<MenuItem> findAllNotDeleted();
+
+  /**
+   * Find all non-deleted menu items with pagination
+   */
+  @Query("SELECT m FROM MenuItem m WHERE m.isDeleted = false")
+  Page<MenuItem> findAllNotDeleted(Pageable pageable);
+
+  /**
+   * Find by type excluding soft deleted
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND m.type = :type"
+  )
+  List<MenuItem> findByTypeNotDeleted(@Param("type") ItemType type);
+
+  /**
+   * Find by stock status excluding soft deleted
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE m.isDeleted = false AND m.inStock = :inStock"
+  )
+  List<MenuItem> findByInStockNotDeleted(@Param("inStock") Boolean inStock);
 }

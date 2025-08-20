@@ -43,6 +43,12 @@ public class User {
   @Column(name = "is_active", nullable = false)
   private Boolean isActive = true;
 
+  @Column(name = "is_deleted", nullable = false)
+  private Boolean isDeleted = false;
+
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
+
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 
@@ -189,6 +195,28 @@ public class User {
   public void setIsActive(Boolean isActive) {
     this.isActive = isActive;
     this.updatedAt = LocalDateTime.now();
+  }
+
+  public Boolean getIsDeleted() {
+    return isDeleted;
+  }
+
+  public void setIsDeleted(Boolean isDeleted) {
+    this.isDeleted = isDeleted;
+    this.updatedAt = LocalDateTime.now();
+    if (isDeleted) {
+      this.deletedAt = LocalDateTime.now();
+    } else {
+      this.deletedAt = null;
+    }
+  }
+
+  public LocalDateTime getDeletedAt() {
+    return deletedAt;
+  }
+
+  public void setDeletedAt(LocalDateTime deletedAt) {
+    this.deletedAt = deletedAt;
   }
 
   public LocalDateTime getCreatedAt() {

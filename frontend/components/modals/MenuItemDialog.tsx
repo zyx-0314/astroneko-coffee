@@ -32,10 +32,7 @@ const typeOptions = [
   { value: 'COMBO', label: 'Combo', icon: <ShoppingBag className="h-4 w-4" /> }
 ];
 
-const promoTypeOptions = [
-  { value: 'NEEKOGUST', label: 'Neekogust' },
-  { value: 'WELCOME_BACK_SCHOOL', label: 'Welcome Back School' }
-];
+
 
 export default function MenuItemDialog({ open, onOpenChange, onSubmit, item, mode }: MenuItemDialogProps) {
   const [loading, setLoading] = useState(false);
@@ -94,7 +91,7 @@ export default function MenuItemDialog({ open, onOpenChange, onSubmit, item, mod
     }
   };
 
-  const handleInputChange = (field: keyof CreateMenuItemRequest, value: any) => {
+  const handleInputChange = (field: keyof CreateMenuItemRequest, value: string | number | boolean | undefined | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -197,13 +194,12 @@ export default function MenuItemDialog({ open, onOpenChange, onSubmit, item, mod
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">Image URL *</Label>
+                <Label htmlFor="image">Image URL</Label>
                 <Input
                   id="image"
-                  value={formData.image}
+                  value={formData.image || ''}
                   onChange={(e) => handleInputChange('image', e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  required
                   disabled={isReadOnly}
                 />
               </div>
@@ -273,23 +269,13 @@ export default function MenuItemDialog({ open, onOpenChange, onSubmit, item, mod
               {/* Promo Type */}
               <div className="space-y-2">
                 <Label htmlFor="promoType">Promotion Type</Label>
-                <Select 
-                  value={formData.promoType || 'none'} 
-                  onValueChange={(value) => handleInputChange('promoType', value === 'none' ? null : value)}
+                <Input
+                  id="promoType"
+                  value={formData.promoType || ''}
+                  onChange={(e) => handleInputChange('promoType', e.target.value || null)}
+                  placeholder="Enter promotion name (e.g. Summer Special)"
                   disabled={isReadOnly}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="No promotion" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No promotion</SelectItem>
-                    {promoTypeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
 
               {/* Analytics - Only show in view/edit mode */}

@@ -1,8 +1,8 @@
 // Item type enum to match backend
 export type ItemType = 'COFFEE' | 'PASTRIES' | 'DRINKS' | 'BUNDLES' | 'VEGETARIAN' | 'INSTANT' | 'COMBO';
 
-// Promo type enum to match backend
-export type PromoType = 'NEEKOGUST' | 'WELCOME_BACK_SCHOOL' | null;
+// Promo type is now a string to allow any text input
+export type PromoType = string | null;
 
 // Main MenuItem interface for the menu page
 export interface MenuItem {
@@ -25,7 +25,7 @@ export interface MenuItem {
   inStock: boolean;
   isOnSale?: boolean;
   isCombo?: boolean;
-  promoType?: 'neekogust' | 'welcome-back-school' | null;
+  promoType?: string | null;
 }
 
 // Sorting options type

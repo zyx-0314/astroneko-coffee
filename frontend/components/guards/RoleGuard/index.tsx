@@ -3,13 +3,13 @@
 import { useAuth } from '@/provider/auth-provider';
 import { useRouter } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
-import { UserRole } from '@/schema/user.schema';
+import { User } from '@/schema/user.schema';
 import { getRouteForRole } from '@/lib/auth';
 import { useRoleGuard } from './RoleGuard.hook';
 
 interface RoleGuardProps {
   children: ReactNode;
-  allowedRoles: UserRole[];
+  allowedRoles: User['role'][];
   redirectTo?: string;
   fallback?: ReactNode;
 }

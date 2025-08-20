@@ -45,7 +45,7 @@ export default function KitchenMenuSection() {
   const loadMenuItems = async () => {
     try {
       setLoading(true);
-      const filters: any = {
+      const filters: Record<string, string | number | boolean> = {
         page: currentPage,
         size: pageSize,
         sortBy,

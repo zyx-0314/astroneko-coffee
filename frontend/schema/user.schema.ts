@@ -19,6 +19,9 @@ export interface User {
 // User role type for type safety (legacy)
 export type LegacyUserRole = User['role'];
 
+// User role type for type safety
+export type UserRole = User['role'];
+
 // Staff roles specifically (legacy)
 export type StaffRole = Exclude<LegacyUserRole, 'client'>;
 
