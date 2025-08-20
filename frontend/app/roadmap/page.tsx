@@ -45,113 +45,102 @@ export default function RoadmapPage() {
   const roadmapData: RoadmapItem[] = [
     {
       id: '1',
-      title: 'User Authentication System',
-      description: 'Complete JWT-based authentication with role management',
+      title: 'Authentication & Roles (RBAC)',
+      description: 'Login/logout, roles: Manager, Front Desk, Kitchen. Route/feature permissions.',
       status: 'completed',
       category: 'authentication',
       priority: 'high',
-      quarter: 'Q1 2024',
+      quarter: 'Q1 2025',
       progress: 100,
-      features: ['JWT Token Management', 'Role-based Access Control', 'Login/Logout', 'Session Management']
+      features: ['Login/logout functionality', 'RBAC with Manager/Front Desk/Kitchen roles', 'Login, logout, sign up', 'Manager CRUD Staff and Client Account', 'Dashboard reflecting database data']
     },
     {
       id: '2',
-      title: 'Admin Dashboard Foundation',
-      description: 'Core admin interface with navigation and layout systems',
-      status: 'completed',
+      title: 'Menu Management',
+      description: 'Categories, items, modifiers, prices, tax. Toggle item active/sold out.',
+      status: 'in-progress',
       category: 'admin',
       priority: 'high',
-      quarter: 'Q1 2024',
-      progress: 100,
-      features: ['Admin Sidebar Navigation', 'Responsive Layout', 'Dark Mode Support', 'Role Guards']
+      quarter: 'Q1 2025',
+      progress: 75,
+      features: ['Categories, items, modifiers, prices, tax', 'Toggle item active/sold out', 'CRUD for Manager', 'RU updating if out of stock for Kitchen', 'R for front desk and client']
     },
     {
       id: '3',
-      title: 'Staff Management System',
-      description: 'Complete CRUD operations for employee management',
-      status: 'in-progress',
-      category: 'admin',
+      title: 'Order & POS System',
+      description: 'Create/edit order, order lines, ticketing. Send orders to Kitchen (KDS).',
+      status: 'planned',
+      category: 'backend',
       priority: 'high',
-      quarter: 'Q1-Q2 2024',
-      progress: 25,
-      features: ['Staff CRUD Operations', 'Schedule Management', 'Performance Tracking', 'Attendance System']
+      quarter: 'Q2 2025',
+      progress: 0,
+      features: ['Create/edit order, order lines, ticketing', 'Send orders to Kitchen (KDS)', 'Discounts (basic), receipts', 'CRUD for Front desk', 'R for both manager and client']
     },
     {
       id: '4',
-      title: 'Inventory Management',
-      description: 'Real-time inventory tracking and management system',
+      title: 'Kitchen Display (KDS)',
+      description: 'Queue view for Kitchen staff. Update prep status (in-progress, done).',
       status: 'planned',
-      category: 'admin',
+      category: 'backend',
       priority: 'high',
-      quarter: 'Q2 2024',
+      quarter: 'Q2 2025',
       progress: 0,
-      features: ['Stock Level Tracking', 'Auto Reorder Alerts', 'Supplier Management', 'Waste Tracking']
+      features: ['Queue view for Kitchen staff', 'Update prep status (in-progress, done)']
     },
     {
       id: '5',
-      title: 'Menu Management System',
-      description: 'Dynamic menu creation and management with pricing',
-      status: 'in-progress',
-      category: 'admin',
+      title: 'Payment Integration',
+      description: 'Payment intent flow (cash + mock digital). Link payments to orders.',
+      status: 'planned',
+      category: 'backend',
       priority: 'high',
-      quarter: 'Q2 2024',
-      progress: 40,
-      features: ['Menu CRUD Operations', 'Category Management', 'Pricing Controls', 'Seasonal Menus']
+      quarter: 'Q2 2025',
+      progress: 0,
+      features: ['Payment intent flow (cash + mock digital)', 'Link payments to orders', 'Refund/void']
     },
     {
       id: '6',
-      title: 'Order Management System',
-      description: 'End-to-end order processing and tracking',
+      title: 'Inventory & Recipes',
+      description: 'Ingredients (SKU), stock levels, ledger. Recipe BOM (menu item → ingredients).',
       status: 'planned',
-      category: 'backend',
+      category: 'admin',
       priority: 'high',
-      quarter: 'Q2 2024',
+      quarter: 'Q3 2025',
       progress: 0,
-      features: ['Order Processing', 'Payment Integration', 'Order Tracking', 'Customer Management']
+      features: ['Ingredients (SKU), stock levels, ledger', 'Recipe BOM (menu item → ingredients)', 'Auto-decrement on paid orders, waste log']
     },
     {
       id: '7',
-      title: 'Advanced Analytics & Reports',
-      description: 'Comprehensive business intelligence and reporting',
-      status: 'planned',
-      category: 'analytics',
-      priority: 'medium',
-      quarter: 'Q3 2024',
-      progress: 0,
-      features: ['Sales Analytics', 'Staff Performance Reports', 'Inventory Reports', 'Financial Dashboards']
-    },
-    {
-      id: '8',
-      title: 'Customer Frontend Application',
-      description: 'Customer-facing web application for ordering',
+      title: 'Client Profiles & Loyalty (Basic)',
+      description: 'Save client info (name/contact). Attach orders to clients.',
       status: 'planned',
       category: 'frontend',
       priority: 'medium',
-      quarter: 'Q2-Q3 2024',
+      quarter: 'Q3 2025',
       progress: 0,
-      features: ['Menu Browsing', 'Online Ordering', 'User Profiles', 'Order History']
+      features: ['Save client info (name/contact)', 'Attach orders to clients', 'Simple loyalty points/stamps']
+    },
+    {
+      id: '8',
+      title: 'Employee Management',
+      description: 'Clock-in/out, shifts. Role assignments, time tracking.',
+      status: 'planned',
+      category: 'admin',
+      priority: 'medium',
+      quarter: 'Q3 2025',
+      progress: 0,
+      features: ['Clock-in/out, shifts', 'Role assignments, time tracking']
     },
     {
       id: '9',
-      title: 'Mobile Application',
-      description: 'Native mobile apps for iOS and Android',
+      title: 'Reports & End-of-Day',
+      description: 'Sales by item/category. Payment reconciliation (cash vs. digital).',
       status: 'planned',
-      category: 'mobile',
-      priority: 'low',
-      quarter: 'Q4 2024',
+      category: 'analytics',
+      priority: 'medium',
+      quarter: 'Q4 2025',
       progress: 0,
-      features: ['iOS App', 'Android App', 'Push Notifications', 'Offline Mode']
-    },
-    {
-      id: '10',
-      title: 'Payment Processing System',
-      description: 'Integrated payment gateway with multiple options',
-      status: 'planned',
-      category: 'backend',
-      priority: 'high',
-      quarter: 'Q2 2024',
-      progress: 0,
-      features: ['Credit Card Processing', 'Digital Wallets', 'Split Payments', 'Refund Management']
+      features: ['Sales by item/category', 'Payment reconciliation (cash vs. digital)', 'Stock/waste summary', 'Close day wizard']
     }
   ];
 

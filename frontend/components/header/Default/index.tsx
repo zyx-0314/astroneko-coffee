@@ -106,6 +106,18 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
                     About Us
                   </Link>
                   <Link 
+                    href="/mood-board" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Mood Board
+                  </Link>
+                  <Link 
+                    href="/roadmap" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Roadmap
+                  </Link>
+                  <Link 
                     href="/contact" 
                     className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
@@ -167,12 +179,6 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
             >
               Menu
             </Link>
-            <Link
-              href="/mood-board"
-              className="block px-3 py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
-            >
-              Design
-            </Link>
             <div className="px-3 py-2">
               <div className="text-[#E1B168] font-medium mb-2">More</div>
               <div className="pl-4 space-y-1">
@@ -181,6 +187,18 @@ export default function DefaultHeader({ className = '' }: HeaderProps) {
                   className="block py-1 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
                 >
                   About Us
+                </Link>
+                <Link
+                  href="/mood-board"
+                  className="block py-1 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                >
+                  Mood Board
+                </Link>
+                <Link
+                  href="/roadmap"
+                  className="block py-1 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                >
+                  Roadmap
                 </Link>
                 <Link
                   href="/contact"

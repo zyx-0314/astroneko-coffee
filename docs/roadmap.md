@@ -1,205 +1,57 @@
-# Astroneko Coffee – Roadmap
+### ✅ MVP Build Order
 
-## **Module 1 – Environment & Project Setup**
+1. **Authentication & Roles (RBAC)**
 
-### Submodules
+   * Login/logout, roles: Manager, Front Desk, Kitchen.
+   * Route/feature permissions.
+   * Login, logout, sign up and Manager CRUD Staff and Client Account
+   * Both dashboard of manager is working and reflecting data in database
 
-1. **Repo & Structure**
+2. **Menu Management**
 
-   * Create monorepo with `frontend/`, `backend/`, `infrastructure/`
-   * Add README stubs per folder
-2. **Core Tooling**
+   * Categories, items, modifiers, prices, tax.
+   * Toggle item active/sold out.
+   * CRUD for Manager, RU updating if out of stock for Kitchen, R for front desk and client
 
-   * Install Java 21, Node.js LTS, Docker, Postman
-   * Setup WSL2 for Windows dev
-3. **Base Skeletons**
+3. **Order & POS System**
 
-   * **Backend**: Spring Boot with Spring Web, Security, Data JPA, PostgreSQL Driver, Validation, Actuator
-   * **Frontend**: Next.js TS, shadcn/ui, radix-ui, Zustand, Zod, Axios, Framer Motion
-4. **Docker Compose**
+   * Create/edit order, order lines, ticketing.
+   * Send orders to Kitchen (KDS).
+   * Discounts (basic), receipts.
+   * CRUD for Front desk, R for both manager and client
 
-   * Postgres + Redis + Redis Commander
-   * Ports: +3 from default
+4. **Kitchen Display (KDS)**
 
-**Deliverables:**
+   * Queue view for Kitchen staff.
+   * Update prep status (in-progress, done).
 
-* Running containers for DB/cache
-* Compiling empty backend & frontend
-* `.env.example` files in both apps
+5. **Payment Integration**
 
----
+   * Payment intent flow (cash + mock digital).
+   * Link payments to orders.
+   * Refund/void.
 
-## **Module 2 – Data & API Foundations**
+6. **Inventory & Recipes**
 
-### Submodules
+   * Ingredients (SKU), stock levels, ledger.
+   * Recipe BOM (menu item → ingredients).
+   * Auto-decrement on paid orders, waste log.
 
-1. **Data Modeling**
+7. **Client Profiles & Loyalty (Basic)**
 
-   * Entities: User, MenuItem, Order, OrderItem, Payment, QueueTicket, Reservation, StaffStatus
-   * Audit fields, UUID IDs
-2. **Schemas**
+   * Save client info (name/contact).
+   * Attach orders to clients.
+   * Simple loyalty points/stamps.
 
-   * Backend: Jakarta Validation
-   * Frontend: Zod schemas in `/schemas`
-3. **API Structure**
+8. **Employee Management**
 
-   * Base path `/api/v1`
-   * Public vs Auth endpoints defined
-4. **Security & CORS**
+   * Clock-in/out, shifts.
+   * Role assignments, time tracking.
 
-   * JWT via httpOnly cookie
-   * Role-based access (MANAGER, EMPLOYEE\_CASHIER, CUSTOMER\_LOYAL)
-   * CORS policy set for local dev
+9. **Reports & End-of-Day**
 
-**Deliverables:**
-
-* ER diagram in `/docs`
-* JPA entities & repos scaffolded
-* Empty controller stubs per resource
-* Swagger UI visible with endpoint list
-
----
-
-## **Module 3 – Core Features**
-
-### Submodules
-
-1. **Menu Management**
-
-   * GET menu (public)
-   * CRUD menu items (manager only)
-2. **Order System**
-
-   * Place guest or customer order
-   * Order status updates (cashier/kitchen)
-   * Basic total calculation
-3. **Queue & Reservations**
-
-   * Create/view queue tickets
-   * Create/view reservations
-4. **Payments**
-
-   * MockPaymentService
-   * PaymentProvider interface for later Xendit integration
-5. **Staff Status**
-
-   * Update IN/OUT/BREAK
-   * View staff status (manager)
-
-**Deliverables:**
-
-* Working REST endpoints with role rules
-* Unit tests for services
-* Postman collection with example calls
-
----
-
-## **Module 4 – Frontend MVP**
-
-### Submodules
-
-1. **Routing & Layout**
-
-   * `/ (user)/`, `/ (admin)/`, `/ (employee-cashier)/`
-   * Shared navbar/footer components
-2. **Pages**
-
-   * Menu view (public & logged-in)
-   * POS ordering (cashier)
-   * Admin dashboard (manager)
-3. **State Management**
-
-   * Zustand stores per feature
-4. **API Integration**
-
-   * Axios wrapper with interceptors for JWT cookies
-5. **A11y & Mobile-first**
-
-   * WCAG 2.1 AA checks
-   * Dark mode toggle
-
-**Deliverables:**
-
-* All MVP pages functional
-* Mobile, tablet, desktop layouts verified
-* Accessibility audit passes
-
----
-
-## **Module 5 – Testing & Quality**
-
-### Submodules
-
-1. **Backend**
-
-   * JUnit + Mockito unit tests
-   * Testcontainers integration tests
-2. **Frontend**
-
-   * Jest + RTL for components
-   * MSW for API mocking
-   * Cypress E2E (later)
-3. **Code Quality**
-
-   * ESLint/Prettier (frontend)
-   * Spotless/Checkstyle (backend)
-4. **Telemetry**
-
-   * Dev telemetry endpoint for debugging events
-
-**Deliverables:**
-
-* Passing test suites
-* Lint/format scripts in package.json & pom.xml
-* Test coverage reports
-
----
-
-## **Module 6 – Deployment & CI/CD**
-
-### Submodules
-
-1. **Local Deployment**
-
-   * `docker compose up --build` for full stack
-2. **Staging Prep**
-
-   * Optional staging profile & compose override
-3. **CI/CD**
-
-   * GitHub Actions for backend & frontend build/test
-   * Artifact build (backend JAR, frontend `.next` export)
-
-**Deliverables:**
-
-* One-command local start
-* CI builds passing
-* Deployment instructions in `/docs`
-
----
-
-## **Module 7 – Documentation & Handover**
-
-### Submodules
-
-1. **Dev Manual**
-
-   * Setup steps, principles, naming conventions
-   * API & role access matrix
-2. **Roadmap Tracking**
-
-   * This document updated per milestone
-3. **User Guide**
-
-   * How to use the system as manager, cashier, customer
-4. **Handover Package**
-
-   * Final repo with tagged release
-   * Demo recording (optional)
-
-**Deliverables:**
-
-* Updated `/docs` folder
-* Final README with quick start
-* Confirmed milestone completion log
+   * Sales by item/category.
+   * Payment reconciliation (cash vs. digital).
+   * Stock/waste summary.
+   * Close day wizard.
 

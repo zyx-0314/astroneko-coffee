@@ -169,6 +169,57 @@ export default function AuthenticatedHeader({
                 layoutId="auth-underline"
               />
             </Link>
+            
+            {/* Dropdown menu for More */}
+            <div className="relative group">
+              <button className="text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200 font-medium flex items-center space-x-1">
+                <span>More</span>
+                <svg 
+                  className="w-4 h-4 transform group-hover:rotate-180 transition-transform duration-200" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Dropdown Content */}
+              <div className="absolute top-full left-0 mt-2 w-48 bg-[#D4EDEC] dark:bg-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  <Link 
+                    href="/about" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    About Us
+                  </Link>
+                  <Link 
+                    href="/mood-board" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Mood Board
+                  </Link>
+                  <Link 
+                    href="/roadmap" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Roadmap
+                  </Link>
+                  <Link 
+                    href="/contact" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Contact
+                  </Link>
+                  <Link 
+                    href="/careers" 
+                    className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Careers
+                  </Link>
+                </div>
+              </div>
+            </div>
           </nav>
 
           {/* Right side - Role-based features and User Profile */}
@@ -448,6 +499,43 @@ export default function AuthenticatedHeader({
                 >
                   Order
                 </Link>
+                
+                {/* More Section */}
+                <div className="px-3 py-2">
+                  <div className="text-[#E1B168] font-medium mb-2">More</div>
+                  <div className="pl-4 space-y-1">
+                    <Link
+                      href="/about"
+                      className="block py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                    >
+                      About Us
+                    </Link>
+                    <Link
+                      href="/mood-board"
+                      className="block py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                    >
+                      Mood Board
+                    </Link>
+                    <Link
+                      href="/roadmap"
+                      className="block py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                    >
+                      Roadmap
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="block py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                    >
+                      Contact
+                    </Link>
+                    <Link
+                      href="/careers"
+                      className="block py-2 text-gray-800 dark:text-white hover:text-[#E1B168] transition-colors duration-200"
+                    >
+                      Careers
+                    </Link>
+                  </div>
+                </div>
                 
                 {/* Mobile User Section */}
                 <div className="border-t border-gray-300 dark:border-gray-600 pt-4 mt-4">
