@@ -1,46 +1,104 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.dto.CreateMenuItemRequest;
-import coffee.astroneko.backend.dto.UpdateMenuItemRequest;
+import coffee.astroneko.backend.dto.request.CreateMenuItemRequest;
+import coffee.astroneko.backend.dto.request.UpdateMenuItemRequest;
+import coffee.astroneko.backend.dto.response.MenuItemResponse;
 import coffee.astroneko.backend.entity.MenuItem;
+import coffee.astroneko.backend.entity.MenuItem.ItemType;
+import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import coffee.astroneko.backend.repository.MenuItemRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class MenuItemService {
 
-  private final MenuItemRepository menuItemRepository;
-
   @Autowired
-  public MenuItemService(MenuItemRepository menuItemRepository) {
-    this.menuItemRepository = menuItemRepository;
+  private MenuItemRepository menuItemRepository;
+
+  /**
+   * Get all menu items with pagination and filtering
+   */
+  public Page<MenuItemResponse> getMenuItems(
+    ItemType type,
+    PromoType promoType,
+    Boolean inStock,
+    Boolean isOnSale,
+    Boolean isCombo,
+    int page,
+    int size,
+    String sortBy,
+    String sortDir
+  ) {
+    Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+      ? Sort.Direction.DESC
+      : Sort.Direction.ASC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    Page<MenuItem> menuItems = menuItemRepository.findMenuItemsWithFilters(
+      type,
+      promoType,
+      inStock,
+      isOnSale,
+      isCombo,
+      pageable
+    );
+
+    return menuItems.map(MenuItemResponse::from);
   }
 
   /**
-   * Get all menu items
+   * Get all menu items (for public menu)
    */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getAllMenuItems() {
-    return menuItemRepository.findAll();
+  public Page<MenuItemResponse> getPublicMenuItems(
+    ItemType type,
+    int page,
+    int size,
+    String sortBy,
+    String sortDir
+  ) {
+    Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+      ? Sort.Direction.DESC
+      : Sort.Direction.ASC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    // Only show in-stock items for public menu
+    Page<MenuItem> menuItems = menuItemRepository.findMenuItemsWithFilters(
+      type,
+      null,
+      true,
+      null,
+      null,
+      pageable
+    );
+
+    return menuItems.map(MenuItemResponse::from);
   }
 
   /**
    * Get menu item by ID
    */
-  @Transactional(readOnly = true)
-  public Optional<MenuItem> getMenuItemById(Long id) {
-    return menuItemRepository.findById(id);
+  public Optional<MenuItemResponse> getMenuItemById(Long id) {
+    return menuItemRepository.findById(id).map(MenuItemResponse::from);
   }
 
   /**
-   * Create a new menu item
+   * Create new menu item (Manager only)
    */
-  public MenuItem createMenuItem(CreateMenuItemRequest request) {
+  @PreAuthorize("hasRole('MANAGER') or hasRole('OWNER')")
+  @Transactional
+  public MenuItemResponse createMenuItem(CreateMenuItemRequest request) {
     MenuItem menuItem = new MenuItem();
     menuItem.setName(request.getName());
     menuItem.setDescription(request.getDescription());
@@ -48,170 +106,166 @@ public class MenuItemService {
     menuItem.setOriginalPrice(request.getOriginalPrice());
     menuItem.setType(request.getType());
     menuItem.setImage(request.getImage());
-    menuItem.setRating(request.getRating());
-    menuItem.setReviewsCount(request.getReviewsCount());
-    menuItem.setWeeklyReviews(request.getWeeklyReviews());
-    menuItem.setMonthlyReviews(request.getMonthlyReviews());
-    menuItem.setWeeklyBuys(request.getWeeklyBuys());
-    menuItem.setMonthlyBuys(request.getMonthlyBuys());
-    menuItem.setPositiveReviewsWeekly(request.getPositiveReviewsWeekly());
-    menuItem.setPositiveReviewsMonthly(request.getPositiveReviewsMonthly());
     menuItem.setTags(request.getTags());
-    menuItem.setInStock(request.getInStock());
-    menuItem.setIsOnSale(request.getIsOnSale());
-    menuItem.setIsCombo(request.getIsCombo());
+    menuItem.setInStock(
+      request.getInStock() != null ? request.getInStock() : true
+    );
+    menuItem.setIsOnSale(
+      request.getIsOnSale() != null ? request.getIsOnSale() : false
+    );
+    menuItem.setIsCombo(
+      request.getIsCombo() != null ? request.getIsCombo() : false
+    );
     menuItem.setPromoType(request.getPromoType());
 
-    return menuItemRepository.save(menuItem);
+    MenuItem savedMenuItem = menuItemRepository.save(menuItem);
+    return MenuItemResponse.from(savedMenuItem);
   }
 
   /**
-   * Update an existing menu item
+   * Update menu item (Manager only)
    */
-  public Optional<MenuItem> updateMenuItem(
+  @PreAuthorize("hasRole('MANAGER') or hasRole('OWNER')")
+  @Transactional
+  public Optional<MenuItemResponse> updateMenuItem(
     Long id,
     UpdateMenuItemRequest request
   ) {
-    Optional<MenuItem> optionalMenuItem = menuItemRepository.findById(id);
+    return menuItemRepository
+      .findById(id)
+      .map(menuItem -> {
+        if (request.getName() != null) {
+          menuItem.setName(request.getName());
+        }
+        if (request.getDescription() != null) {
+          menuItem.setDescription(request.getDescription());
+        }
+        if (request.getPrice() != null) {
+          menuItem.setPrice(request.getPrice());
+        }
+        if (request.getOriginalPrice() != null) {
+          menuItem.setOriginalPrice(request.getOriginalPrice());
+        }
+        if (request.getType() != null) {
+          menuItem.setType(request.getType());
+        }
+        if (request.getImage() != null) {
+          menuItem.setImage(request.getImage());
+        }
+        if (request.getTags() != null) {
+          menuItem.setTags(request.getTags());
+        }
+        if (request.getInStock() != null) {
+          menuItem.setInStock(request.getInStock());
+        }
+        if (request.getIsOnSale() != null) {
+          menuItem.setIsOnSale(request.getIsOnSale());
+        }
+        if (request.getIsCombo() != null) {
+          menuItem.setIsCombo(request.getIsCombo());
+        }
+        if (request.getPromoType() != null) {
+          menuItem.setPromoType(request.getPromoType());
+        }
 
-    if (optionalMenuItem.isEmpty()) {
-      return Optional.empty();
-    }
-
-    MenuItem menuItem = optionalMenuItem.get();
-    menuItem.setName(request.getName());
-    menuItem.setDescription(request.getDescription());
-    menuItem.setPrice(request.getPrice());
-    menuItem.setOriginalPrice(request.getOriginalPrice());
-    menuItem.setType(request.getType());
-    menuItem.setImage(request.getImage());
-
-    if (request.getRating() != null) {
-      menuItem.setRating(request.getRating());
-    }
-    if (request.getReviewsCount() != null) {
-      menuItem.setReviewsCount(request.getReviewsCount());
-    }
-    if (request.getWeeklyReviews() != null) {
-      menuItem.setWeeklyReviews(request.getWeeklyReviews());
-    }
-    if (request.getMonthlyReviews() != null) {
-      menuItem.setMonthlyReviews(request.getMonthlyReviews());
-    }
-    if (request.getWeeklyBuys() != null) {
-      menuItem.setWeeklyBuys(request.getWeeklyBuys());
-    }
-    if (request.getMonthlyBuys() != null) {
-      menuItem.setMonthlyBuys(request.getMonthlyBuys());
-    }
-    if (request.getPositiveReviewsWeekly() != null) {
-      menuItem.setPositiveReviewsWeekly(request.getPositiveReviewsWeekly());
-    }
-    if (request.getPositiveReviewsMonthly() != null) {
-      menuItem.setPositiveReviewsMonthly(request.getPositiveReviewsMonthly());
-    }
-    if (request.getTags() != null) {
-      menuItem.setTags(request.getTags());
-    }
-    if (request.getInStock() != null) {
-      menuItem.setInStock(request.getInStock());
-    }
-    if (request.getIsOnSale() != null) {
-      menuItem.setIsOnSale(request.getIsOnSale());
-    }
-    if (request.getIsCombo() != null) {
-      menuItem.setIsCombo(request.getIsCombo());
-    }
-    if (request.getPromoType() != null) {
-      menuItem.setPromoType(request.getPromoType());
-    }
-
-    MenuItem updatedItem = menuItemRepository.save(menuItem);
-    return Optional.of(updatedItem);
+        MenuItem updatedMenuItem = menuItemRepository.save(menuItem);
+        return MenuItemResponse.from(updatedMenuItem);
+      });
   }
 
   /**
-   * Delete a menu item
+   * Update stock status (Kitchen staff can use this)
    */
-  public boolean deleteMenuItem(Long id) {
-    if (!menuItemRepository.existsById(id)) {
-      return false;
-    }
-
-    menuItemRepository.deleteById(id);
-    return true;
-  }
-
-  /**
-   * Check if menu item exists
-   */
-  @Transactional(readOnly = true)
-  public boolean existsById(Long id) {
-    return menuItemRepository.existsById(id);
-  }
-
-  /**
-   * Get menu items with optional filtering
-   */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getMenuItems(
-    MenuItem.ItemType type,
-    MenuItem.PromoType promoType,
-    Boolean inStock,
-    Boolean onSale,
-    Boolean isCombo
+  @PreAuthorize(
+    "hasRole('MANAGER') or hasRole('OWNER') or hasRole('COOK') or hasRole('BARISTA')"
+  )
+  @Transactional
+  public Optional<MenuItemResponse> updateStockStatus(
+    Long id,
+    Boolean inStock
   ) {
-    if (
-      type == null &&
-      promoType == null &&
-      inStock == null &&
-      onSale == null &&
-      isCombo == null
-    ) {
-      return getAllMenuItems();
-    }
-
-    return menuItemRepository.findMenuItemsWithFilters(
-      type,
-      promoType,
-      inStock,
-      onSale,
-      isCombo
-    );
+    return menuItemRepository
+      .findById(id)
+      .map(menuItem -> {
+        menuItem.setInStock(inStock);
+        MenuItem updatedMenuItem = menuItemRepository.save(menuItem);
+        return MenuItemResponse.from(updatedMenuItem);
+      });
   }
 
   /**
-   * Get menu items by type
+   * Discontinue menu item (soft delete by setting inStock to false)
    */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getMenuItemsByType(MenuItem.ItemType type) {
-    return menuItemRepository.findByType(type);
+  @PreAuthorize("hasRole('MANAGER') or hasRole('OWNER')")
+  @Transactional
+  public boolean discontinueMenuItem(Long id) {
+    return menuItemRepository
+      .findById(id)
+      .map(menuItem -> {
+        menuItem.setInStock(false);
+        menuItemRepository.save(menuItem);
+        return true;
+      })
+      .orElse(false);
+  }
+
+  /**
+   * Delete menu item permanently (Manager only)
+   */
+  @PreAuthorize("hasRole('MANAGER') or hasRole('OWNER')")
+  @Transactional
+  public boolean deleteMenuItem(Long id) {
+    if (menuItemRepository.existsById(id)) {
+      menuItemRepository.deleteById(id);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get top bought items for recommendations
+   */
+  public List<MenuItemResponse> getTopBoughtItems(int limit) {
+    Pageable pageable = PageRequest.of(0, limit);
+    List<MenuItem> items = menuItemRepository.findTopBoughtItems(pageable);
+    return items
+      .stream()
+      .map(MenuItemResponse::from)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Get top rated items for favorites
+   */
+  public List<MenuItemResponse> getTopRatedItems(int limit) {
+    Pageable pageable = PageRequest.of(0, limit);
+    List<MenuItem> items = menuItemRepository.findTopRatedItems(pageable);
+    return items
+      .stream()
+      .map(MenuItemResponse::from)
+      .collect(Collectors.toList());
   }
 
   /**
    * Get promotional items
    */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getPromotionalItems(MenuItem.PromoType promoType) {
-    if (promoType == null) {
-      return menuItemRepository.findByPromoTypeIsNotNull();
-    }
-    return menuItemRepository.findByPromoType(promoType);
+  public List<MenuItemResponse> getPromotionalItems(int limit) {
+    Pageable pageable = PageRequest.of(0, limit);
+    List<MenuItem> items = menuItemRepository.findPromotionalItems(pageable);
+    return items
+      .stream()
+      .map(MenuItemResponse::from)
+      .collect(Collectors.toList());
   }
 
   /**
-   * Get items on sale
+   * Get items by type
    */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getItemsOnSale() {
-    return menuItemRepository.findByIsOnSale(true);
-  }
-
-  /**
-   * Get combo deals
-   */
-  @Transactional(readOnly = true)
-  public List<MenuItem> getCombos() {
-    return menuItemRepository.findByIsCombo(true);
+  public List<MenuItemResponse> getItemsByType(ItemType type) {
+    List<MenuItem> items = menuItemRepository.findByType(type);
+    return items
+      .stream()
+      .map(MenuItemResponse::from)
+      .collect(Collectors.toList());
   }
 }

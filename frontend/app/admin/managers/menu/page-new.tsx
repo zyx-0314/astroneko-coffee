@@ -25,8 +25,8 @@ export default function MenuManagementPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [stockFilter, setStockFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('');
+  const [stockFilter, setStockFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState('name');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   
@@ -58,7 +58,7 @@ export default function MenuManagementPage() {
         sortDir,
       };
 
-      if (typeFilter && typeFilter !== 'all') filters.type = typeFilter;
+      if (typeFilter) filters.type = typeFilter;
       if (stockFilter === 'in-stock') filters.inStock = true;
       if (stockFilter === 'out-of-stock') filters.inStock = false;
 
@@ -300,7 +300,7 @@ export default function MenuManagementPage() {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="">All Categories</SelectItem>
                   <SelectItem value="COFFEE">Coffee</SelectItem>
                   <SelectItem value="PASTRIES">Pastries</SelectItem>
                   <SelectItem value="DRINKS">Drinks</SelectItem>
@@ -316,7 +316,7 @@ export default function MenuManagementPage() {
                   <SelectValue placeholder="Stock Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Items</SelectItem>
+                  <SelectItem value="">All Items</SelectItem>
                   <SelectItem value="in-stock">In Stock</SelectItem>
                   <SelectItem value="out-of-stock">Out of Stock</SelectItem>
                 </SelectContent>

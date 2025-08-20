@@ -1,96 +1,114 @@
-package coffee.astroneko.backend.dto;
+package coffee.astroneko.backend.dto.response;
 
 import coffee.astroneko.backend.entity.MenuItem;
-import jakarta.validation.constraints.*;
+import coffee.astroneko.backend.entity.MenuItem.ItemType;
+import coffee.astroneko.backend.entity.MenuItem.PromoType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 
-public class UpdateMenuItemRequest {
+public class MenuItemResponse {
 
-  @NotBlank(message = "Name is required")
-  @Size(
-    min = 2,
-    max = 100,
-    message = "Name must be between 2 and 100 characters"
-  )
+  private Long id;
   private String name;
-
-  @NotBlank(message = "Description is required")
-  @Size(max = 1000, message = "Description must not exceed 1000 characters")
   private String description;
-
-  @NotNull(message = "Price is required")
-  @DecimalMin(value = "0.01", message = "Price must be greater than 0")
   private Double price;
 
-  @DecimalMin(value = "0.01", message = "Original price must be greater than 0")
+  @JsonProperty("originalPrice")
   private Double originalPrice;
 
-  @NotNull(message = "Type is required")
-  private MenuItem.ItemType type;
-
-  @NotBlank(message = "Image URL is required")
-  @Size(max = 500, message = "Image URL must not exceed 500 characters")
+  private ItemType type;
   private String image;
-
-  @DecimalMin(value = "0.0", message = "Rating must be non-negative")
-  @DecimalMax(value = "5.0", message = "Rating must not exceed 5.0")
   private Double rating;
 
-  @Min(value = 0, message = "Reviews count must be non-negative")
+  @JsonProperty("reviewsCount")
   private Integer reviewsCount;
 
-  @Min(value = 0, message = "Weekly reviews must be non-negative")
+  @JsonProperty("weeklyReviews")
   private Integer weeklyReviews;
 
-  @Min(value = 0, message = "Monthly reviews must be non-negative")
+  @JsonProperty("monthlyReviews")
   private Integer monthlyReviews;
 
-  @Min(value = 0, message = "Weekly buys must be non-negative")
+  @JsonProperty("weeklyBuys")
   private Integer weeklyBuys;
 
-  @Min(value = 0, message = "Monthly buys must be non-negative")
+  @JsonProperty("monthlyBuys")
   private Integer monthlyBuys;
 
-  @Min(value = 0, message = "Positive reviews weekly must be non-negative")
+  @JsonProperty("positiveReviewsWeekly")
   private Integer positiveReviewsWeekly;
 
-  @Min(value = 0, message = "Positive reviews monthly must be non-negative")
+  @JsonProperty("positiveReviewsMonthly")
   private Integer positiveReviewsMonthly;
 
   private String tags;
 
+  @JsonProperty("inStock")
   private Boolean inStock;
 
+  @JsonProperty("isOnSale")
   private Boolean isOnSale;
 
+  @JsonProperty("isCombo")
   private Boolean isCombo;
 
-  private MenuItem.PromoType promoType;
+  @JsonProperty("promoType")
+  private PromoType promoType;
 
-  // Default constructor
-  public UpdateMenuItemRequest() {}
+  @JsonProperty("createdAt")
+  private LocalDateTime createdAt;
 
-  // Constructor with basic parameters
-  public UpdateMenuItemRequest(
-    String name,
-    String description,
-    Double price,
-    MenuItem.ItemType type,
-    String image
-  ) {
-    this.name = name;
-    this.description = description;
-    this.price = price;
-    this.type = type;
-    this.image = image;
+  @JsonProperty("updatedAt")
+  private LocalDateTime updatedAt;
+
+  // Constructors
+  public MenuItemResponse() {}
+
+  public MenuItemResponse(MenuItem menuItem) {
+    this.id = menuItem.getId();
+    this.name = menuItem.getName();
+    this.description = menuItem.getDescription();
+    this.price = menuItem.getPrice();
+    this.originalPrice = menuItem.getOriginalPrice();
+    this.type = menuItem.getType();
+    this.image = menuItem.getImage();
+    this.rating = menuItem.getRating();
+    this.reviewsCount = menuItem.getReviewsCount();
+    this.weeklyReviews = menuItem.getWeeklyReviews();
+    this.monthlyReviews = menuItem.getMonthlyReviews();
+    this.weeklyBuys = menuItem.getWeeklyBuys();
+    this.monthlyBuys = menuItem.getMonthlyBuys();
+    this.positiveReviewsWeekly = menuItem.getPositiveReviewsWeekly();
+    this.positiveReviewsMonthly = menuItem.getPositiveReviewsMonthly();
+    this.tags = menuItem.getTags();
+    this.inStock = menuItem.getInStock();
+    this.isOnSale = menuItem.getIsOnSale();
+    this.isCombo = menuItem.getIsCombo();
+    this.promoType = menuItem.getPromoType();
+    this.createdAt = menuItem.getCreatedAt();
+    this.updatedAt = menuItem.getUpdatedAt();
+  }
+
+  // Static factory method
+  public static MenuItemResponse from(MenuItem menuItem) {
+    return new MenuItemResponse(menuItem);
   }
 
   // Getters and Setters
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
-    this.name = name != null ? name.trim() : null;
+    this.name = name;
   }
 
   public String getDescription() {
@@ -117,11 +135,11 @@ public class UpdateMenuItemRequest {
     this.originalPrice = originalPrice;
   }
 
-  public MenuItem.ItemType getType() {
+  public ItemType getType() {
     return type;
   }
 
-  public void setType(MenuItem.ItemType type) {
+  public void setType(ItemType type) {
     this.type = type;
   }
 
@@ -229,31 +247,27 @@ public class UpdateMenuItemRequest {
     this.isCombo = isCombo;
   }
 
-  public MenuItem.PromoType getPromoType() {
+  public PromoType getPromoType() {
     return promoType;
   }
 
-  public void setPromoType(MenuItem.PromoType promoType) {
+  public void setPromoType(PromoType promoType) {
     this.promoType = promoType;
   }
 
-  @Override
-  public String toString() {
-    return (
-      "UpdateMenuItemRequest{" +
-      "name='" +
-      name +
-      '\'' +
-      ", description='" +
-      description +
-      '\'' +
-      ", price=" +
-      price +
-      ", type=" +
-      type +
-      ", inStock=" +
-      inStock +
-      '}'
-    );
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
   }
 }

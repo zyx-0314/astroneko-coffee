@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import coffee.astroneko.backend.dto.CreateMenuItemRequest;
-import coffee.astroneko.backend.dto.UpdateMenuItemRequest;
+import coffee.astroneko.backend.dto.request.CreateMenuItemRequest;
+import coffee.astroneko.backend.dto.request.UpdateMenuItemRequest;
 import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.repository.MenuItemRepository;
 import java.util.Arrays;

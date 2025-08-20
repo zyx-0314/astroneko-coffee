@@ -4,6 +4,8 @@ import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
 import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -59,4 +61,48 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     @Param("isOnSale") Boolean isOnSale,
     @Param("isCombo") Boolean isCombo
   );
+
+  /**
+   * Find menu items with pagination and filtering
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE " +
+    "(:type IS NULL OR m.type = :type) AND " +
+    "(:promoType IS NULL OR m.promoType = :promoType) AND " +
+    "(:inStock IS NULL OR m.inStock = :inStock) AND " +
+    "(:isOnSale IS NULL OR m.isOnSale = :isOnSale) AND " +
+    "(:isCombo IS NULL OR m.isCombo = :isCombo)"
+  )
+  Page<MenuItem> findMenuItemsWithFilters(
+    @Param("type") ItemType type,
+    @Param("promoType") PromoType promoType,
+    @Param("inStock") Boolean inStock,
+    @Param("isOnSale") Boolean isOnSale,
+    @Param("isCombo") Boolean isCombo,
+    Pageable pageable
+  );
+
+  /**
+   * Find top menu items by monthly buys for recommendations
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE m.inStock = true ORDER BY m.monthlyBuys DESC"
+  )
+  List<MenuItem> findTopBoughtItems(Pageable pageable);
+
+  /**
+   * Find top menu items by rating for favorites
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE m.inStock = true AND m.rating > 0 ORDER BY m.rating DESC, m.monthlyBuys DESC"
+  )
+  List<MenuItem> findTopRatedItems(Pageable pageable);
+
+  /**
+   * Find promotional items (with promo type)
+   */
+  @Query(
+    "SELECT m FROM MenuItem m WHERE m.promoType IS NOT NULL AND m.inStock = true ORDER BY m.monthlyBuys DESC"
+  )
+  List<MenuItem> findPromotionalItems(Pageable pageable);
 }
