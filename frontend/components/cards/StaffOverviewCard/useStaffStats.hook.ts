@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react';
 import { staffAPI } from '@/lib/api/staff.api';
 import { Staff } from '@/schema/staff.schema';
-
-export interface StaffStats {
-  totalStaff: number;
-  activeToday: number;
-  onBreak: number;
-  offDuty: number;
-}
+import { StaffStats } from '@/schema/hooks.schema';
 
 export const useStaffStats = () => {
   const [stats, setStats] = useState<StaffStats>({

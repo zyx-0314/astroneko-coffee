@@ -5,9 +5,14 @@ export interface InfoCardProps {
 }
 
 export interface FeatureCardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
+  delay?: number;
+  variant?: 'default' | 'outlined' | 'glass';
+  size?: 'sm' | 'md' | 'lg';
+  iconBg?: string;
+  iconHoverBg?: string;
   className?: string;
 }
 

@@ -53,12 +53,14 @@ export interface TestimonialCardProps {
 
 // Counter component interfaces
 export interface UseStatsCounterProps {
-  end: number;
+  value: number;
   duration?: number;
+  delay?: number;
+  prefix?: string;
+  suffix?: string;
+  end?: number;
   start?: number;
   decimals?: number;
-  suffix?: string;
-  prefix?: string;
 }
 
 // Carousel interfaces
@@ -316,17 +318,24 @@ export interface AuthenticatedHeaderProps {
   user: User;
   onLogout?: () => void;
   className?: string;
+  cartItemCount?: number;
 }
 
 // Stats counter components
 export interface StatsCounterProps {
-  end: number;
-  duration?: number;
-  start?: number;
-  decimals?: number;
+  value: number;
+  label: string;
   suffix?: string;
   prefix?: string;
+  duration?: number;
+  delay?: number;
+  icon?: React.ReactNode;
   className?: string;
+  valueClassName?: string;
+  labelClassName?: string;
+  end?: number;
+  start?: number;
+  decimals?: number;
 }
 
 // UI Components

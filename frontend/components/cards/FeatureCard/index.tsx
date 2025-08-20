@@ -2,18 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-
-export interface FeatureCardProps {
-  icon: ReactNode;
-  title: string;
-  description: string;
-  delay?: number;
-  variant?: 'default' | 'outlined' | 'glass';
-  size?: 'sm' | 'md' | 'lg';
-  iconBg?: string;
-  iconHoverBg?: string;
-  className?: string;
-}
+import { FeatureCardProps } from '@/schema/cards.schema';
 
 const variantStyles = {
   default: 'bg-gray-50 dark:bg-gray-800',

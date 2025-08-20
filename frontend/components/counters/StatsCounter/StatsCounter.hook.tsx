@@ -1,13 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useInView, useMotionValue, useSpring } from 'framer-motion';
-
-export interface UseStatsCounterProps {
-  value: number;
-  duration?: number;
-  delay?: number;
-  prefix?: string;
-  suffix?: string;
-}
+import { UseStatsCounterProps } from '@/schema/components.schema';
 
 export const useStatsCounter = ({
   value,

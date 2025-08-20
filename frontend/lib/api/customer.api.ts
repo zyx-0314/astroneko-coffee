@@ -1,32 +1,9 @@
-import { ApiResponse } from '@/lib/utils';
+import { ApiResponse } from '@/schema/api.schema';
+import { Customer, CustomerResponse, PaginatedCustomerResponse } from '@/schema/customer.schema';
 import { tokenManager } from '@/lib/auth-cookies';
 
-export interface Customer {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  points: number;
-  registrationDate: string;
-  lastPurchaseDate?: string;
-  isActive: boolean;
-}
-
-export interface CustomerResponse {
-  customers: Customer[];
-  total: number;
-}
-
-export interface PaginatedCustomerResponse {
-  content: Customer[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  first: boolean;
-  last: boolean;
-}
+// Re-export the interfaces for easy access
+export type { Customer, CustomerResponse, PaginatedCustomerResponse };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8083';
 

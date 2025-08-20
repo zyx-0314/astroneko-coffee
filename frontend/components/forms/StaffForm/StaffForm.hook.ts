@@ -1,26 +1,8 @@
 import { useState, useEffect } from 'react';
-
-interface StaffFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  role: string;
-  shift: string;
-  notes: string;
-}
-
-interface StaffFormErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  role?: string;
-  shift?: string;
-}
+import { StaffFormHookData, StaffFormHookErrors } from '@/schema/hooks.schema';
 
 export const useStaffForm = (staffId?: string) => {
-  const [formData, setFormData] = useState<StaffFormData>({
+  const [formData, setFormData] = useState<StaffFormHookData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -30,7 +12,7 @@ export const useStaffForm = (staffId?: string) => {
     notes: ''
   });
 
-  const [errors, setErrors] = useState<StaffFormErrors>({});
+  const [errors, setErrors] = useState<StaffFormHookErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -54,7 +36,7 @@ export const useStaffForm = (staffId?: string) => {
   }, [staffId]);
 
   const validateForm = (): boolean => {
-    const newErrors: StaffFormErrors = {};
+    const newErrors: StaffFormHookErrors = {};
 
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'First name is required';
@@ -88,20 +70,20 @@ export const useStaffForm = (staffId?: string) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: StaffFormHookData) => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
-    if (errors[name as keyof StaffFormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+    if (errors[name as keyof StaffFormHookErrors]) {
+      setErrors((prev: StaffFormHookErrors) => ({ ...prev, [name]: undefined }));
     }
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: StaffFormHookData) => ({ ...prev, [name]: value }));
     
     // Clear error when user selects
-    if (errors[name as keyof StaffFormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+    if (errors[name as keyof StaffFormHookErrors]) {
+      setErrors((prev: StaffFormHookErrors) => ({ ...prev, [name]: undefined }));
     }
   };
 

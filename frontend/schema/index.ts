@@ -11,6 +11,11 @@ export * from './order.schema';
 export * from './stock.schema';
 export * from './stats.schema';
 
+// API and infrastructure schemas
+export * from './api.schema';
+export * from './customer.schema';
+export * from './purchaseHistory.schema';
+
 // Component and UI schemas
 export * from './components.schema';
 export * from './colors.schema';
@@ -19,6 +24,7 @@ export * from './typography.schema';
 export * from './header.schema';
 export * from './animatedComponents.schema';
 export * from './auth.schema';
+export * from './hooks.schema';
 
 // Card schemas (specific exports to avoid conflicts)
 export type { 
@@ -27,3 +33,6 @@ export type {
   PlaceholderCardProps,
   FeatureCardProps as CardFeatureProps  // Renamed to avoid conflict
 } from './cards.schema';
+
+// Roadmap schemas
+export * from './roadmap.schema';

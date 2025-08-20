@@ -28,14 +28,9 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { User } from '@/schema/user.schema';
+import { AuthenticatedHeaderProps } from '@/schema/components.schema';
 import { useAuthenticatedHeaderState } from './Authenticated.hook';
 import { CreateReportModal, CreateRequestModal } from '@/components/modals';
-
-export interface AuthenticatedHeaderProps {
-  user: User;
-  className?: string;
-  cartItemCount?: number;
-}
 
 export default function AuthenticatedHeader({ 
   user, 

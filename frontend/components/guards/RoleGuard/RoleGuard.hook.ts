@@ -4,12 +4,8 @@ import { useAuth } from '@/provider/auth-provider';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UserRole } from '@/schema/user.schema';
+import { UseRoleGuardProps } from '@/schema/hooks.schema';
 import { getRouteForRole } from '@/lib/auth';
-
-interface UseRoleGuardProps {
-  allowedRoles: UserRole[];
-  redirectTo?: string;
-}
 
 export const useRoleGuard = ({ allowedRoles, redirectTo }: UseRoleGuardProps) => {
   const { user, isLoading } = useAuth();
