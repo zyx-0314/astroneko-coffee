@@ -32,7 +32,26 @@ public class UserService {
 
     // Create new user account
     User user = new User();
-    user.setName(signUpRequest.getName());
+
+    // Split name into first and last name
+    String[] nameParts = signUpRequest.getName().trim().split("\\s+", 2);
+    String firstName = nameParts[0];
+    String lastName = nameParts.length > 1 ? nameParts[1] : "";
+
+    user.setFirstName(firstName);
+    user.setLastName(lastName);
+
+    // Generate username from email (take part before @)
+    String username = signUpRequest.getEmail().split("@")[0];
+    // Make sure username is unique
+    int counter = 1;
+    String originalUsername = username;
+    while (userRepository.existsByUsername(username)) {
+      username = originalUsername + counter;
+      counter++;
+    }
+    user.setUsername(username);
+
     user.setEmail(signUpRequest.getEmail());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
     user.setRole(User.Role.CLIENT); // Default role for sign up

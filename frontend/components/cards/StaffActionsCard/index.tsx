@@ -7,8 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UserPlus, Search, Filter, Download, Upload } from 'lucide-react';
+import CreateStaffModal from '@/components/modals/CreateStaffModal';
 
-export default function StaffActionsCard() {
+interface StaffActionsCardProps {
+  onStaffCreated?: () => void;
+}
+
+export default function StaffActionsCard({ onStaffCreated }: StaffActionsCardProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -29,12 +34,7 @@ export default function StaffActionsCard() {
               Quick Actions
             </h3>
             <div className="flex flex-wrap gap-3">
-              <Button 
-                className="bg-[#6B4E37] hover:bg-[#5a3f2d] text-white"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Add Staff Member
-              </Button>
+              <CreateStaffModal onStaffCreated={onStaffCreated} />
               <Button 
                 variant="outline" 
                 className="border-[#2CA6A4] text-[#2CA6A4] hover:bg-[#2CA6A4] hover:text-white"

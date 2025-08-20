@@ -8,14 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 interface SignUpSectionProps {
   signUpData: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     confirmPassword: string;
     sex: string;
   };
   setSignUpData: React.Dispatch<React.SetStateAction<{
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -47,19 +49,37 @@ export default function SignUpSection({
       </Alert>
 
       <form onSubmit={handleSignUp} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="signup-name">Full Name</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="signup-name"
-              type="text"
-              placeholder="Enter your full name"
-              value={signUpData.name}
-              onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
-              className="pl-10 focus:ring-2 focus:ring-primary/20"
-              required
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="signup-firstName">First Name</Label>
+            <div className="relative">
+              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="signup-firstName"
+                type="text"
+                placeholder="Enter your first name"
+                value={signUpData.firstName}
+                onChange={(e) => setSignUpData(prev => ({ ...prev, firstName: e.target.value }))}
+                className="pl-10 focus:ring-2 focus:ring-primary/20"
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="signup-lastName">Last Name</Label>
+            <div className="relative">
+              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="signup-lastName"
+                type="text"
+                placeholder="Enter your last name"
+                value={signUpData.lastName}
+                onChange={(e) => setSignUpData(prev => ({ ...prev, lastName: e.target.value }))}
+                className="pl-10 focus:ring-2 focus:ring-primary/20"
+                required
+              />
+            </div>
           </div>
         </div>
 

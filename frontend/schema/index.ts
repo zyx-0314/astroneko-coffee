@@ -4,6 +4,7 @@
 export * from './menuItem.schema';
 export * from './menuItemValidation.schema';
 export * from './user.schema';
+export * from './staff.schema';
 export * from './order.schema';
 export * from './stock.schema';
 export * from './stats.schema';

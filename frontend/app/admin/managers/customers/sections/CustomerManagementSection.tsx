@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,80 +10,76 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Eye, Edit, Trash2, Phone, Mail, Calendar } from 'lucide-react';
+import { Search, Eye, Edit, Trash2, Phone, Mail, Calendar, Loader2, History } from 'lucide-react';
+import { customerAPI, Customer as CustomerType } from '@/lib/api/customer.api';
+import { purchaseHistoryAPI } from '@/lib/api/purchase-history.api';
+import { CustomerPurchaseHistory } from '@/components/modals/CustomerPurchaseHistory';
 
 interface Customer {
-  id: string;
-  name: string;
+  id: number;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone: string;
-  address: string;
+  phoneNumber: string;
+  points: number;
   registrationDate: string;
+  lastPurchaseDate?: string;
+  isActive: boolean;
   totalOrders: number;
   totalSpent: number;
-  status: 'active' | 'inactive' | 'blocked';
-  loyaltyPoints: number;
-  preferences?: string;
-  notes?: string;
 }
 
-const mockCustomers: Customer[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    phone: '+1234567890',
-    address: '123 Main St, City, State',
-    registrationDate: '2024-01-15',
-    totalOrders: 45,
-    totalSpent: 675.50,
-    status: 'active',
-    loyaltyPoints: 450,
-    preferences: 'Prefers oat milk, no sugar',
-    notes: 'Regular customer, comes every morning'
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane.smith@email.com',
-    phone: '+1234567891',
-    address: '456 Oak Ave, City, State',
-    registrationDate: '2024-02-20',
-    totalOrders: 23,
-    totalSpent: 345.75,
-    status: 'active',
-    loyaltyPoints: 230,
-    preferences: 'Loves vanilla lattes',
-    notes: 'Afternoon customer'
-  },
-  {
-    id: '3',
-    name: 'Bob Johnson',
-    email: 'bob.johnson@email.com',
-    phone: '+1234567892',
-    address: '789 Pine Rd, City, State',
-    registrationDate: '2024-03-10',
-    totalOrders: 8,
-    totalSpent: 120.25,
-    status: 'inactive',
-    loyaltyPoints: 80,
-    notes: 'Has not visited in 2 months'
-  }
-];
-
 export function CustomerManagementSection() {
-  const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [isPurchaseHistoryOpen, setIsPurchaseHistoryOpen] = useState(false);
+  const [historyCustomer, setHistoryCustomer] = useState<Customer | null>(null);
 
-  const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.phone.includes(searchTerm)
-  );
+  useEffect(() => {
+    loadCustomers();
+  }, []);
+
+  const loadCustomers = async () => {
+    setLoading(true);
+    try {
+      const response = await customerAPI.getAllCustomers();
+      if (response.success && response.data) {
+        // Transform and enrich customer data
+        const enrichedCustomers = await Promise.all(
+          response.data.map(async (customer) => {
+            const orderCountResponse = await purchaseHistoryAPI.getCustomerOrderCount(customer.id);
+            const totalSpentResponse = await purchaseHistoryAPI.getCustomerTotalSpent(customer.id);
+            
+            return {
+              ...customer,
+              totalOrders: orderCountResponse.success ? orderCountResponse.data || 0 : 0,
+              totalSpent: totalSpentResponse.success ? totalSpentResponse.data || 0 : 0,
+            };
+          })
+        );
+        setCustomers(enrichedCustomers);
+      }
+    } catch (error) {
+      console.error('Failed to load customers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredCustomers = customers.filter(customer => {
+    const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      fullName.includes(searchLower) ||
+      customer.email.toLowerCase().includes(searchLower) ||
+      customer.phoneNumber.includes(searchTerm)
+    );
+  });
 
   const handleView = (customer: Customer) => {
     setSelectedCustomer(customer);
@@ -95,29 +91,45 @@ export function CustomerManagementSection() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (customerId: string) => {
-    if (confirm('Are you sure you want to delete this customer?')) {
-      setCustomers(customers.filter(c => c.id !== customerId));
+  const handleViewHistory = (customer: Customer) => {
+    setHistoryCustomer(customer);
+    setIsPurchaseHistoryOpen(true);
+  };
+
+  const handleDelete = async (customerId: number) => {
+    if (confirm('Are you sure you want to deactivate this customer?')) {
+      try {
+        const response = await customerAPI.deactivateCustomer(customerId);
+        if (response.success) {
+          await loadCustomers(); // Reload data
+        }
+      } catch (error) {
+        console.error('Failed to deactivate customer:', error);
+      }
     }
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editingCustomer) {
-      setCustomers(customers.map(c => 
-        c.id === editingCustomer.id ? editingCustomer : c
-      ));
-      setIsEditDialogOpen(false);
-      setEditingCustomer(null);
+      try {
+        if (editingCustomer.isActive) {
+          await customerAPI.activateCustomer(editingCustomer.id);
+        } else {
+          await customerAPI.deactivateCustomer(editingCustomer.id);
+        }
+        await loadCustomers();
+        setIsEditDialogOpen(false);
+        setEditingCustomer(null);
+      } catch (error) {
+        console.error('Failed to update customer:', error);
+      }
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-yellow-100 text-yellow-800';
-      case 'blocked': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const getStatusColor = (isActive: boolean) => {
+    return isActive 
+      ? 'bg-green-100 text-green-800' 
+      : 'bg-yellow-100 text-yellow-800';
   };
 
   return (
@@ -161,61 +173,80 @@ export function CustomerManagementSection() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredCustomers.map((customer) => (
-              <div key={customer.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold">{customer.name}</h3>
-                    <Badge className={getStatusColor(customer.status)}>
-                      {customer.status}
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Mail className="h-3 w-3" />
-                      {customer.email}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      {customer.phone}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      Orders: {customer.totalOrders}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-green-600 font-medium">
-                        ${customer.totalSpent.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleView(customer)}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(customer)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(customer.id)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+            {loading ? (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
+                <span className="ml-2">Loading customers...</span>
               </div>
-            ))}
+            ) : filteredCustomers.length === 0 ? (
+              <div className="text-center p-8 text-gray-500">
+                No customers found
+              </div>
+            ) : (
+              filteredCustomers.map((customer) => (
+                <div key={customer.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-semibold">{`${customer.firstName} ${customer.lastName}`}</h3>
+                      <Badge className={getStatusColor(customer.isActive)}>
+                        {customer.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Mail className="h-3 w-3" />
+                        {customer.email}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Phone className="h-3 w-3" />
+                        {customer.phoneNumber}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        Orders: {customer.totalOrders}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-green-600 font-medium">
+                          ${customer.totalSpent.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleView(customer)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewHistory(customer)}
+                      className="text-blue-600 hover:text-blue-700"
+                    >
+                      <History className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(customer)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(customer.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
@@ -231,12 +262,12 @@ export function CustomerManagementSection() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="font-semibold">Name</Label>
-                  <p>{selectedCustomer.name}</p>
+                  <p>{`${selectedCustomer.firstName} ${selectedCustomer.lastName}`}</p>
                 </div>
                 <div>
                   <Label className="font-semibold">Status</Label>
-                  <Badge className={getStatusColor(selectedCustomer.status)}>
-                    {selectedCustomer.status}
+                  <Badge className={getStatusColor(selectedCustomer.isActive)}>
+                    {selectedCustomer.isActive ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
                 <div>
@@ -245,19 +276,15 @@ export function CustomerManagementSection() {
                 </div>
                 <div>
                   <Label className="font-semibold">Phone</Label>
-                  <p>{selectedCustomer.phone}</p>
-                </div>
-                <div className="col-span-2">
-                  <Label className="font-semibold">Address</Label>
-                  <p>{selectedCustomer.address}</p>
+                  <p>{selectedCustomer.phoneNumber}</p>
                 </div>
                 <div>
                   <Label className="font-semibold">Registration Date</Label>
                   <p>{new Date(selectedCustomer.registrationDate).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <Label className="font-semibold">Loyalty Points</Label>
-                  <p>{selectedCustomer.loyaltyPoints}</p>
+                  <Label className="font-semibold">Points</Label>
+                  <p>{selectedCustomer.points}</p>
                 </div>
                 <div>
                   <Label className="font-semibold">Total Orders</Label>
@@ -267,16 +294,10 @@ export function CustomerManagementSection() {
                   <Label className="font-semibold">Total Spent</Label>
                   <p>${selectedCustomer.totalSpent.toFixed(2)}</p>
                 </div>
-                {selectedCustomer.preferences && (
+                {selectedCustomer.lastPurchaseDate && (
                   <div className="col-span-2">
-                    <Label className="font-semibold">Preferences</Label>
-                    <p>{selectedCustomer.preferences}</p>
-                  </div>
-                )}
-                {selectedCustomer.notes && (
-                  <div className="col-span-2">
-                    <Label className="font-semibold">Notes</Label>
-                    <p>{selectedCustomer.notes}</p>
+                    <Label className="font-semibold">Last Purchase</Label>
+                    <p>{new Date(selectedCustomer.lastPurchaseDate).toLocaleDateString()}</p>
                   </div>
                 )}
               </div>
@@ -293,26 +314,27 @@ export function CustomerManagementSection() {
           </DialogHeader>
           {editingCustomer && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={editingCustomer.name}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      name: e.target.value
-                    })}
-                  />
+                  <Label className="font-semibold">Name</Label>
+                  <p>{`${editingCustomer.firstName} ${editingCustomer.lastName}`}</p>
+                </div>
+                <div>
+                  <Label className="font-semibold">Email</Label>
+                  <p>{editingCustomer.email}</p>
+                </div>
+                <div>
+                  <Label className="font-semibold">Phone</Label>
+                  <p>{editingCustomer.phoneNumber}</p>
                 </div>
                 <div>
                   <Label htmlFor="status">Status</Label>
                   <Select
-                    value={editingCustomer.status}
-                    onValueChange={(value: 'active' | 'inactive' | 'blocked') =>
+                    value={editingCustomer.isActive ? 'active' : 'inactive'}
+                    onValueChange={(value: 'active' | 'inactive') =>
                       setEditingCustomer({
                         ...editingCustomer,
-                        status: value
+                        isActive: value === 'active'
                       })
                     }
                   >
@@ -322,65 +344,8 @@ export function CustomerManagementSection() {
                     <SelectContent>
                       <SelectItem value="active">Active</SelectItem>
                       <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="blocked">Blocked</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={editingCustomer.email}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      email: e.target.value
-                    })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={editingCustomer.phone}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      phone: e.target.value
-                    })}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    value={editingCustomer.address}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      address: e.target.value
-                    })}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label htmlFor="preferences">Preferences</Label>
-                  <Input
-                    id="preferences"
-                    value={editingCustomer.preferences || ''}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      preferences: e.target.value
-                    })}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea
-                    id="notes"
-                    value={editingCustomer.notes || ''}
-                    onChange={(e) => setEditingCustomer({
-                      ...editingCustomer,
-                      notes: e.target.value
-                    })}
-                  />
                 </div>
               </div>
               <div className="flex justify-end gap-2">
@@ -398,6 +363,16 @@ export function CustomerManagementSection() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Purchase History Modal */}
+      {historyCustomer && (
+        <CustomerPurchaseHistory
+          customerId={historyCustomer.id}
+          customerName={`${historyCustomer.firstName} ${historyCustomer.lastName}`}
+          isOpen={isPurchaseHistoryOpen}
+          onClose={() => setIsPurchaseHistoryOpen(false)}
+        />
+      )}
       </motion.div>
     </div>
   );

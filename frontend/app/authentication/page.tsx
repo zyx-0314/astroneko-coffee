@@ -25,7 +25,8 @@ export default function AuthenticationPage() {
   
   // Sign Up Form
   const [signUpData, setSignUpData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -70,7 +71,7 @@ export default function AuthenticationPage() {
     }
 
     try {
-      const user = await signUp(signUpData.name, signUpData.email, signUpData.password, signUpData.sex);
+      const user = await signUp(signUpData.firstName, signUpData.lastName, signUpData.email, signUpData.password, signUpData.sex);
       
       if (user) {
         // Update the auth context

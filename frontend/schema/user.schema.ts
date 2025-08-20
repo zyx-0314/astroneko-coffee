@@ -16,14 +16,14 @@ export interface User {
   sex?: 'male' | 'female' | 'other';
 }
 
-// User role type for type safety
-export type UserRole = User['role'];
+// User role type for type safety (legacy)
+export type LegacyUserRole = User['role'];
 
-// Staff roles specifically
-export type StaffRole = Exclude<UserRole, 'client'>;
+// Staff roles specifically (legacy)
+export type StaffRole = Exclude<LegacyUserRole, 'client'>;
 
 // Client role specifically  
-export type ClientRole = Extract<UserRole, 'client'>;
+export type ClientRole = Extract<LegacyUserRole, 'client'>;
 
 // Authentication state interface
 export interface AuthState {

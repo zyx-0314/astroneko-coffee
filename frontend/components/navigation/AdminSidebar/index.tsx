@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/provider/auth-provider';
 import { useAdminSidebar } from './AdminSidebar.hook';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
 export default function AdminSidebar() {
   const { user, logout } = useAuth();
@@ -224,9 +225,9 @@ export default function AdminSidebar() {
            {/* User Info */}
           <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-[#6B4E37] text-white flex items-center justify-center">
-                {user?.name?.[0] || 'U'}
-              </div>
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={user && user.avatar ? user.avatar : user && user.sex === 'female' ? '/placeholder/user/Female.png' : '/placeholder/user/Male.png'} />
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                   {user?.name || 'User'}

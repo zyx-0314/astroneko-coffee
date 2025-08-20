@@ -1,129 +1,144 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface StaffMember {
-  id: string;
-  employeeId: string;
-  name: string;
-  role: 'MANAGER' | 'FRONT_DESK' | 'KITCHEN' | 'BARISTA';
-  status: 'active' | 'break' | 'offline';
-  shift: string;
-  phone: string;
-  email: string;
-  avatar?: string;
-  lastActive: string;
-  department: string;
-  hireDate: string;
-  salary: number;
-}
+import { staffAPI } from '@/lib/api/staff.api';
+import { Staff, StaffSummary, formatShiftTime, getFullName, UserRole } from '@/schema/staff.schema';
 
 export const useStaffTable = () => {
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+  const [staffMembers, setStaffMembers] = useState<StaffSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data for demonstration
+  // Fetch staff data from API
   useEffect(() => {
-    const mockStaff: StaffMember[] = [
-      {
-        id: '1',
-        employeeId: 'EMP001',
-        name: 'Sarah Johnson',
-        role: 'MANAGER',
-        status: 'active',
-        shift: '9:00 AM - 6:00 PM',
-        phone: '+1-555-0123',
-        email: 'sarah.johnson@astro-neko.com',
-        lastActive: '2 minutes ago',
-        department: 'Management',
-        hireDate: '2023-01-15',
-        salary: 65000
-      },
-      {
-        id: '2',
-        employeeId: 'EMP002',
-        name: 'Mike Chen',
-        role: 'BARISTA',
-        status: 'active',
-        shift: '7:00 AM - 3:00 PM',
-        phone: '+1-555-0124',
-        email: 'mike.chen@astro-neko.com',
-        lastActive: '15 minutes ago',
-        department: 'Coffee Services',
-        hireDate: '2023-03-20',
-        salary: 35000
-      },
-      {
-        id: '3',
-        employeeId: 'EMP003',
-        name: 'Emma Rodriguez',
-        role: 'FRONT_DESK',
-        status: 'break',
-        shift: '11:00 AM - 8:00 PM',
-        phone: '+1-555-0125',
-        email: 'emma.rodriguez@astro-neko.com',
-        lastActive: '5 minutes ago',
-        department: 'Customer Service',
-        hireDate: '2023-02-10',
-        salary: 32000
-      },
-      {
-        id: '4',
-        employeeId: 'EMP004',
-        name: 'David Kim',
-        role: 'KITCHEN',
-        status: 'active',
-        shift: '6:00 AM - 2:00 PM',
-        phone: '+1-555-0126',
-        email: 'david.kim@astro-neko.com',
-        lastActive: '1 hour ago',
-        department: 'Kitchen',
-        hireDate: '2023-04-05',
-        salary: 38000
-      },
-      {
-        id: '5',
-        employeeId: 'EMP005',
-        name: 'Lisa Thompson',
-        role: 'BARISTA',
-        status: 'offline',
-        shift: '2:00 PM - 10:00 PM',
-        phone: '+1-555-0127',
-        email: 'lisa.thompson@astro-neko.com',
-        lastActive: '3 hours ago',
-        department: 'Coffee Services',
-        hireDate: '2023-05-12',
-        salary: 34000
-      }
-    ];
+    const fetchStaff = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const staffData = await staffAPI.getAllStaff(true); // Get only active staff
+        
+        // Transform Staff data to StaffSummary
+        const staffSummary: StaffSummary[] = staffData.map((staff: Staff): StaffSummary => ({
+          id: staff.id,
+          employeeId: staff.employeeId,
+          name: getFullName(staff.firstName, staff.lastName),
+          email: staff.email,
+          role: staff.role,
+          status: staff.isActive && staff.isUserActive ? 'active' : 'offline', // Simplified status logic
+          shift: formatShiftTime(staff.shiftStart, staff.shiftEnd),
+          phone: staff.phone,
+          lastActive: 'Active now', // Placeholder - would need real-time data
+          avatar: staff.avatar,
+          department: staff.department,
+          position: staff.position,
+          isActive: staff.isActive && staff.isUserActive
+        }));
 
-    // Simulate API call delay
-    setTimeout(() => {
-      setStaffMembers(mockStaff);
-      setIsLoading(false);
-    }, 1000);
+        setStaffMembers(staffSummary);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch staff data');
+        console.error('Error fetching staff:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStaff();
   }, []);
 
   const handleEdit = (staffId: string) => {
     console.log('Edit staff member:', staffId);
-    // TODO: Implement edit functionality
+    // TODO: Navigate to edit form or open modal
+    // For now, we'll implement this when we create the edit modal/form
   };
 
-  const handleDelete = (staffId: string) => {
-    console.log('Delete staff member:', staffId);
-    // TODO: Implement delete functionality with confirmation
+  const handleDelete = async (staffId: string) => {
+    if (!confirm('Are you sure you want to delete this staff member? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await staffAPI.deleteStaff(parseInt(staffId));
+      // Remove from local state
+      setStaffMembers(prev => prev.filter(staff => staff.id.toString() !== staffId));
+      alert('Staff member deleted successfully');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete staff member';
+      alert(`Failed to delete staff member: ${errorMessage}`);
+      console.error('Error deleting staff:', err);
+    }
   };
 
   const handleView = (staffId: string) => {
     console.log('View staff member:', staffId);
-    // TODO: Implement view details functionality
+    // TODO: Navigate to detail view or open modal
+    // For now, we'll implement this when we create the detail modal/page
+  };
+
+  const handleDeactivate = async (staffId: string) => {
+    if (!confirm('Are you sure you want to deactivate this staff member?')) {
+      return;
+    }
+
+    try {
+      await staffAPI.deactivateStaff(parseInt(staffId));
+      // Update local state
+      setStaffMembers(prev => 
+        prev.map(staff => 
+          staff.id.toString() === staffId 
+            ? { ...staff, isActive: false, status: 'offline' as const }
+            : staff
+        )
+      );
+      alert('Staff member deactivated successfully');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to deactivate staff member';
+      alert(`Failed to deactivate staff member: ${errorMessage}`);
+      console.error('Error deactivating staff:', err);
+    }
+  };
+
+  const refreshStaff = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const staffData = await staffAPI.getAllStaff(true);
+      
+      const staffSummary: StaffSummary[] = staffData.map((staff: Staff): StaffSummary => ({
+        id: staff.id,
+        employeeId: staff.employeeId,
+        name: getFullName(staff.firstName, staff.lastName),
+        email: staff.email,
+        role: staff.role,
+        status: staff.isActive && staff.isUserActive ? 'active' : 'offline',
+        shift: formatShiftTime(staff.shiftStart, staff.shiftEnd),
+        phone: staff.phone,
+        lastActive: 'Active now',
+        avatar: staff.avatar,
+        department: staff.department,
+        position: staff.position,
+        isActive: staff.isActive && staff.isUserActive
+      }));
+
+      setStaffMembers(staffSummary);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to refresh staff data');
+      console.error('Error refreshing staff:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return {
     staffMembers,
     isLoading,
+    error,
     handleEdit,
     handleDelete,
-    handleView
+    handleView,
+    handleDeactivate,
+    refreshStaff
   };
 };

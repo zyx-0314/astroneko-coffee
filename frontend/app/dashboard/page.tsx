@@ -5,14 +5,13 @@ import {
   getPromoItems,
   mockMenuItems as menuItems,
 } from '@/lib/data/menu';
-import { getOrdersByCustomer } from '@/lib/data/orders';
 import { useAuth } from '@/provider/auth-provider';
 import {
   ProfileDisplaySection,
   FavoritesDisplaySection,
   RecommendationDisplaySection,
-  OrderHistoryDisplaySection,
 } from './sections';
+import PurchaseHistoryDisplaySection from './sections/PurchaseHistoryDisplaySection';
 
 // Mock most bought items (would come from user's order history analysis)
 const mostBoughtItems = [
@@ -40,8 +39,6 @@ export default function ClientDashboard() {
       </div>
     );
   }
-
-  const userOrderHistory = getOrdersByCustomer(currentUser.id);
 
   const handleQuickOrder = (item: unknown) => {
     console.log('Quick order for:', item);
@@ -71,8 +68,8 @@ export default function ClientDashboard() {
           onAddToCart={handleAddToCart}
         />
 
-        {/* Order History Section */}
-        <OrderHistoryDisplaySection orders={userOrderHistory} />
+        {/* Purchase History Section */}
+        <PurchaseHistoryDisplaySection customerId={parseInt(currentUser.id)} />
       </div>
     </div>
   );

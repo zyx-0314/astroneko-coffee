@@ -10,9 +10,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { User, Mail, Phone, Calendar, MapPin, Camera, Save } from 'lucide-react';
+import { useAuth } from '@/provider/auth-provider';
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
+  const {user} = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
@@ -54,7 +56,7 @@ export default function ProfilePage() {
           <CardHeader className="text-center">
             <div className="relative mx-auto w-24 h-24 mb-4">
               <Avatar className="w-24 h-24">
-                <AvatarImage src="/placeholder/avatars/manager.jpg" alt="Profile" />
+                <AvatarImage src={user && user.avatar ? user.avatar : user && user.sex === 'female' ? '/placeholder/user/Female.png' : '/placeholder/user/Male.png'} />
                 <AvatarFallback className="text-lg bg-[#6B4E37] text-white">
                   JD
                 </AvatarFallback>
@@ -68,28 +70,22 @@ export default function ProfilePage() {
               </Button>
             </div>
             <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
-              John Doe
+              { user?.name}
             </CardTitle>
             <Badge variant="secondary" className="bg-[#6B4E37] text-white">
-              Manager
+              {user?.role || 'Staff Member'}
             </Badge>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Mail className="h-4 w-4" />
-              <span>john.doe@astroneko.coffee</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <Phone className="h-4 w-4" />
-              <span>+1 (555) 123-4567</span>
+              <span>
+                {user?.email || '<Placeholder Email>'}
+              </span>
             </div>
             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Calendar className="h-4 w-4" />
               <span>Joined March 2024</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <MapPin className="h-4 w-4" />
-              <span>Main Branch</span>
             </div>
           </CardContent>
         </Card>
@@ -108,7 +104,7 @@ export default function ProfilePage() {
                   <Label htmlFor="firstName">First Name</Label>
                   <Input 
                     id="firstName" 
-                    defaultValue="John" 
+                    defaultValue={user?.name || "John"}
                     disabled={!isEditing}
                   />
                 </div>
@@ -116,7 +112,7 @@ export default function ProfilePage() {
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input 
                     id="lastName" 
-                    defaultValue="Doe" 
+                    defaultValue={user?.name || "Doe"}
                     disabled={!isEditing}
                   />
                 </div>

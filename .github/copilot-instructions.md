@@ -4,6 +4,17 @@
 
 Astroneko Coffee is a full-stack coffee shop management system built with Spring Boot 3 (Java 21) backend and Next.js 14 frontend. The system supports multiple user roles (Admin/Manager, Employee/Cashier, Client) with comprehensive coffee shop operations including menu management, order processing, staff management, and authentication.
 
+## Response
+
+- Accept the issue or request
+- Plan out from simple to hardest
+- Break down the implementation into smaller tasks
+- Identify potential challenges and risks then document it for future references
+- Start implementing the solution incrementally, testing as you go
+- Before completion, ensure all tests are passing and code is reviewed
+  - cd frontend; npm run build - for frontend builds
+  - cd backend; ./mvnw clean package - for backend builds
+
 ## Architecture & Key Patterns
 
 ### Backend (Spring Boot 3 + PostgreSQL + Redis)
@@ -49,6 +60,7 @@ Astroneko Coffee is a full-stack coffee shop management system built with Spring
 - **Reusable Components**: Extensive use of shadcn/ui base components that are extended across the application
 - **Index Exports**: Centralized exports through `index.ts` files for clean imports
 - **Animation Variants**: Shared Framer Motion variants in `framer/variants/` for consistent animations
+- **Observability**: When doing modifications to code make sure to follow pattern and if noticed certain issues or improvements, start doing them incrementally following uniformity.
 
 #### Patterns
 
@@ -226,3 +238,17 @@ User user = userService.findByEmail(email);
 - **Middleware** (`middleware.ts`): Route protection based on user role
 - **Backend**: `@PreAuthorize` annotations on service methods
 - **Frontend**: Conditional rendering based on `user.role` from auth context
+
+## Commands sample to use backend
+
+- Run the backend:
+
+```powershell
+cd backend; mvn spring-boot:run;
+```
+
+- Run the frontend:
+
+```powershell
+cd frontend; npm run dev;
+```

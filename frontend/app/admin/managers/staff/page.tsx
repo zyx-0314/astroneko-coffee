@@ -51,7 +51,7 @@ export default function StaffManagementPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <StaffActionsCard />
+              <StaffActionsCard onStaffCreated={() => window.location.reload()} />
             </motion.div>
 
             {/* Staff List Section */}

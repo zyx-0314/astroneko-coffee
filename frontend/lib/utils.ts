@@ -29,3 +29,11 @@ export function formatShortDate(isoString: string): string {
   const day = date.getDate();
   return `${month} ${day}`;
 }
+
+// API Response interface for consistent API handling
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T | null;
+  error: string | null;
+  status: number;
+}

@@ -11,10 +11,16 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, length = 100)
-  private String name;
+  @Column(name = "first_name", nullable = false, length = 50)
+  private String firstName;
 
-  @Column(nullable = false, unique = true, length = 150)
+  @Column(name = "last_name", nullable = false, length = 50)
+  private String lastName;
+
+  @Column(nullable = false, unique = true, length = 50)
+  private String username;
+
+  @Column(nullable = false, unique = true, length = 100)
   private String email;
 
   @Column(nullable = false)
@@ -76,9 +82,17 @@ public class User {
     this.updatedAt = LocalDateTime.now();
   }
 
-  public User(String name, String email, String password) {
+  public User(
+    String firstName,
+    String lastName,
+    String username,
+    String email,
+    String password
+  ) {
     this();
-    this.name = name;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.username = username;
     this.email = email;
     this.password = password;
   }
@@ -92,13 +106,35 @@ public class User {
     this.id = id;
   }
 
-  public String getName() {
-    return name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
     this.updatedAt = LocalDateTime.now();
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  public String getName() {
+    return firstName + " " + lastName;
   }
 
   public String getEmail() {

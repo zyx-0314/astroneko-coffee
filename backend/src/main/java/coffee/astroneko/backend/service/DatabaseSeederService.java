@@ -39,7 +39,9 @@ public class DatabaseSeederService implements CommandLineRunner {
 
     // Client users
     User clientUser = new User();
-    clientUser.setName("John Smith");
+    clientUser.setFirstName("John");
+    clientUser.setLastName("Smith");
+    clientUser.setUsername("johnsmith");
     clientUser.setEmail("john.smith@example.com");
     clientUser.setPassword(passwordEncoder.encode("password123"));
     clientUser.setRole(User.Role.CLIENT);
@@ -48,7 +50,9 @@ public class DatabaseSeederService implements CommandLineRunner {
     users.add(clientUser);
 
     User femaleClient = new User();
-    femaleClient.setName("Jane Doe");
+    femaleClient.setFirstName("Jane");
+    femaleClient.setLastName("Doe");
+    femaleClient.setUsername("janedoe");
     femaleClient.setEmail("jane.doe@example.com");
     femaleClient.setPassword(passwordEncoder.encode("password123"));
     femaleClient.setRole(User.Role.CLIENT);
@@ -58,7 +62,9 @@ public class DatabaseSeederService implements CommandLineRunner {
 
     // Staff users
     User manager = new User();
-    manager.setName("Alex Thompson");
+    manager.setFirstName("Alex");
+    manager.setLastName("Thompson");
+    manager.setUsername("alexthompson");
     manager.setEmail("alex.thompson@astroneko.com");
     manager.setPassword(passwordEncoder.encode("password123"));
     manager.setRole(User.Role.MANAGER);
@@ -69,7 +75,9 @@ public class DatabaseSeederService implements CommandLineRunner {
     users.add(manager);
 
     User cashier = new User();
-    cashier.setName("Sarah Johnson");
+    cashier.setFirstName("Sarah");
+    cashier.setLastName("Johnson");
+    cashier.setUsername("sarahjohnson");
     cashier.setEmail("sarah.johnson@astroneko.com");
     cashier.setPassword(passwordEncoder.encode("password123"));
     cashier.setRole(User.Role.CASHIER);
@@ -81,7 +89,9 @@ public class DatabaseSeederService implements CommandLineRunner {
     users.add(cashier);
 
     User cook = new User();
-    cook.setName("Mike Rodriguez");
+    cook.setFirstName("Mike");
+    cook.setLastName("Rodriguez");
+    cook.setUsername("mikerodriguez");
     cook.setEmail("mike.rodriguez@astroneko.com");
     cook.setPassword(passwordEncoder.encode("password123"));
     cook.setRole(User.Role.COOK);
@@ -93,7 +103,9 @@ public class DatabaseSeederService implements CommandLineRunner {
     users.add(cook);
 
     User barista = new User();
-    barista.setName("Emma Wilson");
+    barista.setFirstName("Emma");
+    barista.setLastName("Wilson");
+    barista.setUsername("emmawilson");
     barista.setEmail("emma.wilson@astroneko.com");
     barista.setPassword(passwordEncoder.encode("password123"));
     barista.setRole(User.Role.BARISTA);
@@ -104,7 +116,9 @@ public class DatabaseSeederService implements CommandLineRunner {
     users.add(barista);
 
     User helper = new User();
-    helper.setName("David Chen");
+    helper.setFirstName("David");
+    helper.setLastName("Chen");
+    helper.setUsername("davidchen");
     helper.setEmail("david.chen@astroneko.com");
     helper.setPassword(passwordEncoder.encode("password123"));
     helper.setRole(User.Role.HELPER);

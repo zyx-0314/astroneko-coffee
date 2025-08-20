@@ -154,7 +154,7 @@ export async function signIn(email: string, password: string): Promise<User | nu
   }
 }
 
-export async function signUp(name: string, email: string, password: string, sex?: string): Promise<User | null> {
+export async function signUp(firstName: string, lastName: string, email: string, password: string, sex?: string): Promise<User | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/signup`, {
       method: 'POST',
@@ -162,7 +162,8 @@ export async function signUp(name: string, email: string, password: string, sex?
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 
-        name, 
+        firstName, 
+        lastName,
         email, 
         password, 
         sex: sex || 'OTHER' 
@@ -216,8 +217,8 @@ export function mockSignIn(email: string, password: string): Promise<User | null
   return signIn(email, password);
 }
 
-export function mockSignUp(name: string, email: string, password: string): Promise<User | null> {
-  return signUp(name, email, password);
+export function mockSignUp(firstName: string, lastName: string, email: string, password: string): Promise<User | null> {
+  return signUp(firstName, lastName, email, password);
 }
 
 export function calculateWorkDuration(clockInTime: string): string {

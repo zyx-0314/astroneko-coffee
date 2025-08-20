@@ -3,19 +3,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-// Temporary interface to avoid any type
-interface StaffMember {
-  id: string;
-  employeeId: string;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-  shift: string;
-  phone: string;
-  lastActive: string;
-  avatar?: string;
-}
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
@@ -32,16 +19,45 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Edit, Trash2, Eye, Clock } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, Eye, Clock, RefreshCw, UserX } from 'lucide-react';
 import { useStaffTable } from './StaffTable.hook';
+import { StaffSummary, getRoleBadgeColor, getRoleDisplayName } from '@/schema/staff.schema';
 
 export default function StaffTable() {
-  const { staffMembers, isLoading, handleEdit, handleDelete, handleView } = useStaffTable();
+  const { 
+    staffMembers, 
+    isLoading, 
+    error, 
+    handleEdit, 
+    handleDelete, 
+    handleView, 
+    handleDeactivate,
+    refreshStaff 
+  } = useStaffTable();
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6B4E37]"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <div className="text-red-600 dark:text-red-400">
+          Failed to load staff data: {error}
+        </div>
+        <Button 
+          onClick={refreshStaff}
+          variant="outline"
+          size="sm"
+          className="flex items-center space-x-2"
+        >
+          <RefreshCw className="h-4 w-4" />
+          <span>Retry</span>
+        </Button>
       </div>
     );
   }
@@ -70,34 +86,10 @@ export default function StaffTable() {
     );
   };
 
-  const getRoleBadge = (role: string) => {
-    const roleConfig = {
-      MANAGER: { 
-        label: 'Manager', 
-        className: 'bg-[#6B4E37] text-white' 
-      },
-      FRONT_DESK: { 
-        label: 'Front Desk', 
-        className: 'bg-[#2CA6A4] text-white' 
-      },
-      KITCHEN: { 
-        label: 'Kitchen', 
-        className: 'bg-[#E1B168] text-white' 
-      },
-      BARISTA: { 
-        label: 'Barista', 
-        className: 'bg-[#D4EDEC] text-gray-800' 
-      }
-    };
-
-    const config = roleConfig[role as keyof typeof roleConfig] || { 
-      label: role, 
-      className: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' 
-    };
-    
+  const getRoleBadge = (role: StaffSummary['role']) => {
     return (
-      <Badge className={config.className}>
-        {config.label}
+      <Badge className={getRoleBadgeColor(role)}>
+        {getRoleDisplayName(role)}
       </Badge>
     );
   };
@@ -117,7 +109,7 @@ export default function StaffTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {staffMembers.map((staff: StaffMember, index: number) => (
+          {staffMembers.map((staff: StaffSummary, index: number) => (
             <motion.tr
               key={staff.id}
               initial={{ opacity: 0, y: 20 }}
@@ -174,16 +166,25 @@ export default function StaffTable() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                    <DropdownMenuItem onClick={() => handleView(staff.id)} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleView(staff.id.toString())} className="cursor-pointer">
                       <Eye className="mr-2 h-4 w-4" />
                       View Details
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleEdit(staff.id)} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleEdit(staff.id.toString())} className="cursor-pointer">
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
+                    {staff.isActive && (
+                      <DropdownMenuItem 
+                        onClick={() => handleDeactivate(staff.id.toString())} 
+                        className="cursor-pointer text-orange-600 dark:text-orange-400"
+                      >
+                        <UserX className="mr-2 h-4 w-4" />
+                        Deactivate
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem 
-                      onClick={() => handleDelete(staff.id)} 
+                      onClick={() => handleDelete(staff.id.toString())} 
                       className="cursor-pointer text-red-600 dark:text-red-400"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
