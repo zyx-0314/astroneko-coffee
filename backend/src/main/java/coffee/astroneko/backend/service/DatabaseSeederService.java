@@ -1,11 +1,11 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.User;
-import coffee.astroneko.backend.repository.MenuItemRepository;
 import coffee.astroneko.backend.repository.UserRepository;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +19,9 @@ public class DatabaseSeederService implements CommandLineRunner {
 
   @Autowired
   private PasswordEncoder passwordEncoder;
+
+  // --- NEW: RNG for phone generation
+  private final Random rng = new SecureRandom();
 
   @Override
   public void run(String... args) throws Exception {
@@ -40,7 +43,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser1.setPassword(passwordEncoder.encode("password123"));
     clientUser1.setRole(User.Role.CLIENT);
     clientUser1.setSex(User.Sex.MALE);
-    clientUser1.setPoints(1250);
     clientUser1.setIsActive(true);
     users.add(clientUser1);
 
@@ -52,7 +54,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser2.setPassword(passwordEncoder.encode("password123"));
     clientUser2.setRole(User.Role.CLIENT);
     clientUser2.setSex(User.Sex.FEMALE);
-    clientUser2.setPoints(890);
     clientUser2.setIsActive(true);
     users.add(clientUser2);
 
@@ -64,7 +65,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser3.setPassword(passwordEncoder.encode("password123"));
     clientUser3.setRole(User.Role.CLIENT);
     clientUser3.setSex(User.Sex.MALE);
-    clientUser3.setPoints(2100);
     clientUser3.setIsActive(true);
     users.add(clientUser3);
 
@@ -76,7 +76,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser4.setPassword(passwordEncoder.encode("password123"));
     clientUser4.setRole(User.Role.CLIENT);
     clientUser4.setSex(User.Sex.FEMALE);
-    clientUser4.setPoints(750);
     clientUser4.setIsActive(true);
     users.add(clientUser4);
 
@@ -88,7 +87,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser5.setPassword(passwordEncoder.encode("password123"));
     clientUser5.setRole(User.Role.CLIENT);
     clientUser5.setSex(User.Sex.MALE);
-    clientUser5.setPoints(1800);
     clientUser5.setIsActive(true);
     users.add(clientUser5);
 
@@ -100,7 +98,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser6.setPassword(passwordEncoder.encode("password123"));
     clientUser6.setRole(User.Role.CLIENT);
     clientUser6.setSex(User.Sex.FEMALE);
-    clientUser6.setPoints(950);
     clientUser6.setIsActive(false); // Inactive user
     users.add(clientUser6);
 
@@ -112,7 +109,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser7.setPassword(passwordEncoder.encode("password123"));
     clientUser7.setRole(User.Role.CLIENT);
     clientUser7.setSex(User.Sex.MALE);
-    clientUser7.setPoints(3200);
     clientUser7.setIsActive(true);
     users.add(clientUser7);
 
@@ -124,7 +120,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser8.setPassword(passwordEncoder.encode("password123"));
     clientUser8.setRole(User.Role.CLIENT);
     clientUser8.setSex(User.Sex.FEMALE);
-    clientUser8.setPoints(1450);
     clientUser8.setIsActive(true);
     users.add(clientUser8);
 
@@ -136,7 +131,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser9.setPassword(passwordEncoder.encode("password123"));
     clientUser9.setRole(User.Role.CLIENT);
     clientUser9.setSex(User.Sex.MALE);
-    clientUser9.setPoints(680);
     clientUser9.setIsActive(false); // Inactive user
     users.add(clientUser9);
 
@@ -148,7 +142,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser10.setPassword(passwordEncoder.encode("password123"));
     clientUser10.setRole(User.Role.CLIENT);
     clientUser10.setSex(User.Sex.FEMALE);
-    clientUser10.setPoints(1125);
     clientUser10.setIsActive(true);
     users.add(clientUser10);
 
@@ -160,7 +153,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser11.setPassword(passwordEncoder.encode("password123"));
     clientUser11.setRole(User.Role.CLIENT);
     clientUser11.setSex(User.Sex.MALE);
-    clientUser11.setPoints(2750);
     clientUser11.setIsActive(true);
     users.add(clientUser11);
 
@@ -172,7 +164,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     clientUser12.setPassword(passwordEncoder.encode("password123"));
     clientUser12.setRole(User.Role.CLIENT);
     clientUser12.setSex(User.Sex.FEMALE);
-    clientUser12.setPoints(825);
     clientUser12.setIsActive(true);
     users.add(clientUser12);
 
@@ -186,8 +177,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     manager.setRole(User.Role.MANAGER);
     manager.setSex(User.Sex.MALE);
     manager.setAvatar("/placeholder/user/Male.png");
-    manager.setShiftStart("08:00");
-    manager.setShiftEnd("17:00");
     users.add(manager);
 
     User cashier = new User();
@@ -199,9 +188,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     cashier.setRole(User.Role.CASHIER);
     cashier.setSex(User.Sex.FEMALE);
     cashier.setAvatar("/placeholder/user/Female.png");
-    cashier.setShiftStart("09:00");
-    cashier.setShiftEnd("18:00");
-    cashier.setClockInTime("08:55");
     users.add(cashier);
 
     User cook = new User();
@@ -213,9 +199,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     cook.setRole(User.Role.COOK);
     cook.setSex(User.Sex.MALE);
     cook.setAvatar("/placeholder/user/Male.png");
-    cook.setShiftStart("07:30");
-    cook.setShiftEnd("16:30");
-    cook.setClockInTime("07:25");
     users.add(cook);
 
     User barista = new User();
@@ -227,8 +210,6 @@ public class DatabaseSeederService implements CommandLineRunner {
     barista.setRole(User.Role.BARISTA);
     barista.setSex(User.Sex.FEMALE);
     barista.setAvatar("/placeholder/user/Female.png");
-    barista.setShiftStart("10:00");
-    barista.setShiftEnd("19:00");
     users.add(barista);
 
     User helper = new User();
@@ -239,11 +220,22 @@ public class DatabaseSeederService implements CommandLineRunner {
     helper.setPassword(passwordEncoder.encode("password123"));
     helper.setRole(User.Role.HELPER);
     helper.setSex(User.Sex.MALE);
-    helper.setShiftStart("11:00");
-    helper.setShiftEnd("20:00");
     users.add(helper);
+
+    // --- NEW: assign random PH numbers (09 + 9 digits) to all users
+    for (User u : users) {
+      // If your entity uses a different setter name, adjust the next line:
+      u.setPhoneNumber(randomPhMobile()); // ← adjust if your setter differs
+    }
 
     userRepository.saveAll(users);
     System.out.println("✅ Seeded " + users.size() + " users");
+  }
+
+  // --- NEW: helper to generate Philippine mobile numbers
+  private String randomPhMobile() {
+    // 9 digits, zero-padded, prefixed with "09"
+    int nineDigits = rng.nextInt(1_000_000_000); // 0..999,999,999
+    return String.format("09%09d", nineDigits);
   }
 }
