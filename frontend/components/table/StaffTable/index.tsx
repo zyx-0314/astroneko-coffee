@@ -120,7 +120,7 @@ export default function StaffTable() {
               <TableCell>
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={staff.avatar} alt={staff.name} />
+                    <AvatarImage src={staff && staff.avatar ? staff.avatar : staff && staff.sex === 'FEMALE' ? '/placeholder/user/Female.png' : '/placeholder/user/Male.png'} />
                     <AvatarFallback className="bg-[#6B4E37] text-white">
                       {staff.name.split(' ').map((n: string) => n[0]).join('')}
                     </AvatarFallback>

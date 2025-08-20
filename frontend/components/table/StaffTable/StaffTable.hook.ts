@@ -32,7 +32,8 @@ export const useStaffTable = () => {
           avatar: staff.avatar,
           department: staff.department,
           position: staff.position,
-          isActive: staff.isActive && staff.isUserActive
+          isActive: staff.isActive && staff.isUserActive,
+          sex: staff.sex
         }));
 
         setStaffMembers(staffSummary);
@@ -119,7 +120,8 @@ export const useStaffTable = () => {
         avatar: staff.avatar,
         department: staff.department,
         position: staff.position,
-        isActive: staff.isActive && staff.isUserActive
+        isActive: staff.isActive && staff.isUserActive,
+        sex: staff.sex
       }));
 
       setStaffMembers(staffSummary);

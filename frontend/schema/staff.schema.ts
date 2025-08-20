@@ -64,7 +64,7 @@ export interface Staff {
   username: string;
   email: string;
   role: UserRole;
-  sex?: UserSex;
+  sex: UserSex;
   avatar?: string;
   points: number;
   isUserActive: boolean;
@@ -85,6 +85,7 @@ export interface StaffSummary {
   department: string;
   position: string;
   isActive: boolean;
+  sex: UserSex;
 }
 
 // Create staff request
