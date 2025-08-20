@@ -55,6 +55,7 @@ public class StaffService {
     user.setRole(request.getRole());
     user.setSex(request.getSex());
     user.setAvatar(request.getAvatar());
+    user.setPhoneNumber(request.getPhone()); // Set phone number on User entity
     user.setIsActive(true);
 
     user = userRepository.save(user);
@@ -200,6 +201,9 @@ public class StaffService {
     }
     if (request.getAvatar() != null) {
       user.setAvatar(request.getAvatar());
+    }
+    if (request.getPhone() != null) {
+      user.setPhoneNumber(request.getPhone()); // Update phone number on User entity
     }
 
     user = userRepository.save(user);

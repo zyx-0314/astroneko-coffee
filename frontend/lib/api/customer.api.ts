@@ -1,4 +1,5 @@
 import { ApiResponse } from '@/lib/utils';
+import { tokenManager } from '@/lib/auth-cookies';
 
 export interface Customer {
   id: number;
@@ -31,7 +32,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8083';
 
 class CustomerAPI {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('token');
+    const token = tokenManager.getToken();
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
@@ -187,7 +188,8 @@ class CustomerAPI {
     size: number = 10,
     sortBy: string = 'firstName',
     sortDir: 'asc' | 'desc' = 'asc',
-    active?: boolean
+    active?: boolean,
+    search?: string
   ): Promise<ApiResponse<PaginatedCustomerResponse>> {
     try {
       const params = new URLSearchParams({
@@ -199,6 +201,10 @@ class CustomerAPI {
 
       if (active !== undefined) {
         params.append('active', active.toString());
+      }
+
+      if (search && search.trim()) {
+        params.append('search', search.trim());
       }
 
       const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/paginated?${params}`, {

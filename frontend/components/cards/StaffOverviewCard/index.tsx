@@ -3,39 +3,64 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, UserCheck, UserX, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Users, UserCheck, UserX, Clock, RefreshCw } from 'lucide-react';
+import { useStaffStats } from './useStaffStats.hook';
 
 export default function StaffOverviewCard() {
-  const stats = [
+  const { stats, isLoading, error, refreshStats } = useStaffStats();
+
+  if (error) {
+    return (
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="text-red-600 dark:text-red-400">
+            Failed to load staff statistics: {error}
+          </div>
+          <Button 
+            onClick={refreshStats}
+            variant="outline"
+            size="sm"
+            className="flex items-center space-x-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Retry</span>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const statsConfig = [
     {
       title: 'Total Staff',
-      value: '24',
-      change: '+2',
-      changeType: 'positive' as const,
+      value: isLoading ? '...' : stats.totalStaff.toString(),
+      change: '+0', // Could be calculated from historical data
+      changeType: 'neutral' as 'positive' | 'negative' | 'neutral',
       icon: Users,
       color: '#6B4E37'
     },
     {
       title: 'Active Today',
-      value: '18',
-      change: '+3',
-      changeType: 'positive' as const,
+      value: isLoading ? '...' : stats.activeToday.toString(),
+      change: '+0', // Could be calculated from yesterday's data
+      changeType: 'positive' as 'positive' | 'negative' | 'neutral',
       icon: UserCheck,
       color: '#2CA6A4'
     },
     {
       title: 'On Break',
-      value: '3',
-      change: '-1',
-      changeType: 'negative' as const,
+      value: isLoading ? '...' : stats.onBreak.toString(),
+      change: '+0', // Could be calculated from previous period
+      changeType: 'neutral' as 'positive' | 'negative' | 'neutral',
       icon: Clock,
       color: '#E1B168'
     },
     {
       title: 'Off Duty',
-      value: '3',
-      change: '0',
-      changeType: 'neutral' as const,
+      value: isLoading ? '...' : stats.offDuty.toString(),
+      change: '+0', // Could be calculated from previous period
+      changeType: 'neutral' as 'positive' | 'negative' | 'neutral',
       icon: UserX,
       color: '#6C757D'
     }
@@ -43,7 +68,7 @@ export default function StaffOverviewCard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {stats.map((stat, index) => (
+      {statsConfig.map((stat, index) => (
         <motion.div
           key={stat.title}
           initial={{ opacity: 0, scale: 0.9 }}

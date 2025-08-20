@@ -8,6 +8,12 @@ export const useStaffTable = () => {
   const [staffMembers, setStaffMembers] = useState<StaffSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Modal state management
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewStaffId, setViewStaffId] = useState<string | null>(null);
+  const [editStaffId, setEditStaffId] = useState<string | null>(null);
 
   // Fetch staff data from API
   useEffect(() => {
@@ -49,9 +55,8 @@ export const useStaffTable = () => {
   }, []);
 
   const handleEdit = (staffId: string) => {
-    console.log('Edit staff member:', staffId);
-    // TODO: Navigate to edit form or open modal
-    // For now, we'll implement this when we create the edit modal/form
+    setEditStaffId(staffId);
+    setIsEditModalOpen(true);
   };
 
   const handleDelete = async (staffId: string) => {
@@ -72,9 +77,8 @@ export const useStaffTable = () => {
   };
 
   const handleView = (staffId: string) => {
-    console.log('View staff member:', staffId);
-    // TODO: Navigate to detail view or open modal
-    // For now, we'll implement this when we create the detail modal/page
+    setViewStaffId(staffId);
+    setIsViewModalOpen(true);
   };
 
   const handleDeactivate = async (staffId: string) => {
@@ -141,6 +145,13 @@ export const useStaffTable = () => {
     handleDelete,
     handleView,
     handleDeactivate,
-    refreshStaff
+    refreshStaff,
+    // Modal state
+    isViewModalOpen,
+    setIsViewModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
+    viewStaffId,
+    editStaffId
   };
 };

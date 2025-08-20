@@ -22,6 +22,8 @@ import {
 import { MoreHorizontal, Edit, Trash2, Eye, Clock, RefreshCw, UserX } from 'lucide-react';
 import { useStaffTable } from './StaffTable.hook';
 import { StaffSummary, getRoleBadgeColor, getRoleDisplayName } from '@/schema/staff.schema';
+import ViewStaffModal from '@/components/modals/ViewStaffModal';
+import EditStaffModal from '@/components/modals/EditStaffModal';
 
 export default function StaffTable() {
   const { 
@@ -32,7 +34,14 @@ export default function StaffTable() {
     handleDelete, 
     handleView, 
     handleDeactivate,
-    refreshStaff 
+    refreshStaff,
+    // Modal state
+    isViewModalOpen,
+    setIsViewModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
+    viewStaffId,
+    editStaffId
   } = useStaffTable();
 
   if (isLoading) {
@@ -95,8 +104,9 @@ export default function StaffTable() {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
+    <>
+      <div className="overflow-x-auto">
+        <Table>
         <TableHeader>
           <TableRow className="border-gray-200 dark:border-gray-700">
             <TableHead className="text-gray-700 dark:text-gray-300">Staff Member</TableHead>
@@ -198,5 +208,21 @@ export default function StaffTable() {
         </TableBody>
       </Table>
     </div>
+
+    {/* View Staff Modal */}
+    <ViewStaffModal
+      staffId={viewStaffId}
+      isOpen={isViewModalOpen}
+      onClose={() => setIsViewModalOpen(false)}
+    />
+
+    {/* Edit Staff Modal */}
+    <EditStaffModal
+      staffId={editStaffId}
+      isOpen={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+      onStaffUpdated={refreshStaff}
+    />
+  </>
   );
 }

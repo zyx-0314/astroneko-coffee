@@ -66,15 +66,34 @@ public class CustomerService {
     String sortBy,
     String sortDir
   ) {
+    return getAllCustomersPaginated(page, size, sortBy, sortDir, null);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<CustomerResponse> getAllCustomersPaginated(
+    int page,
+    int size,
+    String sortBy,
+    String sortDir,
+    String search
+  ) {
     Sort sort = sortDir.equalsIgnoreCase("desc")
       ? Sort.by(sortBy).descending()
       : Sort.by(sortBy).ascending();
 
     Pageable pageable = PageRequest.of(page, size, sort);
-    Page<User> customers = userRepository.findByRole(
-      User.Role.CLIENT,
-      pageable
-    );
+    Page<User> customers;
+
+    if (search != null && !search.trim().isEmpty()) {
+      String searchTerm = "%" + search.toLowerCase() + "%";
+      customers = userRepository.findByRoleAndSearchTerm(
+        User.Role.CLIENT,
+        searchTerm,
+        pageable
+      );
+    } else {
+      customers = userRepository.findByRole(User.Role.CLIENT, pageable);
+    }
 
     return customers.map(this::mapToCustomerResponse);
   }
@@ -86,15 +105,37 @@ public class CustomerService {
     String sortBy,
     String sortDir
   ) {
+    return getAllActiveCustomersPaginated(page, size, sortBy, sortDir, null);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<CustomerResponse> getAllActiveCustomersPaginated(
+    int page,
+    int size,
+    String sortBy,
+    String sortDir,
+    String search
+  ) {
     Sort sort = sortDir.equalsIgnoreCase("desc")
       ? Sort.by(sortBy).descending()
       : Sort.by(sortBy).ascending();
 
     Pageable pageable = PageRequest.of(page, size, sort);
-    Page<User> customers = userRepository.findByRoleAndIsActiveTrue(
-      User.Role.CLIENT,
-      pageable
-    );
+    Page<User> customers;
+
+    if (search != null && !search.trim().isEmpty()) {
+      String searchTerm = "%" + search.toLowerCase() + "%";
+      customers = userRepository.findByRoleAndIsActiveTrueAndSearchTerm(
+        User.Role.CLIENT,
+        searchTerm,
+        pageable
+      );
+    } else {
+      customers = userRepository.findByRoleAndIsActiveTrue(
+        User.Role.CLIENT,
+        pageable
+      );
+    }
 
     return customers.map(this::mapToCustomerResponse);
   }

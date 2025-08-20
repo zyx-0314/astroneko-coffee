@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -78,6 +78,9 @@ export default function CreateStaffModal({ onStaffCreated, trigger }: CreateStaf
             <UserPlus className="h-6 w-6 text-[#6B4E37]" />
             Add New Staff Member
           </DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-400">
+            Fill in the staff member information using the tabs below.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

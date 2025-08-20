@@ -68,16 +68,24 @@ export function EnhancedCustomerTable({ customers, loading, onCustomerUpdate }: 
   const loadPaginatedData = async (page: number = 0, search: string = '', status: 'all' | 'active' | 'inactive' = 'all') => {
     if (!USE_SERVER_PAGINATION) return;
     
+    console.log('Loading paginated data:', { page, search, status, sortBy, sortDir });
     setServerLoading(true);
     try {
       const activeFilter = status === 'all' ? undefined : status === 'active';
+      const searchTerm = search.trim() || undefined;
+      
+      console.log('API call parameters:', { page, ITEMS_PER_PAGE, sortBy, sortDir, activeFilter, searchTerm });
+      
       const response = await customerAPI.getCustomersPaginated(
         page,
         ITEMS_PER_PAGE,
         sortBy,
         sortDir,
-        activeFilter
+        activeFilter,
+        searchTerm
       );
+      
+      console.log('API response:', response);
       
       if (response.success && response.data) {
         // Enrich customer data with stats
@@ -105,16 +113,10 @@ export function EnhancedCustomerTable({ customers, loading, onCustomerUpdate }: 
           })
         );
 
+        // When using server pagination, don't filter client-side - server already filtered
         setPaginatedData({
           ...response.data,
-          content: enrichedCustomers.filter(customer => {
-            if (!search) return true;
-            const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-            const searchLower = search.toLowerCase();
-            return fullName.includes(searchLower) ||
-              customer.email.toLowerCase().includes(searchLower) ||
-              customer.phoneNumber.includes(search);
-          })
+          content: enrichedCustomers
         });
       }
     } catch (error) {
@@ -206,10 +208,18 @@ export function EnhancedCustomerTable({ customers, loading, onCustomerUpdate }: 
 
   const currentData = getCurrentData();
 
-  // Load data on component mount and when filters change
+  // Load data on component mount
   useEffect(() => {
     if (USE_SERVER_PAGINATION) {
       loadPaginatedData(0, searchTerm, statusFilter);
+    }
+  }, []);
+
+  // Load data when filters change
+  useEffect(() => {
+    if (USE_SERVER_PAGINATION) {
+      loadPaginatedData(0, searchTerm, statusFilter);
+      setCurrentPage(1);
     }
   }, [sortBy, sortDir, statusFilter]);
 
@@ -229,10 +239,10 @@ export function EnhancedCustomerTable({ customers, loading, onCustomerUpdate }: 
 
   // Handle page change
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     if (USE_SERVER_PAGINATION) {
       loadPaginatedData(page - 1, searchTerm, statusFilter);
     }
-    setCurrentPage(page);
   };
 
   // Handle sorting

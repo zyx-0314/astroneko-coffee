@@ -40,14 +40,18 @@ export function CustomerDashboardSection() {
   const loadCustomerStats = async () => {
     setLoading(true);
     try {
+      // Use paginated API to get all customers and active customers
       const [allCustomersResponse, activeCustomersResponse] = await Promise.all([
-        customerAPI.getAllCustomers(),
-        customerAPI.getAllActiveCustomers()
+        customerAPI.getCustomersPaginated(0, 1000), // Get a large page to get all customers
+        customerAPI.getCustomersPaginated(0, 1000, 'firstName', 'asc', true) // Active customers only
       ]);
 
+      console.log('All customers response:', allCustomersResponse);
+      console.log('Active customers response:', activeCustomersResponse);
+
       if (allCustomersResponse.success && activeCustomersResponse.success) {
-        const allCustomers = allCustomersResponse.data || [];
-        const activeCustomers = activeCustomersResponse.data || [];
+        const allCustomers = allCustomersResponse.data?.content || [];
+        const activeCustomers = activeCustomersResponse.data?.content || [];
         
         // Calculate basic stats
         const totalCustomers = allCustomers.length;

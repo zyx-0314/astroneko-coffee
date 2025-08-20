@@ -32,23 +32,9 @@ export function CustomerManagementSection() {
   const loadCustomers = async () => {
     setLoading(true);
     try {
-      const response = await customerAPI.getAllCustomers();
-      if (response.success && response.data) {
-        // Transform and enrich customer data
-        const enrichedCustomers = await Promise.all(
-          response.data.map(async (customer) => {
-            const orderCountResponse = await purchaseHistoryAPI.getCustomerOrderCount(customer.id);
-            const totalSpentResponse = await purchaseHistoryAPI.getCustomerTotalSpent(customer.id);
-            
-            return {
-              ...customer,
-              totalOrders: orderCountResponse.success ? orderCountResponse.data || 0 : 0,
-              totalSpent: totalSpentResponse.success ? totalSpentResponse.data || 0 : 0,
-            };
-          })
-        );
-        setCustomers(enrichedCustomers);
-      }
+      // Since EnhancedCustomerTable uses server-side pagination, 
+      // we don't need to load customers here. Just set empty array.
+      setCustomers([]);
     } catch (error) {
       console.error('Failed to load customers:', error);
     } finally {

@@ -1,4 +1,5 @@
 import { ApiResponse } from '@/lib/utils';
+import { tokenManager } from '@/lib/auth-cookies';
 
 export interface PurchaseHistory {
   id: number;
@@ -47,7 +48,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8083';
 
 class PurchaseHistoryAPI {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('token');
+    const token = tokenManager.getToken();
     return {
       'Content-Type': 'application/json',
       'Authorization': token ? `Bearer ${token}` : '',

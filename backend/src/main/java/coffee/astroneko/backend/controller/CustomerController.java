@@ -193,7 +193,10 @@ public class CustomerController {
     @Parameter(description = "Filter by active status") @RequestParam(
       name = "active",
       required = false
-    ) Boolean active
+    ) Boolean active,
+    @Parameter(
+      description = "Search term for name, email, or phone"
+    ) @RequestParam(name = "search", required = false) String search
   ) {
     try {
       Page<CustomerResponse> customers;
@@ -202,14 +205,16 @@ public class CustomerController {
           page,
           size,
           sortBy,
-          sortDir
+          sortDir,
+          search
         );
       } else {
         customers = customerService.getAllCustomersPaginated(
           page,
           size,
           sortBy,
-          sortDir
+          sortDir,
+          search
         );
       }
       return ResponseEntity.ok(customers);
