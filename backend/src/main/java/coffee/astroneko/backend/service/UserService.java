@@ -33,13 +33,9 @@ public class UserService {
     // Create new user account
     User user = new User();
 
-    // Split name into first and last name
-    String[] nameParts = signUpRequest.getName().trim().split("\\s+", 2);
-    String firstName = nameParts[0];
-    String lastName = nameParts.length > 1 ? nameParts[1] : "";
-
-    user.setFirstName(firstName);
-    user.setLastName(lastName);
+    // Set names directly from request
+    user.setFirstName(signUpRequest.getFirstName());
+    user.setLastName(signUpRequest.getLastName());
 
     // Generate username from email (take part before @)
     String username = signUpRequest.getEmail().split("@")[0];
@@ -53,6 +49,7 @@ public class UserService {
     user.setUsername(username);
 
     user.setEmail(signUpRequest.getEmail());
+    user.setPhoneNumber(signUpRequest.getPhoneNumber());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
     user.setRole(User.Role.CLIENT); // Default role for sign up
 

@@ -6,14 +6,22 @@ import jakarta.validation.constraints.Size;
 
 public class SignUpRequest {
 
-  @NotBlank(message = "Name is required")
-  @Size(max = 100, message = "Name must be less than 100 characters")
-  private String name;
+  @NotBlank(message = "First name is required")
+  @Size(max = 50, message = "First name must be less than 50 characters")
+  private String firstName;
+
+  @NotBlank(message = "Last name is required")
+  @Size(max = 50, message = "Last name must be less than 50 characters")
+  private String lastName;
 
   @NotBlank(message = "Email is required")
   @Email(message = "Please provide a valid email")
-  @Size(max = 150, message = "Email must be less than 150 characters")
+  @Size(max = 100, message = "Email must be less than 100 characters")
   private String email;
+
+  @NotBlank(message = "Phone number is required")
+  @Size(max = 20, message = "Phone number must be less than 20 characters")
+  private String phoneNumber;
 
   @NotBlank(message = "Password is required")
   @Size(
@@ -28,19 +36,35 @@ public class SignUpRequest {
   // Constructors
   public SignUpRequest() {}
 
-  public SignUpRequest(String name, String email, String password) {
-    this.name = name;
+  public SignUpRequest(
+    String firstName,
+    String lastName,
+    String email,
+    String phoneNumber,
+    String password
+  ) {
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.email = email;
+    this.phoneNumber = phoneNumber;
     this.password = password;
   }
 
   // Getters and Setters
-  public String getName() {
-    return name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   public String getEmail() {
@@ -49,6 +73,14 @@ public class SignUpRequest {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 
   public String getPassword() {

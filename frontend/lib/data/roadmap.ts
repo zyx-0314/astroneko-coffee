@@ -40,7 +40,7 @@ export const roadmapData: RoadmapItem[] = [
     id: 'p1-auth',
     title: 'Authentication System',
     description: 'Complete sign in/up flow with role-based redirects and route protection.',
-    status: 'in-progress',
+    status: 'completed',
     category: 'authentication',
     priority: 'high',
     quarter: 'Phase 1',

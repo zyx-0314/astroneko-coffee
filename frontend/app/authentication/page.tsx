@@ -28,6 +28,7 @@ export default function AuthenticationPage() {
     firstName: '',
     lastName: '',
     email: '',
+    phoneNumber: '',
     password: '',
     confirmPassword: '',
     sex: ''
@@ -71,7 +72,7 @@ export default function AuthenticationPage() {
     }
 
     try {
-      const user = await signUp(signUpData.firstName, signUpData.lastName, signUpData.email, signUpData.password, signUpData.sex);
+      const user = await signUp(signUpData.firstName, signUpData.lastName, signUpData.email, signUpData.phoneNumber, signUpData.password, signUpData.sex);
       
       if (user) {
         // Update the auth context

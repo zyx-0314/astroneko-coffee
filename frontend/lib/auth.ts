@@ -1,7 +1,7 @@
-import { User, UserRole, AuthState } from '@/schema/user.schema';
+import { User, AuthState } from '@/schema/user.schema';
 
 // Role to route mapping
-export const roleRouteMap: Record<UserRole, string> = {
+export const roleRouteMap: Record<User['role'], string> = {
   cashier: '/admin/front-desk/dashboard',
   helper: '/admin/front-desk/dashboard',
   cook: '/admin/kitchen/dashboard',
@@ -12,39 +12,39 @@ export const roleRouteMap: Record<UserRole, string> = {
 };
 
 // Staff roles that can access admin dashboards
-export const staffRoles: UserRole[] = ['cashier', 'helper', 'cook', 'barista', 'manager', 'owner'];
+export const staffRoles: User['role'][] = ['cashier', 'helper', 'cook', 'barista', 'manager', 'owner'];
 
 // Kitchen roles
-export const kitchenRoles: UserRole[] = ['cook', 'barista'];
+export const kitchenRoles: User['role'][] = ['cook', 'barista'];
 
 // Front desk roles
-export const frontDeskRoles: UserRole[] = ['cashier', 'helper'];
+export const frontDeskRoles: User['role'][] = ['cashier', 'helper'];
 
 // Manager roles
-export const managerRoles: UserRole[] = ['manager', 'owner'];
+export const managerRoles: User['role'][] = ['manager', 'owner'];
 
-export function getRouteForRole(role: UserRole): string {
+export function getRouteForRole(role: User['role']): string {
   return roleRouteMap[role] || '/auth/forbidden';
 }
 
-export function canAccessRoute(userRole: UserRole, route: string): boolean {
+export function canAccessRoute(userRole: User['role'], route: string): boolean {
   const allowedRoute = getRouteForRole(userRole);
   return route === allowedRoute;
 }
 
-export function isStaffRole(role: UserRole): boolean {
+export function isStaffRole(role: User['role']): boolean {
   return staffRoles.includes(role);
 }
 
-export function canAccessFrontDesk(role: UserRole): boolean {
+export function canAccessFrontDesk(role: User['role']): boolean {
   return frontDeskRoles.includes(role);
 }
 
-export function canAccessKitchen(role: UserRole): boolean {
+export function canAccessKitchen(role: User['role']): boolean {
   return kitchenRoles.includes(role);
 }
 
-export function canAccessManagement(role: UserRole): boolean {
+export function canAccessManagement(role: User['role']): boolean {
   return managerRoles.includes(role);
 }
 
@@ -96,7 +96,7 @@ export async function fetchUserProfile(token?: string): Promise<User | null> {
       id: userData.id.toString(),
       name: userData.name,
       email: userData.email,
-      role: userData.role.toLowerCase() as UserRole,
+      role: userData.role.toLowerCase() as User['role'],
       points: userData.points || 0,
       sex: userData.sex ? userData.sex.toLowerCase() : undefined,
       isActive: userData.isActive !== false,
@@ -142,7 +142,7 @@ export async function signIn(email: string, password: string): Promise<User | nu
       id: authResponse.userId.toString(),
       name: authResponse.name,
       email: authResponse.email,
-      role: authResponse.role as UserRole,
+      role: authResponse.role as User['role'],
       points: 0,
       isActive: true
     };
@@ -154,7 +154,7 @@ export async function signIn(email: string, password: string): Promise<User | nu
   }
 }
 
-export async function signUp(firstName: string, lastName: string, email: string, password: string, sex?: string): Promise<User | null> {
+export async function signUp(firstName: string, lastName: string, email: string, phoneNumber: string, password: string, sex?: string): Promise<User | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/signup`, {
       method: 'POST',
@@ -165,6 +165,7 @@ export async function signUp(firstName: string, lastName: string, email: string,
         firstName, 
         lastName,
         email, 
+        phoneNumber,
         password, 
         sex: sex || 'OTHER' 
       } as SignUpRequest),
@@ -191,7 +192,7 @@ export async function signUp(firstName: string, lastName: string, email: string,
       id: authResponse.userId.toString(),
       name: authResponse.name,
       email: authResponse.email,
-      role: authResponse.role as UserRole,
+      role: authResponse.role as User['role'],
       points: 0,
       isActive: true
     };
@@ -217,8 +218,8 @@ export function mockSignIn(email: string, password: string): Promise<User | null
   return signIn(email, password);
 }
 
-export function mockSignUp(firstName: string, lastName: string, email: string, password: string): Promise<User | null> {
-  return signUp(firstName, lastName, email, password);
+export function mockSignUp(firstName: string, lastName: string, email: string, phoneNumber: string, password: string): Promise<User | null> {
+  return signUp(firstName, lastName, email, phoneNumber, password);
 }
 
 export function calculateWorkDuration(clockInTime: string): string {
