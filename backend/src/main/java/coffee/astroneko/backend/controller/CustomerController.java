@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -158,6 +159,60 @@ public class CustomerController {
       return ResponseEntity.ok("Customer activated successfully");
     } catch (RuntimeException e) {
       return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GetMapping("/paginated")
+  @Operation(
+    summary = "Get customers with pagination",
+    description = "Retrieves a paginated list of customers"
+  )
+  @ApiResponse(
+    responseCode = "200",
+    description = "Paginated customer list retrieved successfully"
+  )
+  public ResponseEntity<Page<CustomerResponse>> getCustomersPaginated(
+    @Parameter(description = "Page number (0-based)") @RequestParam(
+      name = "page",
+      defaultValue = "0"
+    ) int page,
+    @Parameter(description = "Page size") @RequestParam(
+      name = "size",
+      defaultValue = "10"
+    ) int size,
+    @Parameter(description = "Sort field") @RequestParam(
+      name = "sortBy",
+      defaultValue = "firstName"
+    ) String sortBy,
+    @Parameter(description = "Sort direction (asc/desc)") @RequestParam(
+      name = "sortDir",
+      defaultValue = "asc"
+    ) String sortDir,
+    @Parameter(description = "Filter by active status") @RequestParam(
+      name = "active",
+      required = false
+    ) Boolean active
+  ) {
+    try {
+      Page<CustomerResponse> customers;
+      if (active != null && active) {
+        customers = customerService.getAllActiveCustomersPaginated(
+          page,
+          size,
+          sortBy,
+          sortDir
+        );
+      } else {
+        customers = customerService.getAllCustomersPaginated(
+          page,
+          size,
+          sortBy,
+          sortDir
+        );
+      }
+      return ResponseEntity.ok(customers);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

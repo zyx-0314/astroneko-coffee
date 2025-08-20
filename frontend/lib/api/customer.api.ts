@@ -17,15 +17,31 @@ export interface CustomerResponse {
   total: number;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+export interface PaginatedCustomerResponse {
+  content: Customer[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+}
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8083';
 
 class CustomerAPI {
   private getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('token');
-    return {
+    const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      'Authorization': token ? `Bearer ${token}` : '',
     };
+    
+    // Only add Authorization header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
   }
 
   private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
@@ -156,6 +172,41 @@ class CustomerAPI {
         averageOrderValue: number;
         lastOrderDate?: string;
       }>(response);
+    } catch (error) {
+      return {
+        success: false,
+        data: null,
+        error: error instanceof Error ? error.message : 'Network error occurred',
+        status: 0
+      };
+    }
+  }
+
+  async getCustomersPaginated(
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'firstName',
+    sortDir: 'asc' | 'desc' = 'asc',
+    active?: boolean
+  ): Promise<ApiResponse<PaginatedCustomerResponse>> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        size: size.toString(),
+        sortBy,
+        sortDir
+      });
+
+      if (active !== undefined) {
+        params.append('active', active.toString());
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/paginated?${params}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      return await this.handleResponse<PaginatedCustomerResponse>(response);
     } catch (error) {
       return {
         success: false,

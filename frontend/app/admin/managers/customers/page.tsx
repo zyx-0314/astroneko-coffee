@@ -22,8 +22,8 @@ export default function CustomersPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mb-8"
           >
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Customer Management</h1>
-            <p className="text-gray-600 dark:text-gray-300">Manage customer information and profiles</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Customer Dashboard</h1>
+            <p className="text-gray-600 dark:text-gray-300">View customer analytics and manage customer information</p>
           </motion.div>
           
           <CustomerManagementSection />

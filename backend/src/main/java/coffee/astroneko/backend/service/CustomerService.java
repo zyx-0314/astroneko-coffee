@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +57,46 @@ public class CustomerService {
       User.Role.CLIENT
     );
     return customer.map(this::mapToCustomerResponse);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<CustomerResponse> getAllCustomersPaginated(
+    int page,
+    int size,
+    String sortBy,
+    String sortDir
+  ) {
+    Sort sort = sortDir.equalsIgnoreCase("desc")
+      ? Sort.by(sortBy).descending()
+      : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<User> customers = userRepository.findByRole(
+      User.Role.CLIENT,
+      pageable
+    );
+
+    return customers.map(this::mapToCustomerResponse);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<CustomerResponse> getAllActiveCustomersPaginated(
+    int page,
+    int size,
+    String sortBy,
+    String sortDir
+  ) {
+    Sort sort = sortDir.equalsIgnoreCase("desc")
+      ? Sort.by(sortBy).descending()
+      : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<User> customers = userRepository.findByRoleAndIsActiveTrue(
+      User.Role.CLIENT,
+      pageable
+    );
+
+    return customers.map(this::mapToCustomerResponse);
   }
 
   @Transactional

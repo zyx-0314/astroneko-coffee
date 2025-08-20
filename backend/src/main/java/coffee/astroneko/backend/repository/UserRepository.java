@@ -3,6 +3,8 @@ package coffee.astroneko.backend.repository;
 import coffee.astroneko.backend.entity.User;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
   List<User> findByRoleAndIsActiveTrue(User.Role role);
   Optional<User> findByIdAndRole(Long id, User.Role role);
   Optional<User> findByEmailAndRole(String email, User.Role role);
+
+  // Pagination support
+  Page<User> findByRole(User.Role role, Pageable pageable);
+  Page<User> findByRoleAndIsActiveTrue(User.Role role, Pageable pageable);
 }

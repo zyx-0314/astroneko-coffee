@@ -18,9 +18,6 @@ public class DatabaseSeederService implements CommandLineRunner {
   private UserRepository userRepository;
 
   @Autowired
-  private MenuItemRepository menuItemRepository;
-
-  @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Override
@@ -29,36 +26,155 @@ public class DatabaseSeederService implements CommandLineRunner {
     if (userRepository.count() == 0) {
       seedUsers();
     }
-    if (menuItemRepository.count() == 0) {
-      seedMenuItems();
-    }
   }
 
   private void seedUsers() {
     List<User> users = new ArrayList<>();
 
-    // Client users
-    User clientUser = new User();
-    clientUser.setFirstName("John");
-    clientUser.setLastName("Smith");
-    clientUser.setUsername("johnsmith");
-    clientUser.setEmail("john.smith@example.com");
-    clientUser.setPassword(passwordEncoder.encode("password123"));
-    clientUser.setRole(User.Role.CLIENT);
-    clientUser.setSex(User.Sex.MALE);
-    clientUser.setPoints(1250);
-    users.add(clientUser);
+    // Client users (12 clients for better demo data)
+    User clientUser1 = new User();
+    clientUser1.setFirstName("John");
+    clientUser1.setLastName("Smith");
+    clientUser1.setUsername("johnsmith");
+    clientUser1.setEmail("john.smith@example.com");
+    clientUser1.setPassword(passwordEncoder.encode("password123"));
+    clientUser1.setRole(User.Role.CLIENT);
+    clientUser1.setSex(User.Sex.MALE);
+    clientUser1.setPoints(1250);
+    clientUser1.setIsActive(true);
+    users.add(clientUser1);
 
-    User femaleClient = new User();
-    femaleClient.setFirstName("Jane");
-    femaleClient.setLastName("Doe");
-    femaleClient.setUsername("janedoe");
-    femaleClient.setEmail("jane.doe@example.com");
-    femaleClient.setPassword(passwordEncoder.encode("password123"));
-    femaleClient.setRole(User.Role.CLIENT);
-    femaleClient.setSex(User.Sex.FEMALE);
-    femaleClient.setPoints(890);
-    users.add(femaleClient);
+    User clientUser2 = new User();
+    clientUser2.setFirstName("Jane");
+    clientUser2.setLastName("Doe");
+    clientUser2.setUsername("janedoe");
+    clientUser2.setEmail("jane.doe@example.com");
+    clientUser2.setPassword(passwordEncoder.encode("password123"));
+    clientUser2.setRole(User.Role.CLIENT);
+    clientUser2.setSex(User.Sex.FEMALE);
+    clientUser2.setPoints(890);
+    clientUser2.setIsActive(true);
+    users.add(clientUser2);
+
+    User clientUser3 = new User();
+    clientUser3.setFirstName("Michael");
+    clientUser3.setLastName("Johnson");
+    clientUser3.setUsername("michaeljohnson");
+    clientUser3.setEmail("michael.johnson@example.com");
+    clientUser3.setPassword(passwordEncoder.encode("password123"));
+    clientUser3.setRole(User.Role.CLIENT);
+    clientUser3.setSex(User.Sex.MALE);
+    clientUser3.setPoints(2100);
+    clientUser3.setIsActive(true);
+    users.add(clientUser3);
+
+    User clientUser4 = new User();
+    clientUser4.setFirstName("Emily");
+    clientUser4.setLastName("Davis");
+    clientUser4.setUsername("emilydavis");
+    clientUser4.setEmail("emily.davis@example.com");
+    clientUser4.setPassword(passwordEncoder.encode("password123"));
+    clientUser4.setRole(User.Role.CLIENT);
+    clientUser4.setSex(User.Sex.FEMALE);
+    clientUser4.setPoints(750);
+    clientUser4.setIsActive(true);
+    users.add(clientUser4);
+
+    User clientUser5 = new User();
+    clientUser5.setFirstName("Robert");
+    clientUser5.setLastName("Wilson");
+    clientUser5.setUsername("robertwilson");
+    clientUser5.setEmail("robert.wilson@example.com");
+    clientUser5.setPassword(passwordEncoder.encode("password123"));
+    clientUser5.setRole(User.Role.CLIENT);
+    clientUser5.setSex(User.Sex.MALE);
+    clientUser5.setPoints(1800);
+    clientUser5.setIsActive(true);
+    users.add(clientUser5);
+
+    User clientUser6 = new User();
+    clientUser6.setFirstName("Jessica");
+    clientUser6.setLastName("Brown");
+    clientUser6.setUsername("jessicabrown");
+    clientUser6.setEmail("jessica.brown@example.com");
+    clientUser6.setPassword(passwordEncoder.encode("password123"));
+    clientUser6.setRole(User.Role.CLIENT);
+    clientUser6.setSex(User.Sex.FEMALE);
+    clientUser6.setPoints(950);
+    clientUser6.setIsActive(false); // Inactive user
+    users.add(clientUser6);
+
+    User clientUser7 = new User();
+    clientUser7.setFirstName("William");
+    clientUser7.setLastName("Miller");
+    clientUser7.setUsername("williammiller");
+    clientUser7.setEmail("william.miller@example.com");
+    clientUser7.setPassword(passwordEncoder.encode("password123"));
+    clientUser7.setRole(User.Role.CLIENT);
+    clientUser7.setSex(User.Sex.MALE);
+    clientUser7.setPoints(3200);
+    clientUser7.setIsActive(true);
+    users.add(clientUser7);
+
+    User clientUser8 = new User();
+    clientUser8.setFirstName("Ashley");
+    clientUser8.setLastName("Garcia");
+    clientUser8.setUsername("ashleygarcia");
+    clientUser8.setEmail("ashley.garcia@example.com");
+    clientUser8.setPassword(passwordEncoder.encode("password123"));
+    clientUser8.setRole(User.Role.CLIENT);
+    clientUser8.setSex(User.Sex.FEMALE);
+    clientUser8.setPoints(1450);
+    clientUser8.setIsActive(true);
+    users.add(clientUser8);
+
+    User clientUser9 = new User();
+    clientUser9.setFirstName("Christopher");
+    clientUser9.setLastName("Martinez");
+    clientUser9.setUsername("christophermartinez");
+    clientUser9.setEmail("christopher.martinez@example.com");
+    clientUser9.setPassword(passwordEncoder.encode("password123"));
+    clientUser9.setRole(User.Role.CLIENT);
+    clientUser9.setSex(User.Sex.MALE);
+    clientUser9.setPoints(680);
+    clientUser9.setIsActive(false); // Inactive user
+    users.add(clientUser9);
+
+    User clientUser10 = new User();
+    clientUser10.setFirstName("Amanda");
+    clientUser10.setLastName("Taylor");
+    clientUser10.setUsername("amandataylor");
+    clientUser10.setEmail("amanda.taylor@example.com");
+    clientUser10.setPassword(passwordEncoder.encode("password123"));
+    clientUser10.setRole(User.Role.CLIENT);
+    clientUser10.setSex(User.Sex.FEMALE);
+    clientUser10.setPoints(1125);
+    clientUser10.setIsActive(true);
+    users.add(clientUser10);
+
+    User clientUser11 = new User();
+    clientUser11.setFirstName("Daniel");
+    clientUser11.setLastName("Anderson");
+    clientUser11.setUsername("danielanderson");
+    clientUser11.setEmail("daniel.anderson@example.com");
+    clientUser11.setPassword(passwordEncoder.encode("password123"));
+    clientUser11.setRole(User.Role.CLIENT);
+    clientUser11.setSex(User.Sex.MALE);
+    clientUser11.setPoints(2750);
+    clientUser11.setIsActive(true);
+    users.add(clientUser11);
+
+    User clientUser12 = new User();
+    clientUser12.setFirstName("Melissa");
+    clientUser12.setLastName("Thomas");
+    clientUser12.setUsername("melissathomas");
+    clientUser12.setEmail("melissa.thomas@example.com");
+    clientUser12.setPassword(passwordEncoder.encode("password123"));
+    clientUser12.setRole(User.Role.CLIENT);
+    clientUser12.setSex(User.Sex.FEMALE);
+    clientUser12.setPoints(825);
+    clientUser12.setIsActive(true);
+    users.add(clientUser12);
 
     // Staff users
     User manager = new User();
@@ -129,223 +245,5 @@ public class DatabaseSeederService implements CommandLineRunner {
 
     userRepository.saveAll(users);
     System.out.println("✅ Seeded " + users.size() + " users");
-  }
-
-  private void seedMenuItems() {
-    List<MenuItem> menuItems = new ArrayList<>();
-
-    // Cosmic Coffee Creations (Signature Blends)
-    MenuItem milkyWay = new MenuItem();
-    milkyWay.setName("Milky Way");
-    milkyWay.setDescription(
-      "White coffee base, creamy and light with stellar smoothness"
-    );
-    milkyWay.setPrice(3.99);
-    milkyWay.setOriginalPrice(4.50);
-    milkyWay.setType(MenuItem.ItemType.COFFEE);
-    milkyWay.setImage(
-      "/placeholder/product-services/Cosmic_Coffee_Creations_(Signature_Blends).png"
-    );
-    milkyWay.setRating(4.8);
-    milkyWay.setReviewsCount(245);
-    milkyWay.setWeeklyReviews(18);
-    milkyWay.setMonthlyReviews(67);
-    milkyWay.setWeeklyBuys(89);
-    milkyWay.setMonthlyBuys(312);
-    milkyWay.setPositiveReviewsWeekly(16);
-    milkyWay.setPositiveReviewsMonthly(59);
-    milkyWay.setTags("signature,bestseller,creamy");
-    milkyWay.setInStock(true);
-    milkyWay.setIsOnSale(true);
-    milkyWay.setPromoType(MenuItem.PromoType.NEEKOGUST);
-    menuItems.add(milkyWay);
-
-    MenuItem darkMatter = new MenuItem();
-    darkMatter.setName("Dark Matter");
-    darkMatter.setDescription(
-      "Chocolate-infused rich coffee with cosmic depths"
-    );
-    darkMatter.setPrice(5.25);
-    darkMatter.setOriginalPrice(6.00);
-    darkMatter.setType(MenuItem.ItemType.COFFEE);
-    darkMatter.setImage(
-      "/placeholder/product-services/Cosmic_Coffee_Creations_(Signature_Blends).png"
-    );
-    darkMatter.setRating(4.9);
-    darkMatter.setReviewsCount(312);
-    darkMatter.setWeeklyReviews(25);
-    darkMatter.setMonthlyReviews(89);
-    darkMatter.setWeeklyBuys(145);
-    darkMatter.setMonthlyBuys(567);
-    darkMatter.setPositiveReviewsWeekly(23);
-    darkMatter.setPositiveReviewsMonthly(82);
-    darkMatter.setTags("chocolate,rich,bestseller");
-    darkMatter.setInStock(true);
-    darkMatter.setIsOnSale(true);
-    menuItems.add(darkMatter);
-
-    MenuItem cormasNebula = new MenuItem();
-    cormasNebula.setName("Cormas Nebula");
-    cormasNebula.setDescription(
-      "Cookies & cream coffee blend with stellar cookie crumbles"
-    );
-    cormasNebula.setPrice(4.75);
-    cormasNebula.setOriginalPrice(5.50);
-    cormasNebula.setType(MenuItem.ItemType.COFFEE);
-    cormasNebula.setImage(
-      "/placeholder/product-services/Cosmic_Coffee_Creations_(Signature_Blends).png"
-    );
-    cormasNebula.setRating(4.7);
-    cormasNebula.setReviewsCount(189);
-    cormasNebula.setWeeklyReviews(12);
-    cormasNebula.setMonthlyReviews(43);
-    cormasNebula.setWeeklyBuys(67);
-    cormasNebula.setMonthlyBuys(234);
-    cormasNebula.setPositiveReviewsWeekly(11);
-    cormasNebula.setPositiveReviewsMonthly(38);
-    cormasNebula.setTags("cookies,cream,sweet");
-    cormasNebula.setInStock(true);
-    cormasNebula.setIsOnSale(true);
-    menuItems.add(cormasNebula);
-
-    MenuItem cosmosBlend = new MenuItem();
-    cosmosBlend.setName("Cosmos Blend");
-    cosmosBlend.setDescription(
-      "Merkat coffee bean specialty with interstellar aroma"
-    );
-    cosmosBlend.setPrice(5.50);
-    cosmosBlend.setType(MenuItem.ItemType.COFFEE);
-    cosmosBlend.setImage(
-      "/placeholder/product-services/Cosmic_Coffee_Creations_(Signature_Blends).png"
-    );
-    cosmosBlend.setRating(4.6);
-    cosmosBlend.setReviewsCount(156);
-    cosmosBlend.setWeeklyReviews(14);
-    cosmosBlend.setMonthlyReviews(52);
-    cosmosBlend.setWeeklyBuys(78);
-    cosmosBlend.setMonthlyBuys(289);
-    cosmosBlend.setPositiveReviewsWeekly(12);
-    cosmosBlend.setPositiveReviewsMonthly(47);
-    cosmosBlend.setTags("specialty,premium,signature");
-    cosmosBlend.setInStock(false);
-    menuItems.add(cosmosBlend);
-
-    MenuItem starlightLatte = new MenuItem();
-    starlightLatte.setName("Starlight Latte");
-    starlightLatte.setDescription(
-      "Vanilla latte with galaxy art, a visual and taste masterpiece"
-    );
-    starlightLatte.setPrice(4.25);
-    starlightLatte.setOriginalPrice(5.00);
-    starlightLatte.setType(MenuItem.ItemType.COFFEE);
-    starlightLatte.setImage(
-      "/placeholder/product-services/Cosmic_Coffee_Creations_(Signature_Blends).png"
-    );
-    starlightLatte.setRating(4.8);
-    starlightLatte.setReviewsCount(278);
-    starlightLatte.setWeeklyReviews(22);
-    starlightLatte.setMonthlyReviews(78);
-    starlightLatte.setWeeklyBuys(134);
-    starlightLatte.setMonthlyBuys(456);
-    starlightLatte.setPositiveReviewsWeekly(20);
-    starlightLatte.setPositiveReviewsMonthly(71);
-    starlightLatte.setTags("vanilla,latte art,instagram worthy");
-    starlightLatte.setInStock(true);
-    starlightLatte.setIsOnSale(true);
-    starlightLatte.setPromoType(MenuItem.PromoType.WELCOME_BACK_SCHOOL);
-    menuItems.add(starlightLatte);
-
-    // Add some pastries
-    MenuItem meteorBrownie = new MenuItem();
-    meteorBrownie.setName("Meteor Brownie");
-    meteorBrownie.setDescription(
-      "Rich chocolate brownie with cosmic dust and stellar nuts"
-    );
-    meteorBrownie.setPrice(3.25);
-    meteorBrownie.setType(MenuItem.ItemType.PASTRIES);
-    meteorBrownie.setImage(
-      "/placeholder/product-services/Space_Pastries_&_Treats.png"
-    );
-    meteorBrownie.setRating(4.6);
-    meteorBrownie.setReviewsCount(123);
-    meteorBrownie.setWeeklyReviews(8);
-    meteorBrownie.setMonthlyReviews(29);
-    meteorBrownie.setWeeklyBuys(45);
-    meteorBrownie.setMonthlyBuys(167);
-    meteorBrownie.setPositiveReviewsWeekly(7);
-    meteorBrownie.setPositiveReviewsMonthly(26);
-    meteorBrownie.setTags("chocolate,brownie,nuts");
-    meteorBrownie.setInStock(true);
-    menuItems.add(meteorBrownie);
-
-    MenuItem cosmicCroissant = new MenuItem();
-    cosmicCroissant.setName("Cosmic Croissant");
-    cosmicCroissant.setDescription(
-      "Buttery croissant with stardust filling and galactic glaze"
-    );
-    cosmicCroissant.setPrice(2.75);
-    cosmicCroissant.setType(MenuItem.ItemType.PASTRIES);
-    cosmicCroissant.setImage(
-      "/placeholder/product-services/Space_Pastries_&_Treats.png"
-    );
-    cosmicCroissant.setRating(4.4);
-    cosmicCroissant.setReviewsCount(89);
-    cosmicCroissant.setWeeklyReviews(6);
-    cosmicCroissant.setMonthlyReviews(22);
-    cosmicCroissant.setWeeklyBuys(32);
-    cosmicCroissant.setMonthlyBuys(118);
-    cosmicCroissant.setPositiveReviewsWeekly(5);
-    cosmicCroissant.setPositiveReviewsMonthly(19);
-    cosmicCroissant.setTags("croissant,buttery,pastry");
-    cosmicCroissant.setInStock(true);
-    menuItems.add(cosmicCroissant);
-
-    // Add some drinks
-    MenuItem galaxyTea = new MenuItem();
-    galaxyTea.setName("Galaxy Green Tea");
-    galaxyTea.setDescription(
-      "Refreshing green tea with cosmic herbs and stellar honey"
-    );
-    galaxyTea.setPrice(3.50);
-    galaxyTea.setType(MenuItem.ItemType.DRINKS);
-    galaxyTea.setImage(
-      "/placeholder/product-services/Non-Coffee_Galactic_Drinks.png"
-    );
-    galaxyTea.setRating(4.3);
-    galaxyTea.setReviewsCount(67);
-    galaxyTea.setWeeklyReviews(4);
-    galaxyTea.setMonthlyReviews(15);
-    galaxyTea.setWeeklyBuys(23);
-    galaxyTea.setMonthlyBuys(84);
-    galaxyTea.setPositiveReviewsWeekly(3);
-    galaxyTea.setPositiveReviewsMonthly(13);
-    galaxyTea.setTags("tea,green tea,healthy");
-    galaxyTea.setInStock(true);
-    menuItems.add(galaxyTea);
-
-    MenuItem starburstSmoothie = new MenuItem();
-    starburstSmoothie.setName("Starburst Smoothie");
-    starburstSmoothie.setDescription(
-      "Mixed berry smoothie with cosmic protein and stellar energy"
-    );
-    starburstSmoothie.setPrice(5.99);
-    starburstSmoothie.setType(MenuItem.ItemType.DRINKS);
-    starburstSmoothie.setImage(
-      "/placeholder/product-services/Non-Coffee_Galactic_Drinks.png"
-    );
-    starburstSmoothie.setRating(4.7);
-    starburstSmoothie.setReviewsCount(145);
-    starburstSmoothie.setWeeklyReviews(11);
-    starburstSmoothie.setMonthlyReviews(38);
-    starburstSmoothie.setWeeklyBuys(56);
-    starburstSmoothie.setMonthlyBuys(201);
-    starburstSmoothie.setPositiveReviewsWeekly(10);
-    starburstSmoothie.setPositiveReviewsMonthly(34);
-    starburstSmoothie.setTags("smoothie,berry,protein");
-    starburstSmoothie.setInStock(true);
-    menuItems.add(starburstSmoothie);
-
-    menuItemRepository.saveAll(menuItems);
-    System.out.println("✅ Seeded " + menuItems.size() + " menu items");
   }
 }
