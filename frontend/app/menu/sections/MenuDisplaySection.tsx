@@ -1,14 +1,21 @@
+import React, { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { MenuItemCard } from '@/components/cards';
 import { fadeInContainer, cardFadeUp } from '@/framer';
 import { MenuDisplaySectionProps } from '@/schema';
 
-export default function MenuDisplaySection({
+const MenuDisplaySection = memo(function MenuDisplaySection({
   filteredItems,
   isLoading,
   viewMode,
   searchQuery
 }: MenuDisplaySectionProps) {
+  // Memoize the grid layout class to prevent unnecessary re-renders
+  const gridLayoutClass = useMemo(() => {
+    return viewMode === 'grid'
+      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+      : 'space-y-4';
+  }, [viewMode]);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-16">
@@ -37,19 +44,17 @@ export default function MenuDisplaySection({
 
   return (
     <motion.div
-      className={`${
-        viewMode === 'grid'
-          ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-          : 'space-y-4'
-      }`}
+      className={gridLayoutClass}
       variants={fadeInContainer}
       initial="hidden"
       animate="visible"
     >
       {filteredItems.map((item, index) => (
         <motion.div
-          key={item.id}
+          key={`${item.id}-${item.name}-${index}`}
           variants={cardFadeUp}
+          // Add will-change for better performance during animations
+          style={{ willChange: 'transform' }}
         >
           <MenuItemCard
             item={item}
@@ -60,4 +65,6 @@ export default function MenuDisplaySection({
       ))}
     </motion.div>
   );
-}
+});
+
+export default MenuDisplaySection;

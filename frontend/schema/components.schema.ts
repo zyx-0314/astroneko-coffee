@@ -136,7 +136,7 @@ export interface ControlsSectionProps {
 }
 
 export interface MenuDisplaySectionProps {
-  filteredItems: MenuItem[];
+  filteredItems: MenuItem[] | any[]; // Support both MenuItem and MenuItemResponse
   isLoading: boolean;
   viewMode: 'grid' | 'list';
   searchQuery: string;
@@ -206,15 +206,15 @@ export interface UseActiveFiltersProps {
 
 // Menu Item Card interfaces
 export interface MenuItemCardProps {
-  item: MenuItem;
+  item: MenuItem | any; // Support both MenuItem and MenuItemResponse from database
   index: number;
   viewMode: 'grid' | 'list';
-  onAddToCart?: (item: MenuItem) => void;
+  onAddToCart?: (item: MenuItem | any) => void;
 }
 
 export interface UseMenuItemCardProps {
-  item: MenuItem;
-  onAddToCart?: (item: MenuItem) => void;
+  item: MenuItem | any; // Support both MenuItem and MenuItemResponse from database
+  onAddToCart?: (item: MenuItem | any) => void;
 }
 
 // Dashboard section interfaces

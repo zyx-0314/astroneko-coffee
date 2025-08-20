@@ -28,7 +28,6 @@ export default function SortFilter({
       <Select value={sortBy} onValueChange={onSortChange}>
         <SelectTrigger className="w-[200px]">
           <div className="flex items-center gap-2">
-            {selectedSortOption?.icon}
             <SelectValue placeholder="Sort by..." />
           </div>
         </SelectTrigger>

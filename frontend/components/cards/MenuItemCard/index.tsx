@@ -18,7 +18,15 @@ import { cardFadeUp, cardScale } from '@/framer';
 import { useMenuItemCard } from './MenuItemCard.hook';
 
 export default function MenuItemCard({ item, index, viewMode, onAddToCart }: MenuItemCardProps) {
-  const { getPromoTypeDisplay, handleAddToCart } = useMenuItemCard({ item, onAddToCart });
+  const { 
+    getPromoTypeDisplay, 
+    handleAddToCart, 
+    getTags, 
+    getWeeklyBuys, 
+    getWeeklyReviews, 
+    getRating, 
+    getReviewsCount 
+  } = useMenuItemCard({ item, onAddToCart });
 
   return (
     <motion.div
@@ -71,12 +79,12 @@ export default function MenuItemCard({ item, index, viewMode, onAddToCart }: Men
                   {item.description}
                 </CardDescription>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {item.promoType === 'neekogust' && (
+                  {item.promoType?.toLowerCase() === 'neekogust' && (
                     <Badge className="text-xs bg-gradient-to-r from-purple-600 to-pink-500 text-white">
                       NEEKOGUST SPECIAL
                     </Badge>
                   )}
-                  {item.promoType === 'welcome-back-school' && (
+                  {(item.promoType?.toLowerCase() === 'welcome-back-school' || item.promoType?.toLowerCase() === 'welcome_back_school') && (
                     <Badge className="text-xs bg-gradient-to-r from-blue-600 to-green-500 text-white">
                       SCHOOL SPECIAL
                     </Badge>
@@ -101,8 +109,8 @@ export default function MenuItemCard({ item, index, viewMode, onAddToCart }: Men
               <div className="flex flex-col items-end">
                 <div className="flex items-center gap-1 text-[#E1B168] mb-1">
                   <Star className="w-4 h-4 fill-current" />
-                  <span className="text-sm font-medium">{item.rating}</span>
-                  <span className="text-xs text-gray-500">({item.reviewsCount})</span>
+                  <span className="text-sm font-medium">{getRating().toFixed(1)}</span>
+                  <span className="text-xs text-gray-500">({getReviewsCount()})</span>
                 </div>
                 <div className="text-right">
                   {item.isOnSale && item.originalPrice && (
@@ -120,7 +128,7 @@ export default function MenuItemCard({ item, index, viewMode, onAddToCart }: Men
 
           <CardContent className={viewMode === 'list' ? 'py-2' : ''}>
             <div className="flex flex-wrap gap-1 mb-3">
-              {item.tags.map((tag) => (
+              {getTags().map((tag: string) => (
                 <Badge key={tag} variant="outline" className="text-xs">
                   {tag}
                 </Badge>
@@ -131,11 +139,11 @@ export default function MenuItemCard({ item, index, viewMode, onAddToCart }: Men
             <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 w-full">
               <div className="flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
-                {item.weeklyBuys} weekly buys
+                {getWeeklyBuys()} weekly buys
               </div>
               <div className="flex items-center gap-1 justify-end">
                 <Calendar className="w-3 h-3" />
-                {item.weeklyReviews} reviews/week
+                {getWeeklyReviews()} reviews/week
               </div>
             </div>
           </CardContent>
