@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '@/schema/user.schema';
 import { AuthContextType, AuthProviderProps } from '@/schema/auth.schema';
 import { getAuthToken, removeAuthToken } from '@/lib/auth';
+import axios from 'axios';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -19,20 +20,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!token) return null;
 
     try {
-      const response = await fetch('http://localhost:8083/api/v1/secure/user/profile', {
+      const response = await axios.get('http://localhost:8083/api/v1/secure/user/profile', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        // Token might be expired or invalid
-        removeAuthToken();
-        return null;
-      }
-
-      const userData = await response.json();
+      const userData = response.data;
       
       // Convert backend response to frontend User type
       const user: User = {
@@ -49,7 +44,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return user;
     } catch (error) {
       console.error('Failed to fetch current user:', error);
-      removeAuthToken();
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        // Token might be expired or invalid
+        removeAuthToken();
+      } else {
+        removeAuthToken();
+      }
       return null;
     }
   };

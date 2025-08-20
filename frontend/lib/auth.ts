@@ -1,4 +1,6 @@
 import { User, AuthState } from '@/schema/user.schema';
+import apiClient from './api/client';
+import axios from 'axios';
 
 // Role to route mapping
 export const roleRouteMap: Record<User['role'], string> = {
@@ -74,22 +76,14 @@ export async function fetchUserProfile(token?: string): Promise<User | null> {
   if (!authToken) return null;
 
   try {
-    const response = await fetch('http://localhost:8083/api/v1/secure/user/profile', {
+    const response = await axios.get('http://localhost:8083/api/v1/secure/user/profile', {
       headers: {
         'Authorization': `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        // Token expired or invalid
-        removeAuthToken();
-      }
-      return null;
-    }
-
-    const userData = await response.json();
+    const userData = response.data;
     
     // Convert backend response to frontend User type
     const user: User = {
@@ -106,6 +100,10 @@ export async function fetchUserProfile(token?: string): Promise<User | null> {
     return user;
   } catch (error) {
     console.error('Failed to fetch user profile:', error);
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      // Token expired or invalid
+      removeAuthToken();
+    }
     return null;
   }
 }
@@ -113,20 +111,11 @@ export async function fetchUserProfile(token?: string): Promise<User | null> {
 // Real authentication functions that connect to backend
 export async function signIn(email: string, password: string): Promise<User | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password } as LoginRequest),
-    });
+    const response = await axios.post(`${API_BASE_URL}/login`, 
+      { email, password } as LoginRequest
+    );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Login failed');
-    }
-
-    const authResponse: AuthResponse = await response.json();
+    const authResponse: AuthResponse = response.data;
     
     // Save the JWT token
     saveAuthToken(authResponse.token);
@@ -150,33 +139,25 @@ export async function signIn(email: string, password: string): Promise<User | nu
     return user;
   } catch (error) {
     console.error('Sign In Error:', error);
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
     throw error;
   }
 }
 
 export async function signUp(firstName: string, lastName: string, email: string, phoneNumber: string, password: string, sex?: string): Promise<User | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        firstName, 
-        lastName,
-        email, 
-        phoneNumber,
-        password, 
-        sex: sex || 'OTHER' 
-      } as SignUpRequest),
-    });
+    const response = await axios.post(`${API_BASE_URL}/signup`, {
+      firstName, 
+      lastName,
+      email, 
+      phoneNumber,
+      password, 
+      sex: sex || 'OTHER' 
+    } as SignUpRequest);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Sign up failed');
-    }
-
-    const authResponse: AuthResponse = await response.json();
+    const authResponse: AuthResponse = response.data;
     
     // Save the JWT token
     saveAuthToken(authResponse.token);
@@ -200,6 +181,9 @@ export async function signUp(firstName: string, lastName: string, email: string,
     return user;
   } catch (error) {
     console.error('Sign Up Error:', error);
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
     throw error;
   }
 }

@@ -1,135 +1,39 @@
 import { ApiResponse } from '@/schema/api.schema';
 import { Customer, CustomerResponse, PaginatedCustomerResponse } from '@/schema/customer.schema';
-import { tokenManager } from '@/lib/auth-cookies';
+import apiClient, { handleApiResponse } from './client';
 
 // Re-export the interfaces for easy access
 export type { Customer, CustomerResponse, PaginatedCustomerResponse };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8083';
-
 class CustomerAPI {
-  private getAuthHeaders(): HeadersInit {
-    const token = tokenManager.getToken();
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-    
-    // Only add Authorization header if token exists
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    return headers;
-  }
-
-  private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
-    const data = await response.json();
-    
-    if (!response.ok) {
-      return {
-        success: false,
-        data: null,
-        error: data.message || 'An error occurred',
-        status: response.status
-      };
-    }
-
-    return {
-      success: true,
-      data,
-      error: null,
-      status: response.status
-    };
-  }
-
   async getAllCustomers(): Promise<ApiResponse<Customer[]>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<Customer[]>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.get<Customer[]>('/api/v1/secure/customers')
+    );
   }
 
   async getAllActiveCustomers(): Promise<ApiResponse<Customer[]>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/active`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<Customer[]>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.get<Customer[]>('/api/v1/secure/customers/active')
+    );
   }
 
   async getCustomerById(id: number): Promise<ApiResponse<Customer>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/${id}`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<Customer>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.get<Customer>(`/api/v1/secure/customers/${id}`)
+    );
   }
 
   async activateCustomer(id: number): Promise<ApiResponse<Customer>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/${id}/activate`, {
-        method: 'PUT',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<Customer>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.put<Customer>(`/api/v1/secure/customers/${id}/activate`)
+    );
   }
 
   async deactivateCustomer(id: number): Promise<ApiResponse<Customer>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/${id}/deactivate`, {
-        method: 'PUT',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<Customer>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.put<Customer>(`/api/v1/secure/customers/${id}/deactivate`)
+    );
   }
 
   async getCustomerStats(id: number): Promise<ApiResponse<{
@@ -138,26 +42,9 @@ class CustomerAPI {
     averageOrderValue: number;
     lastOrderDate?: string;
   }>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/${id}/stats`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<{
-        totalOrders: number;
-        totalSpent: number;
-        averageOrderValue: number;
-        lastOrderDate?: string;
-      }>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
-    }
+    return handleApiResponse(() => 
+      apiClient.get(`/api/v1/secure/customers/${id}/stats`)
+    );
   }
 
   async getCustomersPaginated(
@@ -168,36 +55,24 @@ class CustomerAPI {
     active?: boolean,
     search?: string
   ): Promise<ApiResponse<PaginatedCustomerResponse>> {
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        size: size.toString(),
-        sortBy,
-        sortDir
-      });
+    const params: Record<string, string | number | boolean> = {
+      page,
+      size,
+      sortBy,
+      sortDir,
+    };
 
-      if (active !== undefined) {
-        params.append('active', active.toString());
-      }
-
-      if (search && search.trim()) {
-        params.append('search', search.trim());
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/v1/secure/customers/paginated?${params}`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-      });
-
-      return await this.handleResponse<PaginatedCustomerResponse>(response);
-    } catch (error) {
-      return {
-        success: false,
-        data: null,
-        error: error instanceof Error ? error.message : 'Network error occurred',
-        status: 0
-      };
+    if (active !== undefined) {
+      params.active = active;
     }
+
+    if (search && search.trim()) {
+      params.search = search.trim();
+    }
+
+    return handleApiResponse(() => 
+      apiClient.get<PaginatedCustomerResponse>('/api/v1/secure/customers/paginated', { params })
+    );
   }
 }
 

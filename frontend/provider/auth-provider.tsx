@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/schema';
+import axios from 'axios';
 
 interface AuthContextType {
   user: User | null;
@@ -27,25 +28,14 @@ async function fetchCurrentUser(): Promise<User | null> {
     const token = tokenManager.getToken();
     if (!token) return null;
 
-    const response = await fetch('http://localhost:8083/api/v1/secure/user/profile', {
-      method: 'GET',
+    const response = await axios.get('http://localhost:8083/api/v1/secure/user/profile', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        // Token is invalid, remove it
-        const { tokenManager } = await import('@/lib/auth-cookies');
-        tokenManager.removeToken();
-        throw new Error('401: Unauthorized');
-      }
-      throw new Error(`Failed to fetch user profile: ${response.status}`);
-    }
-
-    const userData = await response.json();
+    const userData = response.data;
     
     // Convert backend user to frontend User type
     const user: User = {
@@ -62,6 +52,11 @@ async function fetchCurrentUser(): Promise<User | null> {
     return user;
   } catch (error) {
     console.error('Error fetching current user:', error);
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      // Token is invalid, remove it
+      const { tokenManager } = await import('@/lib/auth-cookies');
+      tokenManager.removeToken();
+    }
     return null;
   }
 }
