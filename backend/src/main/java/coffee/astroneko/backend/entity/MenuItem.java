@@ -2,6 +2,7 @@ package coffee.astroneko.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "menu_items")
@@ -66,9 +67,17 @@ public class MenuItem {
   @Column(name = "is_combo")
   private Boolean isCombo = false;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "promo_type", length = 30)
-  private PromoType promoType;
+  // Many-to-many relationship with Promos
+  @ManyToMany(
+    fetch = FetchType.LAZY,
+    cascade = { CascadeType.PERSIST, CascadeType.MERGE }
+  )
+  @JoinTable(
+    name = "menu_item_promos",
+    joinColumns = @JoinColumn(name = "menu_item_id"),
+    inverseJoinColumns = @JoinColumn(name = "promo_id")
+  )
+  private Set<Promo> promos;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -85,11 +94,6 @@ public class MenuItem {
     VEGETARIAN,
     INSTANT,
     COMBO,
-  }
-
-  public enum PromoType {
-    NEEKOGUST,
-    WELCOME_BACK_SCHOOL,
   }
 
   // Constructors
@@ -272,12 +276,12 @@ public class MenuItem {
     this.isCombo = isCombo;
   }
 
-  public PromoType getPromoType() {
-    return promoType;
+  public Set<Promo> getPromos() {
+    return promos;
   }
 
-  public void setPromoType(PromoType promoType) {
-    this.promoType = promoType;
+  public void setPromos(Set<Promo> promos) {
+    this.promos = promos;
   }
 
   public LocalDateTime getCreatedAt() {
@@ -306,7 +310,7 @@ public class MenuItem {
   }
 
   public boolean hasPromotion() {
-    return this.promoType != null;
+    return this.promos != null && !this.promos.isEmpty();
   }
 
   @Override

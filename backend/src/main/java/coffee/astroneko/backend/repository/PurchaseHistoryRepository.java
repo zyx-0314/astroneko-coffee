@@ -14,26 +14,31 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PurchaseHistoryRepository
   extends JpaRepository<PurchaseHistory, Long> {
-  List<PurchaseHistory> findByCustomerOrderByOrderDateDesc(User customer);
+  List<PurchaseHistory> findByCustomerOrderByOrderOrderDateDesc(User customer);
 
-  Page<PurchaseHistory> findByCustomerOrderByOrderDateDesc(
+  Page<PurchaseHistory> findByCustomerOrderByOrderOrderDateDesc(
     User customer,
     Pageable pageable
   );
 
-  List<PurchaseHistory> findByCustomerIdOrderByOrderDateDesc(Long customerId);
+  List<PurchaseHistory> findByCustomerIdOrderByOrderOrderDateDesc(
+    Long customerId
+  );
 
-  Page<PurchaseHistory> findByCustomerIdOrderByOrderDateDesc(
+  Page<PurchaseHistory> findByCustomerIdOrderByOrderOrderDateDesc(
     Long customerId,
     Pageable pageable
   );
 
-  List<PurchaseHistory> findByOrderId(String orderId);
+  List<PurchaseHistory> findByOrderOrderNumber(String orderNumber);
 
-  List<PurchaseHistory> findByStatus(String status);
+  @Query("SELECT p FROM PurchaseHistory p WHERE p.order.status = :status")
+  List<PurchaseHistory> findByOrderStatus(
+    @Param("status") coffee.astroneko.backend.entity.Order.OrderStatus status
+  );
 
   @Query(
-    "SELECT p FROM PurchaseHistory p WHERE p.customer.id = :customerId AND p.orderDate BETWEEN :startDate AND :endDate ORDER BY p.orderDate DESC"
+    "SELECT p FROM PurchaseHistory p WHERE p.customer.id = :customerId AND p.order.orderDate BETWEEN :startDate AND :endDate ORDER BY p.order.orderDate DESC"
   )
   List<PurchaseHistory> findByCustomerIdAndDateRange(
     @Param("customerId") Long customerId,
@@ -42,7 +47,7 @@ public interface PurchaseHistoryRepository
   );
 
   @Query(
-    "SELECT p FROM PurchaseHistory p WHERE p.orderDate BETWEEN :startDate AND :endDate ORDER BY p.orderDate DESC"
+    "SELECT p FROM PurchaseHistory p WHERE p.order.orderDate BETWEEN :startDate AND :endDate ORDER BY p.order.orderDate DESC"
   )
   List<PurchaseHistory> findByDateRange(
     @Param("startDate") LocalDateTime startDate,
@@ -55,7 +60,7 @@ public interface PurchaseHistoryRepository
   Long countByCustomerId(@Param("customerId") Long customerId);
 
   @Query(
-    "SELECT SUM(p.totalAmount) FROM PurchaseHistory p WHERE p.customer.id = :customerId"
+    "SELECT SUM(p.order.totalAmount) FROM PurchaseHistory p WHERE p.customer.id = :customerId"
   )
   java.math.BigDecimal getTotalSpentByCustomerId(
     @Param("customerId") Long customerId

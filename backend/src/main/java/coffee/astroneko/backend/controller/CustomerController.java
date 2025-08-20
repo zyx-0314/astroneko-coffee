@@ -1,6 +1,6 @@
 package coffee.astroneko.backend.controller;
 
-import coffee.astroneko.backend.dto.CustomerResponse;
+import coffee.astroneko.backend.dto.response.CustomerResponse;
 import coffee.astroneko.backend.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -2,7 +2,6 @@ package coffee.astroneko.backend.repository;
 
 import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
-import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,16 +16,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
    * Find menu items by type
    */
   List<MenuItem> findByType(ItemType type);
-
-  /**
-   * Find menu items by promo type
-   */
-  List<MenuItem> findByPromoType(PromoType promoType);
-
-  /**
-   * Find menu items that have any promo type (not null)
-   */
-  List<MenuItem> findByPromoTypeIsNotNull();
 
   /**
    * Find menu items by stock status
@@ -49,14 +38,12 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   @Query(
     "SELECT m FROM MenuItem m WHERE " +
     "(:type IS NULL OR m.type = :type) AND " +
-    "(:promoType IS NULL OR m.promoType = :promoType) AND " +
     "(:inStock IS NULL OR m.inStock = :inStock) AND " +
     "(:isOnSale IS NULL OR m.isOnSale = :isOnSale) AND " +
     "(:isCombo IS NULL OR m.isCombo = :isCombo)"
   )
   List<MenuItem> findMenuItemsWithFilters(
     @Param("type") ItemType type,
-    @Param("promoType") PromoType promoType,
     @Param("inStock") Boolean inStock,
     @Param("isOnSale") Boolean isOnSale,
     @Param("isCombo") Boolean isCombo
@@ -68,14 +55,12 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   @Query(
     "SELECT m FROM MenuItem m WHERE " +
     "(:type IS NULL OR m.type = :type) AND " +
-    "(:promoType IS NULL OR m.promoType = :promoType) AND " +
     "(:inStock IS NULL OR m.inStock = :inStock) AND " +
     "(:isOnSale IS NULL OR m.isOnSale = :isOnSale) AND " +
     "(:isCombo IS NULL OR m.isCombo = :isCombo)"
   )
   Page<MenuItem> findMenuItemsWithFilters(
     @Param("type") ItemType type,
-    @Param("promoType") PromoType promoType,
     @Param("inStock") Boolean inStock,
     @Param("isOnSale") Boolean isOnSale,
     @Param("isCombo") Boolean isCombo,
@@ -99,10 +84,10 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
   List<MenuItem> findTopRatedItems(Pageable pageable);
 
   /**
-   * Find promotional items (with promo type)
+   * Find promotional items (with active promos)
    */
   @Query(
-    "SELECT m FROM MenuItem m WHERE m.promoType IS NOT NULL AND m.inStock = true ORDER BY m.monthlyBuys DESC"
+    "SELECT DISTINCT m FROM MenuItem m JOIN m.promos p WHERE p.isActive = true AND p.startDate <= CURRENT_TIMESTAMP AND p.endDate >= CURRENT_TIMESTAMP AND m.inStock = true ORDER BY m.monthlyBuys DESC"
   )
   List<MenuItem> findPromotionalItems(Pageable pageable);
 }

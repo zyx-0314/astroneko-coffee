@@ -1,8 +1,8 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.dto.AuthResponse;
-import coffee.astroneko.backend.dto.LoginRequest;
-import coffee.astroneko.backend.dto.SignUpRequest;
+import coffee.astroneko.backend.dto.request.LoginRequest;
+import coffee.astroneko.backend.dto.request.SignUpRequest;
+import coffee.astroneko.backend.dto.response.AuthResponse;
 import coffee.astroneko.backend.entity.User;
 import coffee.astroneko.backend.repository.UserRepository;
 import coffee.astroneko.backend.util.JwtUtil;
@@ -65,8 +65,6 @@ public class UserService {
         user.setSex(null);
       }
     }
-
-    user.setPoints(0); // New users start with 0 points
 
     User savedUser = userRepository.save(user);
 

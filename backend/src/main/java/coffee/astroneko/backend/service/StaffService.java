@@ -1,8 +1,8 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.dto.CreateStaffRequest;
-import coffee.astroneko.backend.dto.StaffResponse;
-import coffee.astroneko.backend.dto.UpdateStaffRequest;
+import coffee.astroneko.backend.dto.request.CreateStaffRequest;
+import coffee.astroneko.backend.dto.request.UpdateStaffRequest;
+import coffee.astroneko.backend.dto.response.StaffResponse;
 import coffee.astroneko.backend.entity.EmployeeInformation;
 import coffee.astroneko.backend.entity.User;
 import coffee.astroneko.backend.repository.EmployeeInformationRepository;
@@ -364,7 +364,6 @@ public class StaffService {
     response.setRole(user.getRole());
     response.setSex(user.getSex());
     response.setAvatar(user.getAvatar());
-    response.setPoints(user.getPoints());
     response.setIsUserActive(user.getIsActive());
 
     response.setEmployeeId(employeeInfo.getEmployeeId());

@@ -1,8 +1,8 @@
 package coffee.astroneko.backend.controller;
 
-import coffee.astroneko.backend.dto.AuthResponse;
-import coffee.astroneko.backend.dto.LoginRequest;
-import coffee.astroneko.backend.dto.SignUpRequest;
+import coffee.astroneko.backend.dto.request.LoginRequest;
+import coffee.astroneko.backend.dto.request.SignUpRequest;
+import coffee.astroneko.backend.dto.response.AuthResponse;
 import coffee.astroneko.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

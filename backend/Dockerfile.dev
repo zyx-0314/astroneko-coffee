@@ -22,5 +22,5 @@ COPY src src
 
 EXPOSE 8080
 
-# Development command with Spring Boot DevTools
-CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.profiles=dev"]
+# Development command with Spring Boot DevTools (skip tests)
+CMD ["./mvnw", "compile", "spring-boot:run", "-Dspring-boot.run.profiles=dev", "-Dmaven.test.skip=true"]

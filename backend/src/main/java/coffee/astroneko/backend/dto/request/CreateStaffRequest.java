@@ -1,78 +1,146 @@
-package coffee.astroneko.backend.dto;
+package coffee.astroneko.backend.dto.request;
 
 import coffee.astroneko.backend.entity.EmployeeInformation.EmploymentType;
 import coffee.astroneko.backend.entity.User.Role;
 import coffee.astroneko.backend.entity.User.Sex;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class StaffResponse {
+public class CreateStaffRequest {
 
   // User information
-  private Long id;
-  private Long userId;
+  @NotBlank(message = "First name is required")
+  @Size(max = 50, message = "First name must not exceed 50 characters")
   private String firstName;
+
+  @NotBlank(message = "Last name is required")
+  @Size(max = 50, message = "Last name must not exceed 50 characters")
   private String lastName;
+
+  @NotBlank(message = "Username is required")
+  @Size(max = 50, message = "Username must not exceed 50 characters")
   private String username;
+
+  @NotBlank(message = "Email is required")
+  @Email(message = "Invalid email format")
+  @Size(max = 100, message = "Email must not exceed 100 characters")
   private String email;
+
+  @NotBlank(message = "Password is required")
+  @Size(min = 6, message = "Password must be at least 6 characters")
+  private String password;
+
+  @NotNull(message = "Role is required")
   private Role role;
+
   private Sex sex;
+
   private String avatar;
-  private Integer points;
-  private Boolean isUserActive;
 
   // Employee information
+  @NotBlank(message = "Employee ID is required")
+  @Size(max = 20, message = "Employee ID must not exceed 20 characters")
   private String employeeId;
+
+  @NotNull(message = "Hire date is required")
+  @PastOrPresent(message = "Hire date cannot be in the future")
   private LocalDate hireDate;
+
+  @NotNull(message = "Employment type is required")
   private EmploymentType employmentType;
+
+  @DecimalMin(
+    value = "0.0",
+    inclusive = false,
+    message = "Salary must be greater than 0"
+  )
+  @Digits(integer = 10, fraction = 2, message = "Invalid salary format")
   private BigDecimal salary;
+
+  @DecimalMin(
+    value = "0.0",
+    inclusive = false,
+    message = "Hourly rate must be greater than 0"
+  )
+  @Digits(integer = 8, fraction = 2, message = "Invalid hourly rate format")
   private BigDecimal hourlyRate;
+
+  @NotBlank(message = "Emergency contact name is required")
+  @Size(
+    max = 100,
+    message = "Emergency contact name must not exceed 100 characters"
+  )
   private String emergencyContactName;
+
+  @NotBlank(message = "Emergency contact phone is required")
+  @Size(
+    max = 20,
+    message = "Emergency contact phone must not exceed 20 characters"
+  )
   private String emergencyContactPhone;
+
+  @NotBlank(message = "Address is required")
   private String address;
+
+  @NotBlank(message = "Phone is required")
+  @Size(max = 20, message = "Phone must not exceed 20 characters")
   private String phone;
+
+  @NotNull(message = "Birth date is required")
+  @Past(message = "Birth date must be in the past")
   private LocalDate birthDate;
-  private String socialSecurityNumber; // This will be masked in actual implementation
-  private String bankAccountNumber; // This will be masked in actual implementation
-  private String bankRoutingNumber; // This will be masked in actual implementation
+
+  @NotBlank(message = "Social security number is required")
+  @Size(max = 20, message = "SSN must not exceed 20 characters")
+  private String socialSecurityNumber;
+
+  @NotBlank(message = "Bank account number is required")
+  @Size(max = 30, message = "Bank account number must not exceed 30 characters")
+  private String bankAccountNumber;
+
+  @NotBlank(message = "Bank routing number is required")
+  @Size(max = 30, message = "Bank routing number must not exceed 30 characters")
+  private String bankRoutingNumber;
+
+  @DecimalMin(value = "0.0", message = "Performance rating must be at least 0")
+  @DecimalMax(value = "5.0", message = "Performance rating must not exceed 5.0")
+  @Digits(
+    integer = 1,
+    fraction = 2,
+    message = "Invalid performance rating format"
+  )
   private BigDecimal performanceRating;
+
   private LocalDate lastPerformanceReview;
   private LocalDate nextPerformanceReview;
   private String notes;
+
+  @NotBlank(message = "Position is required")
+  @Size(max = 50, message = "Position must not exceed 50 characters")
   private String position;
+
+  @NotBlank(message = "Department is required")
+  @Size(max = 50, message = "Department must not exceed 50 characters")
   private String department;
+
+  @NotNull(message = "Shift start time is required")
   private LocalTime shiftStart;
+
+  @NotNull(message = "Shift end time is required")
   private LocalTime shiftEnd;
-  private Integer sickDaysTotal;
-  private Integer sickDaysUsed;
-  private Integer vacationDaysTotal;
-  private Integer vacationDaysUsed;
-  private Boolean isActive;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+
+  @Min(value = 0, message = "Sick days total must be non-negative")
+  private Integer sickDaysTotal = 0;
+
+  @Min(value = 0, message = "Vacation days total must be non-negative")
+  private Integer vacationDaysTotal = 0;
 
   // Constructors
-  public StaffResponse() {}
+  public CreateStaffRequest() {}
 
   // Getters and Setters
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
-  }
-
   public String getFirstName() {
     return firstName;
   }
@@ -105,6 +173,14 @@ public class StaffResponse {
     this.email = email;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
   public Role getRole() {
     return role;
   }
@@ -127,22 +203,6 @@ public class StaffResponse {
 
   public void setAvatar(String avatar) {
     this.avatar = avatar;
-  }
-
-  public Integer getPoints() {
-    return points;
-  }
-
-  public void setPoints(Integer points) {
-    this.points = points;
-  }
-
-  public Boolean getIsUserActive() {
-    return isUserActive;
-  }
-
-  public void setIsUserActive(Boolean isUserActive) {
-    this.isUserActive = isUserActive;
   }
 
   public String getEmployeeId() {
@@ -321,51 +381,11 @@ public class StaffResponse {
     this.sickDaysTotal = sickDaysTotal;
   }
 
-  public Integer getSickDaysUsed() {
-    return sickDaysUsed;
-  }
-
-  public void setSickDaysUsed(Integer sickDaysUsed) {
-    this.sickDaysUsed = sickDaysUsed;
-  }
-
   public Integer getVacationDaysTotal() {
     return vacationDaysTotal;
   }
 
   public void setVacationDaysTotal(Integer vacationDaysTotal) {
     this.vacationDaysTotal = vacationDaysTotal;
-  }
-
-  public Integer getVacationDaysUsed() {
-    return vacationDaysUsed;
-  }
-
-  public void setVacationDaysUsed(Integer vacationDaysUsed) {
-    this.vacationDaysUsed = vacationDaysUsed;
-  }
-
-  public Boolean getIsActive() {
-    return isActive;
-  }
-
-  public void setIsActive(Boolean isActive) {
-    this.isActive = isActive;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
   }
 }

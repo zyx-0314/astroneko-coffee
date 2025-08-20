@@ -2,7 +2,6 @@ package coffee.astroneko.backend.dto.response;
 
 import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
-import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
@@ -52,9 +51,6 @@ public class MenuItemResponse {
   @JsonProperty("isCombo")
   private Boolean isCombo;
 
-  @JsonProperty("promoType")
-  private PromoType promoType;
-
   @JsonProperty("createdAt")
   private LocalDateTime createdAt;
 
@@ -84,7 +80,6 @@ public class MenuItemResponse {
     this.inStock = menuItem.getInStock();
     this.isOnSale = menuItem.getIsOnSale();
     this.isCombo = menuItem.getIsCombo();
-    this.promoType = menuItem.getPromoType();
     this.createdAt = menuItem.getCreatedAt();
     this.updatedAt = menuItem.getUpdatedAt();
   }
@@ -245,14 +240,6 @@ public class MenuItemResponse {
 
   public void setIsCombo(Boolean isCombo) {
     this.isCombo = isCombo;
-  }
-
-  public PromoType getPromoType() {
-    return promoType;
-  }
-
-  public void setPromoType(PromoType promoType) {
-    this.promoType = promoType;
   }
 
   public LocalDateTime getCreatedAt() {

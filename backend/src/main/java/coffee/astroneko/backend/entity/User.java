@@ -37,20 +37,11 @@ public class User {
   @Column(length = 500)
   private String avatar;
 
-  @Column(nullable = false)
-  private Integer points = 0;
+  @Column(name = "phone_number", nullable = false, length = 20)
+  private String phoneNumber;
 
   @Column(name = "is_active", nullable = false)
   private Boolean isActive = true;
-
-  @Column(name = "shift_start", length = 10)
-  private String shiftStart;
-
-  @Column(name = "shift_end", length = 10)
-  private String shiftEnd;
-
-  @Column(name = "clock_in_time", length = 10)
-  private String clockInTime;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -182,12 +173,12 @@ public class User {
     this.updatedAt = LocalDateTime.now();
   }
 
-  public Integer getPoints() {
-    return points;
+  public String getPhoneNumber() {
+    return phoneNumber;
   }
 
-  public void setPoints(Integer points) {
-    this.points = points;
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
     this.updatedAt = LocalDateTime.now();
   }
 
@@ -197,33 +188,6 @@ public class User {
 
   public void setIsActive(Boolean isActive) {
     this.isActive = isActive;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public String getShiftStart() {
-    return shiftStart;
-  }
-
-  public void setShiftStart(String shiftStart) {
-    this.shiftStart = shiftStart;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public String getShiftEnd() {
-    return shiftEnd;
-  }
-
-  public void setShiftEnd(String shiftEnd) {
-    this.shiftEnd = shiftEnd;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public String getClockInTime() {
-    return clockInTime;
-  }
-
-  public void setClockInTime(String clockInTime) {
-    this.clockInTime = clockInTime;
     this.updatedAt = LocalDateTime.now();
   }
 

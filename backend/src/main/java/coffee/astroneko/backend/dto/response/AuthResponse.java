@@ -1,4 +1,4 @@
-package coffee.astroneko.backend.dto;
+package coffee.astroneko.backend.dto.response;
 
 public class AuthResponse {
 

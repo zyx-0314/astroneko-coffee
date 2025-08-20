@@ -1,8 +1,8 @@
 package coffee.astroneko.backend.controller;
 
-import coffee.astroneko.backend.dto.CreateStaffRequest;
-import coffee.astroneko.backend.dto.StaffResponse;
-import coffee.astroneko.backend.dto.UpdateStaffRequest;
+import coffee.astroneko.backend.dto.request.CreateStaffRequest;
+import coffee.astroneko.backend.dto.request.UpdateStaffRequest;
+import coffee.astroneko.backend.dto.response.StaffResponse;
 import coffee.astroneko.backend.entity.User;
 import coffee.astroneko.backend.service.StaffService;
 import io.swagger.v3.oas.annotations.Operation;

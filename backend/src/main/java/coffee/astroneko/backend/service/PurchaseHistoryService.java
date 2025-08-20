@@ -1,6 +1,6 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.dto.PurchaseHistoryResponse;
+import coffee.astroneko.backend.dto.response.PurchaseHistoryResponse;
 import coffee.astroneko.backend.entity.PurchaseHistory;
 import coffee.astroneko.backend.repository.PurchaseHistoryRepository;
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ public class PurchaseHistoryService {
     Long customerId
   ) {
     List<PurchaseHistory> purchases =
-      purchaseHistoryRepository.findByCustomerIdOrderByOrderDateDesc(
+      purchaseHistoryRepository.findByCustomerIdOrderByOrderOrderDateDesc(
         customerId
       );
     return purchases
@@ -53,7 +53,7 @@ public class PurchaseHistoryService {
   ) {
     Pageable pageable = PageRequest.of(page, size);
     Page<PurchaseHistory> purchases =
-      purchaseHistoryRepository.findByCustomerIdOrderByOrderDateDesc(
+      purchaseHistoryRepository.findByCustomerIdOrderByOrderOrderDateDesc(
         customerId,
         pageable
       );
@@ -70,9 +70,8 @@ public class PurchaseHistoryService {
   public List<PurchaseHistoryResponse> getPurchaseHistoryByOrderId(
     String orderId
   ) {
-    List<PurchaseHistory> purchases = purchaseHistoryRepository.findByOrderId(
-      orderId
-    );
+    List<PurchaseHistory> purchases =
+      purchaseHistoryRepository.findByOrderOrderNumber(orderId);
     return purchases
       .stream()
       .map(this::mapToPurchaseHistoryResponse)
@@ -145,7 +144,12 @@ public class PurchaseHistoryService {
     response.setStatus(purchase.getStatus());
     response.setPaymentMethod(purchase.getPaymentMethod());
     response.setNotes(purchase.getNotes());
-    response.setDiscountApplied(purchase.getDiscountApplied());
+    // Discount applied can be retrieved from order if needed
+    response.setDiscountApplied(
+      purchase.getOrder() != null
+        ? purchase.getOrder().getDiscountAmount()
+        : null
+    );
     response.setPointsEarned(purchase.getPointsEarned());
     response.setPointsUsed(purchase.getPointsUsed());
     response.setCreatedAt(purchase.getCreatedAt());

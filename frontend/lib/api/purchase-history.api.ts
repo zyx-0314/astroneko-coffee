@@ -13,6 +13,17 @@ export interface PurchaseHistory {
   pointsEarned?: number;
   pointsUsed?: number;
   notes?: string;
+  // Additional order-related data that might be available
+  items?: OrderHistoryItem[];
+}
+
+export interface OrderHistoryItem {
+  menuItemId: number;
+  menuItemName: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  specialInstructions?: string;
 }
 
 export interface CustomerStats {

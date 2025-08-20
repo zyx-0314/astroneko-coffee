@@ -1,6 +1,6 @@
 package coffee.astroneko.backend.service;
 
-import coffee.astroneko.backend.dto.CustomerResponse;
+import coffee.astroneko.backend.dto.response.CustomerResponse;
 import coffee.astroneko.backend.entity.User;
 import coffee.astroneko.backend.repository.UserRepository;
 import java.util.List;
@@ -140,7 +140,6 @@ public class CustomerService {
     response.setEmail(user.getEmail());
     response.setSex(user.getSex());
     response.setAvatar(user.getAvatar());
-    response.setPoints(user.getPoints());
     response.setIsActive(user.getIsActive());
     response.setCreatedAt(user.getCreatedAt());
     response.setUpdatedAt(user.getUpdatedAt());

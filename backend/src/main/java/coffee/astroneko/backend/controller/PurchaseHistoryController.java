@@ -1,6 +1,6 @@
 package coffee.astroneko.backend.controller;
 
-import coffee.astroneko.backend.dto.PurchaseHistoryResponse;
+import coffee.astroneko.backend.dto.response.PurchaseHistoryResponse;
 import coffee.astroneko.backend.service.PurchaseHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

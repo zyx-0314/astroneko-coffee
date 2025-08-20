@@ -1,4 +1,4 @@
-package coffee.astroneko.backend.dto;
+package coffee.astroneko.backend.dto.response;
 
 import coffee.astroneko.backend.entity.User.Sex;
 import java.time.LocalDateTime;
@@ -12,7 +12,6 @@ public class CustomerResponse {
   private String email;
   private Sex sex;
   private String avatar;
-  private Integer points;
   private Boolean isActive;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
@@ -29,7 +28,6 @@ public class CustomerResponse {
     String email,
     Sex sex,
     String avatar,
-    Integer points,
     Boolean isActive,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
@@ -41,7 +39,6 @@ public class CustomerResponse {
     this.email = email;
     this.sex = sex;
     this.avatar = avatar;
-    this.points = points;
     this.isActive = isActive;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -102,14 +99,6 @@ public class CustomerResponse {
 
   public void setAvatar(String avatar) {
     this.avatar = avatar;
-  }
-
-  public Integer getPoints() {
-    return points;
-  }
-
-  public void setPoints(Integer points) {
-    this.points = points;
   }
 
   public Boolean getIsActive() {

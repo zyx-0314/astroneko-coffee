@@ -5,7 +5,6 @@ import coffee.astroneko.backend.dto.request.UpdateMenuItemRequest;
 import coffee.astroneko.backend.dto.response.MenuItemResponse;
 import coffee.astroneko.backend.entity.MenuItem;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
-import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import coffee.astroneko.backend.repository.MenuItemRepository;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,6 @@ public class MenuItemService {
    */
   public Page<MenuItemResponse> getMenuItems(
     ItemType type,
-    PromoType promoType,
     Boolean inStock,
     Boolean isOnSale,
     Boolean isCombo,
@@ -47,7 +45,6 @@ public class MenuItemService {
 
     Page<MenuItem> menuItems = menuItemRepository.findMenuItemsWithFilters(
       type,
-      promoType,
       inStock,
       isOnSale,
       isCombo,
@@ -76,7 +73,6 @@ public class MenuItemService {
     // Only show in-stock items for public menu
     Page<MenuItem> menuItems = menuItemRepository.findMenuItemsWithFilters(
       type,
-      null,
       true,
       null,
       null,
@@ -116,7 +112,6 @@ public class MenuItemService {
     menuItem.setIsCombo(
       request.getIsCombo() != null ? request.getIsCombo() : false
     );
-    menuItem.setPromoType(request.getPromoType());
 
     MenuItem savedMenuItem = menuItemRepository.save(menuItem);
     return MenuItemResponse.from(savedMenuItem);
@@ -163,9 +158,6 @@ public class MenuItemService {
         }
         if (request.getIsCombo() != null) {
           menuItem.setIsCombo(request.getIsCombo());
-        }
-        if (request.getPromoType() != null) {
-          menuItem.setPromoType(request.getPromoType());
         }
 
         MenuItem updatedMenuItem = menuItemRepository.save(menuItem);

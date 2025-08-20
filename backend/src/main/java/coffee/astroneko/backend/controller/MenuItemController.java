@@ -4,7 +4,6 @@ import coffee.astroneko.backend.dto.request.CreateMenuItemRequest;
 import coffee.astroneko.backend.dto.request.UpdateMenuItemRequest;
 import coffee.astroneko.backend.dto.response.MenuItemResponse;
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
-import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import coffee.astroneko.backend.service.MenuItemService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -93,7 +92,6 @@ public class MenuItemController {
   @GetMapping("/secure/menu")
   public ResponseEntity<Page<MenuItemResponse>> getAllMenuItems(
     @RequestParam(required = false) ItemType type,
-    @RequestParam(required = false) PromoType promoType,
     @RequestParam(required = false) Boolean inStock,
     @RequestParam(required = false) Boolean isOnSale,
     @RequestParam(required = false) Boolean isCombo,
@@ -104,7 +102,6 @@ public class MenuItemController {
   ) {
     Page<MenuItemResponse> menuItems = menuItemService.getMenuItems(
       type,
-      promoType,
       inStock,
       isOnSale,
       isCombo,

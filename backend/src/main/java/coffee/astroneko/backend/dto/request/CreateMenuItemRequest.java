@@ -1,7 +1,6 @@
 package coffee.astroneko.backend.dto.request;
 
 import coffee.astroneko.backend.entity.MenuItem.ItemType;
-import coffee.astroneko.backend.entity.MenuItem.PromoType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
@@ -50,9 +49,6 @@ public class CreateMenuItemRequest {
 
   @JsonProperty("isCombo")
   private Boolean isCombo = false;
-
-  @JsonProperty("promoType")
-  private PromoType promoType;
 
   // Constructors
   public CreateMenuItemRequest() {}
@@ -150,13 +146,5 @@ public class CreateMenuItemRequest {
 
   public void setIsCombo(Boolean isCombo) {
     this.isCombo = isCombo;
-  }
-
-  public PromoType getPromoType() {
-    return promoType;
-  }
-
-  public void setPromoType(PromoType promoType) {
-    this.promoType = promoType;
   }
 }

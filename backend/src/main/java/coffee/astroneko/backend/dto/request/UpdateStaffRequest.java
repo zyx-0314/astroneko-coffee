@@ -1,4 +1,4 @@
-package coffee.astroneko.backend.dto;
+package coffee.astroneko.backend.dto.request;
 
 import coffee.astroneko.backend.entity.EmployeeInformation.EmploymentType;
 import coffee.astroneko.backend.entity.User.Role;
