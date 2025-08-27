@@ -7,7 +7,10 @@ export interface RoadmapItem {
   priority: 'high' | 'medium' | 'low';
   quarter: string;
   progress: number;
-  features: string[];
+  features: {
+    title: string;
+    done: boolean;
+  }[];
 }
 
 export interface FuturePhase {

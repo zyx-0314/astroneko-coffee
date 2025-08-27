@@ -21,7 +21,13 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 0',
     progress: 100,
-    features: ['JWT tokens with httpOnly cookies', 'Password hashing and strength rules', 'RBAC: Manager, Front Desk, Kitchen, Client', 'Permission matrix and 403 handling', 'Error pages: forbidden, backend-down, maintenance']
+    features: [
+      {title: 'JWT tokens with httpOnly cookies', done: false},
+      {title: 'Password hashing and strength rules', done: false},
+      {title: 'RBAC: Manager, Front Desk, Kitchen, Client', done: false},
+      {title: 'Permission matrix and 403 handling', done: false},
+      {title: 'Error pages: forbidden, backend-down, maintenance', done: false}
+    ]
   },
   {
     id: 'p0-public',
@@ -32,8 +38,14 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 0',
     progress: 100,
-    features: ['Landing page with header, nav, footer', 'Public menu with category filter', 'Availability badges', 'Order page with cart placeholder']
+    features: [
+      {title: 'Landing page with header, nav, footer', done: false},
+      {title: 'Public menu with category filter', done: false},
+      {title: 'Availability badges', done: false},
+      {title: 'Order page with cart placeholder', done: false}
+    ]
   },
+  // PHASE 1 - POS Core (Completed)
   {
     id: 'p1-auth',
     title: 'Authentication System',
@@ -43,7 +55,13 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 1',
     progress: 85,
-    features: ['Email+password forms with validation', 'Demo login buttons for roles', 'Client sign up with full validation', 'JWT route protection middleware', 'Auto-logout on token expiry']
+    features: [
+      {title: 'Email+password forms with validation', done: false},
+      {title: 'Demo login buttons for roles', done: false},
+      {title: 'Client sign up with full validation', done: false},
+      {title: 'JWT route protection middleware', done: false},
+      {title: 'Auto-logout on token expiry', done: false}
+    ]
   },
 
   // PHASE 1 - POS Core (In Progress)
@@ -56,7 +74,15 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 1',
     progress: 75,
-    features: ['Create/Edit/Delete menu items', 'Name, description, price, category fields', 'Availability toggle (Available/Out of Stock)', 'Sort by name/price, filter by category', 'Bulk availability toggle operations']
+    features: [
+      {title: 'Create menu items', done: false},
+      {title: 'Edit menu items', done: false},
+      {title: 'Delete menu items', done: false},
+      {title: 'Name, description, price, category fields', done: true},
+      {title: 'Availability toggle (Available/Out of Stock)', done: false},
+      {title: 'Sort by name/price, filter by category', done: false},
+      {title: 'Bulk availability toggle operations', done: false}
+    ]
   },
   {
     id: 'p1-frontdesk',
@@ -67,7 +93,13 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 1',
     progress: 0,
-    features: ['Real-time queue with WebSocket', 'Order cards with customer info', 'Priority badges and notifications', 'Build/modify orders with items', 'Send orders to Kitchen (KDS tickets)']
+    features: [
+      {title: 'Real-time queue with WebSocket', done: false},
+      {title: 'Order cards with customer info', done: false},
+      {title: 'Priority badges and notifications', done: false},
+      {title: 'Build/modify orders with items', done: false},
+      {title: 'Send orders to Kitchen (KDS tickets)', done: false}
+    ]
   },
   {
     id: 'p1-kitchen',
@@ -78,7 +110,13 @@ export const roadmapData: RoadmapItem[] = [
     priority: 'high',
     quarter: 'Phase 1',
     progress: 0,
-    features: ['Kitchen ticket queue display', 'Prep status updates (in-progress/done)', 'Special instructions display', 'Line-item status tracking', 'Status sync back to Front Desk']
+    features: [
+      {title: 'Kitchen ticket queue display', done: false},
+      {title: 'Prep status updates (in-progress/done)', done: false},
+      {title: 'Special instructions display', done: false},
+      {title: 'Line-item status tracking', done: false},
+      {title: 'Status sync back to Front Desk', done: false}
+    ]
   }
 ];
 
