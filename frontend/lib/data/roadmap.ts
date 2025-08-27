@@ -1,14 +1,8 @@
-import { CategoryFilter, FuturePhase, RoadmapItem, StatusFilter } from '@/schema/roadmap.schema';
-import { 
-  Circle, 
-  CheckCircle, 
-  Clock, 
-  Shield, 
-  Settings, 
-  Smartphone, 
-  Database, 
-  BarChart3 
+import {
+    BarChart3, CheckCircle, Circle, Clock, Database, Settings, Shield, Smartphone
 } from 'lucide-react';
+
+import { CategoryFilter, FuturePhase, RoadmapItem, StatusFilter } from '@/schema/roadmap.schema';
 
 export const roadmapData: RoadmapItem[] = [
   // PHASE 0 - Foundations (Completed)
@@ -63,27 +57,26 @@ export const roadmapData: RoadmapItem[] = [
       {title: 'Auto-logout on token expiry', done: false}
     ]
   },
-
-  // PHASE 1 - POS Core (In Progress)
   {
     id: 'p1-menu',
     title: 'Menu Management (MVP)',
     description: 'CRUD operations for menu items with category management and availability toggle.',
-    status: 'in-progress',
+    status: 'completed',
     category: 'admin',
     priority: 'high',
     quarter: 'Phase 1',
     progress: 75,
     features: [
-      {title: 'Create menu items', done: false},
-      {title: 'Edit menu items', done: false},
-      {title: 'Delete menu items', done: false},
+      {title: 'Create menu items', done: true},
+      {title: 'Edit menu items', done: true},
+      {title: 'Delete menu items', done: true},
       {title: 'Name, description, price, category fields', done: true},
-      {title: 'Availability toggle (Available/Out of Stock)', done: false},
-      {title: 'Sort by name/price, filter by category', done: false},
-      {title: 'Bulk availability toggle operations', done: false}
+      {title: 'Availability toggle (Available/Out of Stock)', done: true},
+      {title: 'Sort by name/price, filter by category', done: true},
     ]
   },
+
+  // PHASE 1 - POS Core (In Progress)
   {
     id: 'p1-frontdesk',
     title: 'Front Desk Dashboard',
@@ -148,6 +141,13 @@ export const futurePhases: FuturePhase[] = [
     title: 'Analytics & Reporting',
     quarter: 'Q4 2025',
     items: ['Manager Analytics Dashboard', 'Sales Reports & EOD', 'Client Favorites & Recommendations', 'Advanced Admin Features'],
+    color: 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
+  },
+  {
+    phase: 'Phase 6',
+    title: 'Additionals',
+    quarter: 'Q4 2025',
+    items: ['Naming of Promos', 'Filter by Promo'],
     color: 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
   }
 ];

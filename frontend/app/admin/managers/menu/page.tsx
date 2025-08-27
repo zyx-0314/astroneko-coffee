@@ -1,19 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { toast } from 'sonner';
 import { AlertTriangle } from 'lucide-react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { adminMenuApi } from '@/lib/api/menu.api';
-import { MenuItemResponse, CreateMenuItemRequest, UpdateMenuItemRequest } from '@/schema/menuItem.schema';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+import { CRUMenuItemModal } from '@/components/modals';
 import {
-  MenuHeaderSection,
-  MenuStatsSection,
-  MenuFiltersSection,
-  MenuTableSection,
-  MenuPaginationSection,
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+    AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from '@/components/ui/alert-dialog';
+import { adminMenuApi } from '@/lib/api/menu.api';
+import {
+    CreateMenuItemRequest, MenuItemResponse, UpdateMenuItemRequest
+} from '@/schema/menuItem.schema';
+
+import {
+    MenuFiltersSection, MenuHeaderSection, MenuPaginationSection, MenuStatsSection, MenuTableSection
 } from './sections';
-import MenuItemDialog from '@/components/modals/MenuItemDialog';
 
 export default function MenuManagementPage() {
   const [menuItems, setMenuItems] = useState<MenuItemResponse[]>([]);
@@ -22,20 +25,26 @@ export default function MenuManagementPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [stockFilter, setStockFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [stockFilter, setStockFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState("name");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
   // Dialog states
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<'create' | 'edit' | 'view'>('create');
-  const [selectedItem, setSelectedItem] = useState<MenuItemResponse | null>(null);
-  
+  const [dialogMode, setDialogMode] = useState<"create" | "edit" | "view">(
+    "create"
+  );
+  const [selectedItem, setSelectedItem] = useState<MenuItemResponse | null>(
+    null
+  );
+
   // Delete confirmation
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<MenuItemResponse | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<MenuItemResponse | null>(
+    null
+  );
 
   // Stats
   const [stats, setStats] = useState({
@@ -56,17 +65,17 @@ export default function MenuManagementPage() {
         sortDir,
       };
 
-      if (typeFilter && typeFilter !== 'all') filters.type = typeFilter;
-      if (stockFilter === 'in-stock') filters.inStock = true;
-      if (stockFilter === 'out-of-stock') filters.inStock = false;
+      if (typeFilter && typeFilter !== "all") filters.type = typeFilter;
+      if (stockFilter === "in-stock") filters.inStock = true;
+      if (stockFilter === "out-of-stock") filters.inStock = false;
 
       const response = await adminMenuApi.getAllMenuItems(filters);
       setMenuItems(response.content);
       setTotalItems(response.totalElements);
       setTotalPages(response.totalPages);
     } catch (error) {
-      console.error('Error loading menu items:', error);
-      toast.error('Failed to load menu items');
+      console.error("Error loading menu items:", error);
+      toast.error("Failed to load menu items");
     } finally {
       setLoading(false);
     }
@@ -77,12 +86,16 @@ export default function MenuManagementPage() {
     try {
       const allItems = await adminMenuApi.getAllMenuItems({ size: 1000 });
       const items = allItems.content;
-      
-      const categories = new Set(items.map(item => item.type)).size;
-      const popularItems = items.filter(item => (item.weeklyBuys || 0) > 10).length;
-      const avgRating = items.length > 0 
-        ? items.reduce((sum, item) => sum + (item.rating || 0), 0) / items.length 
-        : 0;
+
+      const categories = new Set(items.map((item) => item.type)).size;
+      const popularItems = items.filter(
+        (item) => (item.weeklyBuys || 0) > 10
+      ).length;
+      const avgRating =
+        items.length > 0
+          ? items.reduce((sum, item) => sum + (item.rating || 0), 0) /
+            items.length
+          : 0;
 
       setStats({
         totalItems: allItems.totalElements,
@@ -91,7 +104,7 @@ export default function MenuManagementPage() {
         avgRating: Number(avgRating.toFixed(1)),
       });
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error("Error loading stats:", error);
     }
   };
 
@@ -106,21 +119,21 @@ export default function MenuManagementPage() {
   // Handle create
   const handleCreate = () => {
     setSelectedItem(null);
-    setDialogMode('create');
+    setDialogMode("create");
     setDialogOpen(true);
   };
 
   // Handle edit
   const handleEdit = (item: MenuItemResponse) => {
     setSelectedItem(item);
-    setDialogMode('edit');
+    setDialogMode("edit");
     setDialogOpen(true);
   };
 
   // Handle view
   const handleView = (item: MenuItemResponse) => {
     setSelectedItem(item);
-    setDialogMode('view');
+    setDialogMode("view");
     setDialogOpen(true);
   };
 
@@ -135,12 +148,12 @@ export default function MenuManagementPage() {
 
     try {
       await adminMenuApi.deleteMenuItem(itemToDelete.id);
-      toast.success('Menu item deleted successfully');
+      toast.success("Menu item deleted successfully");
       loadMenuItems();
       loadStats();
     } catch (error) {
-      console.error('Error deleting item:', error);
-      toast.error('Failed to delete menu item');
+      console.error("Error deleting item:", error);
+      toast.error("Failed to delete menu item");
     } finally {
       setDeleteDialogOpen(false);
       setItemToDelete(null);
@@ -151,42 +164,52 @@ export default function MenuManagementPage() {
   const handleStockToggle = async (item: MenuItemResponse) => {
     try {
       await adminMenuApi.updateStockStatus(item.id, !item.inStock);
-      toast.success(`Item marked as ${!item.inStock ? 'in stock' : 'out of stock'}`);
+      toast.success(
+        `Item marked as ${!item.inStock ? "in stock" : "out of stock"}`
+      );
       loadMenuItems();
     } catch (error) {
-      console.error('Error updating stock:', error);
-      toast.error('Failed to update stock status');
+      console.error("Error updating stock:", error);
+      toast.error("Failed to update stock status");
     }
   };
 
   // Handle form submission
-  const handleFormSubmit = async (data: CreateMenuItemRequest | UpdateMenuItemRequest) => {
+  const handleFormSubmit = async (
+    data: CreateMenuItemRequest | UpdateMenuItemRequest
+  ) => {
     try {
-      if (dialogMode === 'create') {
+      if (dialogMode === "create") {
         await adminMenuApi.createMenuItem(data as CreateMenuItemRequest);
-        toast.success('Menu item created successfully');
-      } else if (dialogMode === 'edit' && selectedItem) {
-        await adminMenuApi.updateMenuItem(selectedItem.id, data as UpdateMenuItemRequest);
-        toast.success('Menu item updated successfully');
+        toast.success("Menu item created successfully");
+      } else if (dialogMode === "edit" && selectedItem) {
+        await adminMenuApi.updateMenuItem(
+          selectedItem.id,
+          data as UpdateMenuItemRequest
+        );
+        toast.success("Menu item updated successfully");
       }
-      
+
       loadMenuItems();
       loadStats();
       setDialogOpen(false);
     } catch (error) {
-      console.error('Error saving item:', error);
-      toast.error(`Failed to ${dialogMode === 'create' ? 'create' : 'update'} menu item`);
+      console.error("Error saving item:", error);
+      toast.error(
+        `Failed to ${dialogMode === "create" ? "create" : "update"} menu item`
+      );
     }
   };
 
   // Filter by search term
-  const filteredItems = menuItems.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredItems = menuItems.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Handle sort changes
-  const handleSortChange = (newSortBy: string, newSortDir: 'asc' | 'desc') => {
+  const handleSortChange = (newSortBy: string, newSortDir: "asc" | "desc") => {
     setSortBy(newSortBy);
     setSortDir(newSortDir);
   };
@@ -197,8 +220,7 @@ export default function MenuManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
-      
+    <div className="bg-gradient-to-br from-gray-50 dark:from-gray-900 via-white dark:via-gray-800 to-gray-100 dark:to-gray-900 p-6 min-h-screen">
       {/* Header */}
       <MenuHeaderSection onCreateItem={handleCreate} />
 
@@ -240,7 +262,7 @@ export default function MenuManagementPage() {
       />
 
       {/* Menu Item Dialog */}
-      <MenuItemDialog
+      <CRUMenuItemModal
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSubmit={handleFormSubmit}
@@ -253,17 +275,18 @@ export default function MenuManagementPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <AlertTriangle className="w-5 h-5 text-red-500" />
               Delete Menu Item
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{itemToDelete?.name}&quot;? 
-              This action cannot be undone and will remove the item from all orders and analytics.
+              Are you sure you want to delete &quot;{itemToDelete?.name}&quot;?
+              This action cannot be undone and will remove the item from all
+              orders and analytics.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={confirmDelete}
               className="bg-red-500 hover:bg-red-600"
             >

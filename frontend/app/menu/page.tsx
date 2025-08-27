@@ -1,61 +1,71 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { fadeInContainer } from '@/framer';
 import { menuApi } from '@/lib/api/menu.api';
 import { MenuItemResponse } from '@/schema/menuItem.schema';
+
 import {
-  MenuHeaderSection,
-  PromotionalSection,
-  ControlsSection,
-  MenuDisplaySection
+    ControlsSection, MenuDisplaySection, MenuHeaderSection, PromotionalSection
 } from './sections';
 
 export default function MenuPage() {
   // State for filters and sorting
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('name-asc');
-  const [filterType, setFilterType] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("name-asc");
+  const [filterType, setFilterType] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  
+
   // Lazy loading state
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20); // Larger page size for better performance
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
-  
+
   // Menu items from API (accumulated)
   const [menuItems, setMenuItems] = useState<MenuItemResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   // Helper function to map frontend sort keys to backend field names
   const mapSortByToBackend = (sortBy: string) => {
-    const fieldMapping: { [key: string]: { field: string; direction: string } } = {
-      'reviews-month-desc': { field: 'monthlyReviews', direction: 'desc' },
-      'reviews-month-asc': { field: 'monthlyReviews', direction: 'asc' },
-      'reviews-week-desc': { field: 'weeklyReviews', direction: 'desc' },
-      'reviews-week-asc': { field: 'weeklyReviews', direction: 'asc' },
-      'buys-week-desc': { field: 'weeklyBuys', direction: 'desc' },
-      'buys-week-asc': { field: 'weeklyBuys', direction: 'asc' },
-      'buys-month-desc': { field: 'monthlyBuys', direction: 'desc' },
-      'buys-month-asc': { field: 'monthlyBuys', direction: 'asc' },
-      'positive-month-desc': { field: 'positiveReviewsMonthly', direction: 'desc' },
-      'positive-month-asc': { field: 'positiveReviewsMonthly', direction: 'asc' },
-      'positive-week-desc': { field: 'positiveReviewsWeekly', direction: 'desc' },
-      'positive-week-asc': { field: 'positiveReviewsWeekly', direction: 'asc' },
-      'rating-desc': { field: 'rating', direction: 'desc' },
-      'rating-asc': { field: 'rating', direction: 'asc' },
-      'name-desc': { field: 'name', direction: 'desc' },
-      'name-asc': { field: 'name', direction: 'asc' },
-      'price-desc': { field: 'price', direction: 'desc' },
-      'price-asc': { field: 'price', direction: 'asc' }
+    const fieldMapping: {
+      [key: string]: { field: string; direction: string };
+    } = {
+      "reviews-month-desc": { field: "monthlyReviews", direction: "desc" },
+      "reviews-month-asc": { field: "monthlyReviews", direction: "asc" },
+      "reviews-week-desc": { field: "weeklyReviews", direction: "desc" },
+      "reviews-week-asc": { field: "weeklyReviews", direction: "asc" },
+      "buys-week-desc": { field: "weeklyBuys", direction: "desc" },
+      "buys-week-asc": { field: "weeklyBuys", direction: "asc" },
+      "buys-month-desc": { field: "monthlyBuys", direction: "desc" },
+      "buys-month-asc": { field: "monthlyBuys", direction: "asc" },
+      "positive-month-desc": {
+        field: "positiveReviewsMonthly",
+        direction: "desc",
+      },
+      "positive-month-asc": {
+        field: "positiveReviewsMonthly",
+        direction: "asc",
+      },
+      "positive-week-desc": {
+        field: "positiveReviewsWeekly",
+        direction: "desc",
+      },
+      "positive-week-asc": { field: "positiveReviewsWeekly", direction: "asc" },
+      "rating-desc": { field: "rating", direction: "desc" },
+      "rating-asc": { field: "rating", direction: "asc" },
+      "name-desc": { field: "name", direction: "desc" },
+      "name-asc": { field: "name", direction: "asc" },
+      "price-desc": { field: "price", direction: "desc" },
+      "price-asc": { field: "price", direction: "asc" },
     };
-    
-    return fieldMapping[sortBy] || { field: 'name', direction: 'asc' };
+
+    return fieldMapping[sortBy] || { field: "name", direction: "asc" };
   };
 
   // Fetch initial menu items
@@ -69,23 +79,27 @@ export default function MenuPage() {
         size: pageSize,
         sortBy: field,
         sortDir: direction,
-        ...(filterType !== 'all' && { type: filterType })
+        ...(filterType !== "all" && { type: filterType.toUpperCase() }),
       };
 
       const response = await menuApi.getPublicMenu(params);
-      
+
       if (resetItems) {
         setMenuItems(response.content);
       }
-      
+
       setTotalItems(response.totalElements);
-      setHasMoreItems(response.content.length === pageSize && response.totalElements > pageSize);
+      setHasMoreItems(
+        response.content.length === pageSize &&
+          response.totalElements > pageSize
+      );
       setCurrentPage(0);
     } catch (error) {
-      console.error('Failed to fetch menu items:', error);
-      const errorMessage = error instanceof Error && error.message.includes('API Error') 
-        ? 'Server error occurred while loading menu items. Please try again.'
-        : 'Failed to load menu items. Please check your connection and try again.';
+      console.error("Failed to fetch menu items:", error);
+      const errorMessage =
+        error instanceof Error && error.message.includes("API Error")
+          ? "Server error occurred while loading menu items. Please try again."
+          : "Failed to load menu items. Please check your connection and try again.";
       setError(errorMessage);
       setMenuItems([]);
       setHasMoreItems(false);
@@ -97,7 +111,7 @@ export default function MenuPage() {
   // Load more items for infinite scroll
   const loadMoreItems = async () => {
     if (isLoadingMore || !hasMoreItems) return;
-    
+
     setIsLoadingMore(true);
     try {
       const { field, direction } = mapSortByToBackend(sortBy);
@@ -107,20 +121,23 @@ export default function MenuPage() {
         size: pageSize,
         sortBy: field,
         sortDir: direction,
-        ...(filterType !== 'all' && { type: filterType })
+        ...(filterType !== "all" && { type: filterType.toUpperCase() }),
       };
 
       const response = await menuApi.getPublicMenu(params);
-      
+
       if (response.content.length > 0) {
-        setMenuItems(prev => [...prev, ...response.content]);
+        setMenuItems((prev) => [...prev, ...response.content]);
         setCurrentPage(nextPage);
-        setHasMoreItems(response.content.length === pageSize && (nextPage + 1) * pageSize < response.totalElements);
+        setHasMoreItems(
+          response.content.length === pageSize &&
+            (nextPage + 1) * pageSize < response.totalElements
+        );
       } else {
         setHasMoreItems(false);
       }
     } catch (error) {
-      console.error('Failed to load more items:', error);
+      console.error("Failed to load more items:", error);
       // Don't show error for load more failures, just stop loading
       setHasMoreItems(false);
     } finally {
@@ -140,7 +157,7 @@ export default function MenuPage() {
       { threshold: 0.1 }
     );
 
-    const loadMoreTrigger = document.getElementById('load-more-trigger');
+    const loadMoreTrigger = document.getElementById("load-more-trigger");
     if (loadMoreTrigger) {
       observer.observe(loadMoreTrigger);
     }
@@ -160,10 +177,12 @@ export default function MenuPage() {
   // Client-side search filtering (since API doesn't support search yet)
   const filteredAndSortedItems = useMemo(() => {
     if (!searchQuery) return menuItems;
-    
-    return menuItems.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return menuItems.filter((item) => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description &&
+          item.description.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesSearch;
     });
   }, [menuItems, searchQuery]);
@@ -174,15 +193,15 @@ export default function MenuPage() {
   }, []);
 
   const handleClearSearch = useCallback(() => {
-    setSearchQuery('');
+    setSearchQuery("");
   }, []);
 
   const handleClearFilterType = useCallback(() => {
-    setFilterType('all');
+    setFilterType("all");
   }, []);
 
   const handleToggleFilters = useCallback(() => {
-    setShowFilters(prev => !prev);
+    setShowFilters((prev) => !prev);
   }, []);
 
   const handleSortChange = useCallback((newSortBy: string) => {
@@ -191,22 +210,22 @@ export default function MenuPage() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors"
+      className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors"
       initial="hidden"
       animate="visible"
       variants={fadeInContainer}
     >
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="space-y-8 mx-auto px-4 py-8 container">
         {/* Header Section */}
-        <MenuHeaderSection 
+        <MenuHeaderSection
           title="Cosmic Menu"
           subtitle="Discover our intergalactic coffee creations and stellar treats"
         />
 
         {/* Promotional Section */}
-        <PromotionalSection 
-          onViewCombos={() => handleFilterTypeChange('combo')}
-          onViewPromos={() => handleFilterTypeChange('promo')}
+        <PromotionalSection
+          onViewCombos={() => handleFilterTypeChange("combo")}
+          onViewPromos={() => handleFilterTypeChange("promo")}
         />
 
         {/* Controls Section */}
@@ -228,13 +247,13 @@ export default function MenuPage() {
 
         {/* Error Display */}
         {error && (
-          <div className="text-center py-8">
-            <div className="text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <div className="py-8 text-center">
+            <div className="bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 rounded-lg text-red-500">
               <p className="font-medium">Oops! Something went wrong</p>
-              <p className="text-sm mt-1">{error}</p>
-              <button 
+              <p className="mt-1 text-sm">{error}</p>
+              <button
                 onClick={() => fetchInitialMenuItems(true)}
-                className="mt-3 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                className="bg-red-500 hover:bg-red-600 mt-3 px-4 py-2 rounded-md text-white transition-colors"
               >
                 Try Again
               </button>
@@ -257,7 +276,7 @@ export default function MenuPage() {
           <div id="load-more-trigger" className="flex justify-center py-8">
             {isLoadingMore ? (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <div className="border-primary border-b-2 rounded-full w-6 h-6 animate-spin"></div>
                 <span>Loading more items...</span>
               </div>
             ) : (
@@ -273,7 +292,7 @@ export default function MenuPage() {
           <div className="flex justify-center py-8">
             <div className="text-muted-foreground text-center">
               <p>You&apos;ve reached the end of our menu!</p>
-              <p className="text-sm mt-1">Showing all {totalItems} items</p>
+              <p className="mt-1 text-sm">Showing all {totalItems} items</p>
             </div>
           </div>
         )}

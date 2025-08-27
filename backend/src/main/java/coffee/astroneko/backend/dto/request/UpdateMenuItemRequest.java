@@ -52,14 +52,12 @@ public class UpdateMenuItemRequest {
     String name,
     String description,
     Double price,
-    ItemType type,
-    String image
+    ItemType type
   ) {
     this.name = name;
     this.description = description;
     this.price = price;
     this.type = type;
-    this.image = image;
   }
 
   // Getters and Setters

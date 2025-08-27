@@ -34,7 +34,6 @@ public class CreateMenuItemRequest {
   @NotNull(message = "Type is required")
   private ItemType type;
 
-  @NotBlank(message = "Image URL is required")
   @Size(max = 500, message = "Image URL must not exceed 500 characters")
   private String image;
 

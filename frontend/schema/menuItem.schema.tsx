@@ -1,10 +1,25 @@
 import { z } from 'zod';
 
 // Item type enum to match backend
-export type ItemType = 'COFFEE' | 'PASTRIES' | 'DRINKS' | 'BUNDLES' | 'VEGETARIAN' | 'INSTANT' | 'COMBO';
+export type ItemType =
+  | "COFFEE"
+  | "PASTRIES"
+  | "DRINKS"
+  | "BUNDLES"
+  | "VEGETARIAN"
+  | "INSTANT"
+  | "COMBO";
 
 // Zod enum for ItemType
-export const ItemTypeEnum = z.enum(['COFFEE', 'PASTRIES', 'DRINKS', 'BUNDLES', 'VEGETARIAN', 'INSTANT', 'COMBO']);
+export const ItemTypeEnum = z.enum([
+  "COFFEE",
+  "PASTRIES",
+  "DRINKS",
+  "BUNDLES",
+  "VEGETARIAN",
+  "INSTANT",
+  "COMBO",
+]);
 
 // Promo type is now a string to allow any text input
 export type PromoType = string | null;
@@ -16,7 +31,14 @@ export interface MenuItem {
   description: string;
   price: number;
   originalPrice?: number; // For sale items
-  type: 'coffee' | 'pastries' | 'drinks' | 'bundles' | 'vegetarian' | 'instant' | 'combo';
+  type:
+    | "coffee"
+    | "pastries"
+    | "drinks"
+    | "bundles"
+    | "vegetarian"
+    | "instant"
+    | "combo";
   image: string;
   rating: number;
   reviewsCount: number;
@@ -96,10 +118,26 @@ export interface MenuItemResponse {
   updatedAt?: string;
 }
 
+export interface CRUMenuItemModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (
+    data: CreateMenuItemRequest | UpdateMenuItemRequest
+  ) => Promise<void>;
+  item?: MenuItemResponse | null;
+  mode: "create" | "edit" | "view";
+}
+
 // Zod schemas for validation
 export const CreateMenuItemSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  description: z.string().min(1, "Description is required").max(500, "Description must be less than 500 characters"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be less than 100 characters"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(500, "Description must be less than 500 characters"),
   price: z.number().min(0.01, "Price must be greater than 0"),
   originalPrice: z.number().min(0).optional(),
   type: ItemTypeEnum,
