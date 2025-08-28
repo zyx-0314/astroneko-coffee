@@ -1,57 +1,74 @@
 "use client";
 
-import { useState } from 'react';
-import { 
-  ButtonExample, 
-  FormExample, 
-  CardExample, 
-  LogoExample, 
-  StarRating, 
-  ToggleExample, 
-  BadgeExample 
-} from '@/schema/uiElements.schema';
+import { useState } from "react";
+
+import {
+  BadgeExample,
+  ButtonExample,
+  CardExample,
+  FormExample,
+  LogoExample,
+  StarRating,
+  ToggleExample,
+} from "@/schema/uiElements.schema";
 
 export function useUIElementsState() {
-  const [activeTab, setActiveTab] = useState('buttons');
+  const [activeTab, setActiveTab] = useState("buttons");
 
   const buttonExamples: ButtonExample[] = [
-    { label: 'Order Now', variant: 'primary', size: 'md' },
-    { label: 'Learn More', variant: 'secondary', size: 'md' },
-    { label: 'View Menu', variant: 'outline', size: 'md' },
-    { label: 'Small Button', variant: 'primary', size: 'sm' },
-    { label: 'Large CTA', variant: 'primary', size: 'lg' }
+    { label: "Order Now", variant: "primary", size: "md" },
+    { label: "Learn More", variant: "secondary", size: "md" },
+    { label: "View Menu", variant: "outline", size: "md" },
+    { label: "Small Button", variant: "primary", size: "sm" },
+    { label: "Large CTA", variant: "primary", size: "lg" },
   ];
 
   const formExamples: FormExample[] = [
-    { type: 'input', placeholder: 'Enter your email', label: 'Email Address' },
-    { type: 'input', placeholder: 'Your full name', label: 'Full Name' },
-    { type: 'textarea', placeholder: 'Special instructions...', label: 'Order Notes' },
-    { type: 'select', placeholder: 'Choose size', label: 'Cup Size' }
+    { type: "input", placeholder: "Enter your email", label: "Email Address" },
+    { type: "input", placeholder: "Your full name", label: "Full Name" },
+    {
+      type: "textarea",
+      placeholder: "Special instructions...",
+      label: "Order Notes",
+    },
+    { type: "select", placeholder: "Choose size", label: "Cup Size" },
   ];
 
   const cardExamples: CardExample[] = [
     {
-      title: 'Ethiopian Yirgacheffe',
-      description: 'Bright and floral with notes of citrus and tea',
-      variant: 'featured'
+      title: "Ethiopian Yirgacheffe",
+      description: "Bright and floral with notes of citrus and tea",
+      variant: "featured",
     },
     {
-      title: 'Colombian Supremo',
-      description: 'Rich and balanced with chocolate undertones',
-      variant: 'default'
+      title: "Colombian Supremo",
+      description: "Rich and balanced with chocolate undertones",
+      variant: "default",
     },
     {
-      title: 'Quick Order',
-      description: 'Reorder your favorite',
-      variant: 'compact'
-    }
+      title: "Quick Order",
+      description: "Reorder your favorite",
+      variant: "compact",
+    },
   ];
 
   const logoExamples: LogoExample[] = [
-    { size: "medium", label: "Medium Logo" },
-    { size: "small", label: "Small Logo Black" },
-    { size: "small", label: "Small Logo White" },
-    { size: "small", label: "Small Logo Normal" }
+    { size: "medium", label: "Medium Logo", img: "/main-logo/colored-bg.webp" },
+    {
+      size: "small",
+      label: "Small Logo Black",
+      img: "/main-logo/light-transparent.webp",
+    },
+    {
+      size: "small",
+      label: "Small Logo White",
+      img: "/main-logo/dark-transparent.webp",
+    },
+    {
+      size: "small",
+      label: "Small Logo Normal",
+      img: "/main-logo/transparent.webp",
+    },
   ];
 
   const starRatings: StarRating[] = [
@@ -59,14 +76,14 @@ export function useUIElementsState() {
     { rating: 4, label: "Very Good" },
     { rating: 3, label: "Good" },
     { rating: 2, label: "Fair" },
-    { rating: 1, label: "Poor" }
+    { rating: 1, label: "Poor" },
   ];
 
   const toggleExamples: ToggleExample[] = [
     { id: "notifications", label: "Notifications", checked: true },
     { id: "darkmode", label: "Dark Mode", checked: false },
     { id: "emailUpdates", label: "Email Updates", checked: true },
-    { id: "soundEffects", label: "Sound Effects", checked: false }
+    { id: "soundEffects", label: "Sound Effects", checked: false },
   ];
 
   const badgeExamples: BadgeExample[] = [
@@ -74,7 +91,7 @@ export function useUIElementsState() {
     { label: "Popular", variant: "primary", color: "#6B4E37" },
     { label: "Hot", variant: "danger", color: "#EF4444" },
     { label: "Limited", variant: "warning", color: "#F59E0B" },
-    { label: "Sold Out", variant: "neutral", color: "#6B7280" }
+    { label: "Sold Out", variant: "neutral", color: "#6B7280" },
   ];
 
   return {
@@ -86,6 +103,6 @@ export function useUIElementsState() {
     logoExamples,
     starRatings,
     toggleExamples,
-    badgeExamples
+    badgeExamples,
   };
 }

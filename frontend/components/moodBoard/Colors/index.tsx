@@ -1,17 +1,20 @@
 "use client";
 
-import { FC } from 'react';
-import { useColorPalette } from './Colors.hook';
-import { Color } from '@/schema/colors.schema';
+import { FC } from "react";
+
+import { Color } from "@/schema/colors.schema";
+
+import { useColorPalette } from "./Colors.hook";
 
 const MoodBoardColors: FC = () => {
-  const { selectedColor, copiedColor, copyToClipboard, selectColor } = useColorPalette();
+  const { selectedColor, copiedColor, copyToClipboard, selectColor } =
+    useColorPalette();
 
   const brandColors: Color[] = [
     { hex: "#6B4E37", name: "Shingle Fawn" },
-    { hex: "#2CA6A4", name: "Jungle Green" }, 
+    { hex: "#2CA6A4", name: "Jungle Green" },
     { hex: "#E1B168", name: "Equator" },
-    { hex: "#D4EDEC", name: "Light Mint" }
+    { hex: "#D4EDEC", name: "Light Mint" },
   ];
 
   const neutralColors: Color[] = [
@@ -19,13 +22,13 @@ const MoodBoardColors: FC = () => {
     { hex: "#E9ECEF", name: "Gray 100" },
     { hex: "#6C757D", name: "Gray 500" },
     { hex: "#343A40", name: "Gray 800" },
-    { hex: "#212529", name: "Almost Black" }
+    { hex: "#212529", name: "Almost Black" },
   ];
 
   const renderColorCard = (color: Color, index: number) => (
     <div
       key={index}
-      className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer bg-white dark:bg-gray-800"
+      className="group relative bg-white dark:bg-gray-800 shadow-md hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300 cursor-pointer"
       onClick={() => {
         copyToClipboard(color.hex);
         selectColor(color.hex);
@@ -33,39 +36,39 @@ const MoodBoardColors: FC = () => {
     >
       {/* Color Display Area */}
       <div
-        className="h-32 w-full transition-transform duration-300 group-hover:scale-105 relative border-0"
-        style={{ 
+        className="relative border-0 w-full h-32 group-hover:scale-105 transition-transform duration-300"
+        style={{
           backgroundColor: color.hex,
-          minHeight: '8rem',
-          width: '100%',
-          display: 'block'
+          minHeight: "8rem",
+          width: "100%",
+          display: "block",
         }}
       >
         {/* Visual confirmation overlay */}
-        <div 
+        <div
           className="absolute inset-0 w-full h-full"
           style={{ backgroundColor: color.hex }}
         />
       </div>
-      
+
       {/* Hover Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 pointer-events-none" />
-      
+      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/40 transition-all duration-300 pointer-events-none" />
+
       {/* Color Info */}
-      <div className="p-4 bg-white dark:bg-gray-800 relative z-10">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+      <div className="z-10 relative bg-white dark:bg-gray-800 p-4">
+        <h3 className="mb-1 font-semibold text-gray-900 dark:text-white">
           {color.name}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 font-mono uppercase">
+        <p className="font-mono text-gray-600 dark:text-gray-400 text-sm uppercase">
           {color.hex}
         </p>
         {copiedColor === color.hex && (
-          <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
+          <p className="mt-1 font-medium text-green-600 dark:text-green-400 text-xs">
             Copied!
           </p>
         )}
         {selectedColor === color.hex && (
-          <div className="absolute top-2 right-2 w-4 h-4 bg-green-500 rounded-full shadow-md z-20">
+          <div className="top-2 right-2 z-20 absolute bg-green-500 shadow-md rounded-full w-4 h-4">
             <div className="absolute inset-1 bg-white rounded-full" />
           </div>
         )}
@@ -76,51 +79,68 @@ const MoodBoardColors: FC = () => {
   return (
     <section className="space-y-8">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="mb-2 font-bold text-gray-900 dark:text-white text-3xl">
           Color Palette
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <p className="mb-8 text-gray-600 dark:text-gray-400">
           Click any color to copy its hex code to your clipboard.
         </p>
       </div>
 
       <div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 className="mb-4 font-semibold text-gray-900 dark:text-white text-xl">
           Brand Colors
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="gap-6 grid grid-cols-2 md:grid-cols-4">
           {brandColors.map(renderColorCard)}
         </div>
       </div>
 
       <div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 className="mb-4 font-semibold text-gray-900 dark:text-white text-xl">
           Neutral Palette
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="gap-6 grid grid-cols-2 md:grid-cols-5">
           {neutralColors.map(renderColorCard)}
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg">
+        <h3 className="mb-4 font-semibold text-gray-900 dark:text-white text-xl">
           Usage Guidelines
         </h3>
         <div className="space-y-4 text-gray-600 dark:text-gray-400">
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">Primary Brand Colors:</h4>
-            <ul className="list-disc list-inside mt-2 space-y-1">
-              <li><strong>Shingle Fawn (#6B4E37):</strong> Coffee warmth, earthy comfort</li>
-              <li><strong>Jungle Green (#2CA6A4):</strong> Alien mystique, cosmic energy</li>
-              <li><strong>Equator (#E1B168):</strong> Golden accents, premium feel</li>
-              <li><strong>Light Mint (#D4EDEC):</strong> Fresh, clean background tones</li>
+            <h4 className="font-medium text-gray-900 dark:text-white">
+              Primary Brand Colors:
+            </h4>
+            <ul className="space-y-1 mt-2 list-disc list-inside">
+              <li>
+                <strong>Shingle Fawn (#6B4E37):</strong> Coffee warmth, earthy
+                comfort
+              </li>
+              <li>
+                <strong>Jungle Green (#2CA6A4):</strong> Alien mystique, cosmic
+                energy
+              </li>
+              <li>
+                <strong>Equator (#E1B168):</strong> Golden accents, premium feel
+              </li>
+              <li>
+                <strong>Light Mint (#D4EDEC):</strong> Fresh, clean background
+                tones
+              </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">Best Practices:</h4>
-            <ul className="list-disc list-inside mt-2 space-y-1">
+            <h4 className="font-medium text-gray-900 dark:text-white">
+              Best Practices:
+            </h4>
+            <ul className="space-y-1 mt-2 list-disc list-inside">
               <li>Use brand colors for primary elements and calls-to-action</li>
-              <li>Apply neutrals for text, backgrounds, and supporting elements</li>
+              <li>
+                Apply neutrals for text, backgrounds, and supporting elements
+              </li>
               <li>Maintain sufficient contrast ratios for accessibility</li>
               <li>Consider dark mode variants for all color applications</li>
             </ul>

@@ -24,6 +24,7 @@ export interface CardExample {
 export interface LogoExample {
   size: 'small' | 'medium' | 'large';
   label: string;
+  img: string;
 }
 
 export interface StarRating {
