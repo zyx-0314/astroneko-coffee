@@ -80,16 +80,15 @@ export const roadmapData: RoadmapItem[] = [
   {
     id: 'p1-frontdesk',
     title: 'Front Desk Dashboard',
-    description: 'Real-time order queue management and order processing interface.',
-    status: 'planned',
+    description: 'Restful order queue management and order processing interface.',
+    status: 'in-progress',
     category: 'admin',
     priority: 'high',
     quarter: 'Phase 1',
     progress: 0,
     features: [
-      {title: 'Real-time queue with WebSocket', done: false},
+      {title: 'Rest based queue', done: false},
       {title: 'Order cards with customer info', done: false},
-      {title: 'Priority badges and notifications', done: false},
       {title: 'Build/modify orders with items', done: false},
       {title: 'Send orders to Kitchen (KDS tickets)', done: false}
     ]
@@ -98,7 +97,7 @@ export const roadmapData: RoadmapItem[] = [
     id: 'p1-kitchen',
     title: 'Kitchen Display System (KDS)',
     description: 'Kitchen staff interface for order preparation and status updates.',
-    status: 'planned',
+    status: 'in-progress',
     category: 'backend',
     priority: 'high',
     quarter: 'Phase 1',
@@ -147,7 +146,7 @@ export const futurePhases: FuturePhase[] = [
     phase: 'Phase 6',
     title: 'Additionals',
     quarter: 'Q4 2025',
-    items: ['Naming of Promos', 'Filter by Promo'],
+    items: ['Naming of Promos', 'Filter by Promo', 'Real-time queue with WebSocket', 'Priority badges and notifications'],
     color: 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800'
   }
 ];
