@@ -1,9 +1,18 @@
 # Astroneko Coffee — Backend Anchor (Spring Boot 3, Java 21)
 
-> Scope: **Admin**, **Employee‑Cashier**, **Client/Guest**.
-> Datastores: **PostgreSQL**, **Redis**.
-> APIs: **REST first**, **WebSocket later**, **GraphQL later**.
+**Purpose**: Canonical backend architecture and API contract decisions  
+**Owner**: Backend Team  
+**Last-updated**: 2025-08-29  
+**Status**: Canonical (architecture anchor)
+
+> **Policy**: This document defines core backend architectural decisions. Changes to API structure, security patterns, or database strategy require approval via the Docs Change process.
+
+> Scope: **Admin**, **Employee‑Cashier**, **Client/Guest**.  
+> Datastores: **PostgreSQL**, **Redis**.  
+> APIs: **REST first**, **WebSocket later**, **GraphQL later**.  
 > Payments: **Mock first**, then **PayMongo or Xendit** (whichever is simplest when we reach it).
+
+> **Note**: For detailed implementation guidance and code examples, see `docs/backend-setup.md`.
 
 ---
 

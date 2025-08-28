@@ -1,67 +1,67 @@
-1. **Create Backend**
-   - On the website, configure the backend with the following:
-     ```
-     Project: Maven
-     Language: Java
-     Spring Boot: 3.5.4
-     Group: coffee.astroneko
-     Artifact: backend
-     Packaging: Jar
-     Java: 21
+# Onboarding Checklist - Quick Start Guide
 
-     Dependencies:
-        Spring Web
-        Spring Security
-        Spring Data JPA
-        PostgreSQL Driver
-        Validation
-        Actuator
-     ```
-   - Use Spring Boot to initialize the project.
+**Purpose**: Short onboarding checklist for new developers  
+**Owner**: Onboarding Team  
+**Last-updated**: 2025-08-29  
+**Status**: Canonical (quick reference)
 
-2. **Add Swagger**
-   - Add the Swagger dependency to `pom.xml`:
-     ```xml
-     <dependency>
-         <groupId>org.springdoc</groupId>
-         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-         <version>2.1.0</version>
-     </dependency>
-     ```
-   - Access Swagger UI at: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
+> **Note**: For detailed step-by-step tutorial with code examples, see `docs/examples/setup-tutorial.md`
 
-3. **Configure Application Properties**
-   - Update `application.properties` with the following:
-     ```properties
-     server.port=8083
-     spring.profiles.active=dev
-     springdoc.swagger-ui.path=/swagger-ui.html
-     spring.security.user.name=admin
-     spring.security.user.password=admin123
-     ```
+## Prerequisites Setup
+- [ ] Install Java 21 LTS
+- [ ] Install Maven 3.9+
+- [ ] Install Docker & Docker Compose
+- [ ] Install Node.js LTS
+- [ ] Clone repository and navigate to project root
 
-4. **Test the Backend**
-   - Run the backend:
-     ```bash
-     mvn -q spring-boot:run
-     ```
-   - Verify:
-     - Health check: [http://localhost:8083/actuator/health](http://localhost:8083/actuator/health)
-     - Swagger UI: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
+## Backend Quick Start
+- [ ] Create Spring Boot project (Maven, Java 21, Spring Boot 3.5.4)
+- [ ] Add required dependencies: Web, Security, JPA, PostgreSQL, Validation, Actuator
+- [ ] Configure `application.properties` (port 8083, dev profile)
+- [ ] Add Swagger dependency and configuration
+- [ ] Start Docker database: `docker compose up -d postgres`
+- [ ] Run backend: `mvn spring-boot:run`
+- [ ] Verify health check: http://localhost:8083/actuator/health
+- [ ] Verify Swagger UI: http://localhost:8083/swagger-ui.html
 
-5. **Install Frontend**
-   - Initialize the frontend project:
-     ```bash
-     npx create-next-app@latest .
-     ```
-   - Add ShadCN components:
-     ```bash
-     npx shadcn@latest init
-     npx shadcn@latest add
-     npm i axios zod
-     ```
+## Frontend Quick Start
+- [ ] Initialize Next.js project: `npx create-next-app@latest .`
+- [ ] Add ShadCN: `npx shadcn@latest init && npx shadcn@latest add`
+- [ ] Install dependencies: `npm i axios zod`
+- [ ] Create `.env` with API URL: `NEXT_PUBLIC_API_URL=http://localhost:8083/api/v1`
+- [ ] Run frontend: `npm run dev`
+- [ ] Test connection to backend APIs
 
-6. **Connect Frontend to Backend**
+## Integration & Testing
+- [ ] Configure CORS for frontend-backend communication
+- [ ] Set up security configuration for public/secure endpoints  
+- [ ] Create sample controller and test API endpoints
+- [ ] Verify frontend can fetch data from backend
+- [ ] Test Swagger documentation for all endpoints
+
+## Database Setup
+- [ ] Configure PostgreSQL connection (port 5435)
+- [ ] Create JPA entities and repositories
+- [ ] Test database connectivity and table creation
+- [ ] Verify CRUD operations through API endpoints
+
+## Final Verification
+- [ ] All services running: database, backend, frontend
+- [ ] API endpoints accessible via Swagger and frontend
+- [ ] No CORS errors in browser console
+- [ ] Database tables created and accessible
+
+---
+
+**Next Steps**: 
+- Read `docs/spring.md` for backend architecture decisions
+- Read `docs/nextjs.md` for frontend conventions  
+- See `docs/examples/setup-tutorial.md` for detailed implementation examples
+
+**Common Issues**:
+- Port conflicts: Check if ports 3003, 8083, 5435 are available
+- CORS errors: Verify frontend URL in backend CORS configuration
+- Database connection: Ensure Docker PostgreSQL is running and accessible
    - **Backend**:
      1. **Add CORS Configuration**:
         - Create a `CorsConfig` class in the backend's `config` package.

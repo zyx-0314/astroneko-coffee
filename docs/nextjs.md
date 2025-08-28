@@ -1,5 +1,12 @@
 # Next.js Utilization — Astroneko Coffee (Anchor Doc)
 
+**Purpose**: Canonical Next.js architecture and conventions  
+**Owner**: Frontend Team  
+**Last-updated**: 2025-08-29  
+**Status**: Canonical (architecture decisions)
+
+> **Policy**: This document contains recommended conventions for rendering strategy, routing patterns, and folder structure. Any changes to these architectural patterns must be approved via the Docs Change approval process.
+
 > Goal: a mobile‑first web app supporting **Admin**, **Employee‑Cashier**, and **User (Client)**.
 > Design for **mobile**, **tablet kiosk**, **desktop**. Keep choices simple for learning.
 

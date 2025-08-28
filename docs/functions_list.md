@@ -1,5 +1,12 @@
 # Astroneko Coffee - Functions List (Page → Section → Functionality)
 
+**Purpose**: Comprehensive feature specifications and functionality mapping  
+**Owner**: Product Team  
+**Last-updated**: 2025-08-29  
+**Status**: Living spec (change requires owning approver)
+
+> **Policy**: This document serves as the living specification for all application features. Changes to functionality described here require approval from the owning product team member to ensure consistency with overall product vision.
+
 ## Authentication Page (`/authentication`)
 
 ### Sign In Section

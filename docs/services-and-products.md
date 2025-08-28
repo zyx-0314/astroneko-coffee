@@ -1,3 +1,12 @@
+# Astroneko Coffee - Menu & Product List
+
+**Purpose**: Sample menu items and product catalog for marketing and development testing  
+**Owner**: Product Team  
+**Last-updated**: 2025-08-29  
+**Status**: Content (not code-related)
+
+> **Note**: This is sample content for menu development and marketing purposes.
+
 ### ☕ Cosmic Coffee Creations (Signature Blends)
 
 1. **Milky Way** – White coffee base, creamy + light

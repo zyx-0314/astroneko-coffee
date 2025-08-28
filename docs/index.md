@@ -1,53 +1,74 @@
-# Astroneko Coffee - Project Documentation
+# Astroneko Coffee - Documentation Index
+
+**Purpose**: Table of contents and overview of project documentation  
+**Owner**: Documentation Team  
+**Last-updated**: 2025-08-29  
+**Status**: Canonical (TOC only)
 
 ## Project Overview
 A modern coffee shop management system built with Spring Boot backend and Next.js frontend, featuring admin dashboards, customer ordering, and comprehensive business management tools.
 
 ## Architecture Stack
 - **Frontend**: Next.js 14+ with TypeScript, Tailwind CSS
-- **Backend**: Spring Boot with Java
-- **Database**: (Configuration based)
+- **Backend**: Spring Boot with Java 21
+- **Database**: PostgreSQL + Redis
 - **Deployment**: Docker Compose
 
 ---
 
-# Frontend
+## Documentation Map
 
-## Structure
-```
-frontend/
-├── app/                                # Next.js App Router
-│   ├── (landing)/                      # Landing page group
-│   │   ├── page.tsx                    # Main landing page
-│   │   └── sections/                   # Landing page components
-│   │       ├── BenefitsSection.tsx     # Benefits showcase
-│   │       ├── CTASection.tsx          # Call-to-action section
-│   │       ├── FeatureSection.tsx      # Feature highlights
-│   │       ├── FeaturesListSection.tsx # Features list display
-│   │       ├── GallerySection.tsx      # Image gallery
-│   │       ├── HeroSection.tsx         # Hero banner
-│   │       ├── HowItWorksSection.tsx   # Process explanation
-│   │       ├── index.ts                # Section exports
-│   │       ├── ServicesSection.tsx     # Services overview
-│   │       ├── StatsSection.tsx        # Statistics display
-│   │       └── TestimonialSection.tsx  # Customer testimonials
-│   ├── about/                          # About page - TODO: Apply Section and Components
-│   │   ├── page.tsx
-│   │   └── sections/                   # About page components
-│   │       └── index.ts                # Section exports
-│   ├── admin/                          # Admin dashboard
-│   │   ├── layout.tsx                  # Admin layout wrapper
-│   │   ├── front-desk/                 # Front desk management - TODO: Apply Section and Components
-│   │   │   ├── layout.tsx              # Front desk layout
-│   │   │   └── dashboard/              # Front desk dashboard - TODO: Apply Section and Components
-│   │   │       ├── page.tsx
-│   │   │       └── sections/           # Front desk dashboard components
-│   │   │           └── index.ts        # Section exports
-│   │   ├── help/                       # Admin help section - TODO: Apply Section and Components
-│   │   │   ├── page.tsx
-│   │   │   └── sections/               # Help page components
-│   │   │       └── index.ts            # Section exports
-│   │   ├── kitchen/                    # Kitchen management
+### Core Architecture (Canonical)
+- **[Backend Architecture](spring.md)** - Spring Boot API design, security, database, and packaging decisions
+- **[Frontend Architecture](nextjs.md)** - Next.js routing, rendering strategy, state management, and conventions
+- **[Charter & Principles](charter.md)** - Development principles, no-go rules, and team agreements
+
+### Development Guides
+- **[Backend Setup](backend-setup.md)** - Detailed implementation guide with code examples and configuration
+- **[Testing Guide](testing.md)** - Automated testing framework for backend and frontend
+- **[Onboarding Steps](steps.md)** - Quick start checklist for new developers
+
+### Planning & Specifications
+- **[Roadmap](roadmap.md)** - Phased MVP development plan (P0-P5)
+- **[Feature List](functions_list.md)** - Comprehensive feature mapping by page and section
+- **[Menu & Products](services-and-products.md)** - Sample menu items and product catalog
+
+### Process & Standards
+- **[Git Commit Rules](git-commit.md)** - Commit message format and version control standards
+
+### Examples & Tutorials
+- **[Setup Tutorial](examples/setup-tutorial.md)** - Step-by-step tutorial with detailed code examples
+
+---
+
+## Quick Links
+
+### For New Developers
+1. Read [Charter](charter.md) for principles and rules
+2. Follow [Onboarding Steps](steps.md) for quick setup
+3. Refer to [Backend Setup](backend-setup.md) and [Frontend Architecture](nextjs.md) for implementation details
+
+### For Architecture Decisions
+- [Backend Architecture](spring.md) - API contracts and backend patterns
+- [Frontend Architecture](nextjs.md) - Routing and component conventions
+- [Charter](charter.md) - Change approval process for architectural modifications
+
+### For Feature Development
+- [Roadmap](roadmap.md) - Current development priorities
+- [Feature List](functions_list.md) - Complete feature specifications
+- [Testing Guide](testing.md) - Testing requirements and setup
+
+---
+
+## Document Types
+- **Canonical**: Single source of truth (architecture decisions, TOCs)
+- **Tutorial**: Time-sensitive setup guides and examples  
+- **Content**: Marketing materials and sample data
+- **Process**: Team workflows and standards
+
+---
+
+**Note**: For detailed project structure and component organization, see the individual architecture documents linked above.
 │   │   │   ├── layout.tsx              # Front desk layout
 │   │   │   └── dashboard/              # Kitchen dashboard - TODO: Apply Section and Components
 │   │   │       ├── page.tsx
